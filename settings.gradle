@@ -1,0 +1,5 @@
+rootProject.name='Prosecute'
+include ':app'
+include ':network'
+include ':root'
+include ':hook'
