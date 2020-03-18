@@ -2,6 +2,7 @@ package com.micro.tremolo;
 
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
+import com.micro.tremolo.execute.PluginDeploy;
 import com.micro.tremolo.mvp.EntranceInter;
 import com.micro.tremolo.mvp.EntrancePresenter;
 import com.micro.tremolo.version.TremoloParam;
@@ -47,6 +48,6 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     public void execute() {
-
+        PluginDeploy.executePlugin(getHookParam());
     }
 }

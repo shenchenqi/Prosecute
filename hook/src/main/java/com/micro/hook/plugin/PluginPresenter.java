@@ -10,7 +10,7 @@ public abstract class PluginPresenter<Inter extends PluginInter> {
         return clazz;
     }
 
-    public void setClazz(Inter clazz) throws Throwable {
+    void setClazz(Inter clazz) throws Throwable {
         if (clazz == null) {
             throw new Throwable("clazz cannot be null");
         }
@@ -19,10 +19,4 @@ public abstract class PluginPresenter<Inter extends PluginInter> {
     }
 
     public abstract void onAttached();
-
-    public void onDetached() {
-        if (clazz != null) {
-            clazz = null;
-        }
-    }
 }

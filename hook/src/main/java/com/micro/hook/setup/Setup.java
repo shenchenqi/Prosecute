@@ -7,7 +7,7 @@ import com.micro.hook.config.HookParam;
  */
 public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> implements SetupInter {
 
-    protected final HookParam hookParam;
+    private final HookParam hookParam;
     private final P presenter;
 
     protected Setup(HookParam hookParam) throws Throwable {
@@ -18,6 +18,10 @@ public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> i
             this.presenter.getClazz().initParam(hookParam.getVersion());
             this.presenter.getClazz().hide();
         }
+    }
+
+    protected HookParam getHookParam() {
+        return hookParam;
     }
 
     protected abstract P getPresenter();

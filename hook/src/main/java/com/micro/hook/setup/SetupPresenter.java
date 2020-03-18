@@ -20,10 +20,4 @@ public abstract class SetupPresenter<Inter extends SetupInter> {
     }
 
     public abstract void onAttached();
-
-    public void onDetached() {
-        if (clazz != null) {
-            clazz = null;
-        }
-    }
 }
