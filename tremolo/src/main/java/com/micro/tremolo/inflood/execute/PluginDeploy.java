@@ -1,4 +1,4 @@
-package com.micro.tremolo.execute;
+package com.micro.tremolo.inflood.execute;
 
 import com.micro.hook.config.Hook;
 import com.micro.hook.config.HookParam;
@@ -6,7 +6,7 @@ import com.micro.hook.config.HookParam;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.micro.tremolo.TremoloModule.logger;
+import static com.micro.tremolo.inflood.TremoloModule.logger;
 
 /**
  * created by kilin on 20-3-18 上午10:10
@@ -38,7 +38,7 @@ public class PluginDeploy {
             return;
         }
         for (Class clazz : registerPluginMap.values()) {
-            Hook.method(clazz, "start", hookParam.getHook());
+            Hook.method(clazz, "start", hookParam.getHook(), hookParam.getContext());
         }
     }
 }

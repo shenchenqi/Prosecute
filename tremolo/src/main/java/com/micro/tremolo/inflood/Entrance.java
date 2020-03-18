@@ -1,13 +1,13 @@
-package com.micro.tremolo;
+package com.micro.tremolo.inflood;
 
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
-import com.micro.tremolo.execute.PluginDeploy;
-import com.micro.tremolo.mvp.EntranceInter;
-import com.micro.tremolo.mvp.EntrancePresenter;
-import com.micro.tremolo.version.TremoloParam;
+import com.micro.tremolo.inflood.execute.PluginDeploy;
+import com.micro.tremolo.inflood.mvp.EntranceInter;
+import com.micro.tremolo.inflood.mvp.EntrancePresenter;
+import com.micro.tremolo.inflood.version.TremoloParam;
 
-import static com.micro.tremolo.TremoloModule.logger;
+import static com.micro.tremolo.inflood.TremoloModule.logger;
 
 /**
  * created by kilin on 20-3-17 下午5:23

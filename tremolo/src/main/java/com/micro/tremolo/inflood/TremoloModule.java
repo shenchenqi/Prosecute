@@ -1,10 +1,10 @@
-package com.micro.tremolo;
+package com.micro.tremolo.inflood;
 
 import com.micro.hook.ExecuteMonitor;
 import com.micro.hook.config.HookParam;
 import com.micro.root.Logger;
+import com.micro.tremolo.Const;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,17 +30,17 @@ public class TremoloModule extends ExecuteMonitor {
 
     @Override
     protected String getPackageName() {
-        return "com.ss.android.ugc.aweme";
+        return Const.PACKAGE_NAME;
     }
 
     @Override
     protected String applicationPath() {
-        return "com.ss.android.ugc.aweme.app.AwemeApplication";
+        return Const.APPLICATION;
     }
 
     @Override
     protected List<String> versions() {
-        return Arrays.asList("7.1.0", "7.1.1");
+        return Const.VERSIONS;
     }
 
     @Override

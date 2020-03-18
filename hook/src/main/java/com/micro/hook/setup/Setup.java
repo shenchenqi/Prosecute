@@ -14,6 +14,7 @@ public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> i
         this.hookParam = hookParam;
         this.presenter = getPresenter();
         if (this.presenter != null) {
+            this.presenter.setContext(hookParam.getContext());
             this.presenter.setClazz((I) this);
             this.presenter.getClazz().initParam(hookParam.getVersion());
             this.presenter.getClazz().hide();
