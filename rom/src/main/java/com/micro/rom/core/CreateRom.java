@@ -1,7 +1,10 @@
-package com.micro.rom;
+package com.micro.rom.core;
 
 import android.content.Context;
 import android.os.Build;
+
+import com.micro.rom.core.basis.BackupCallback;
+import com.micro.rom.core.basis.BaseRom;
 
 /**
  * created by kilin on 20-3-11 下午2:21
@@ -9,10 +12,8 @@ import android.os.Build;
 public abstract class CreateRom {
 
     private final BaseRom baseRom;
-    private final Context context;
 
     protected CreateRom(Context context, String packageName, String createDir) {
-        this.context = context;
         initConfig();
         this.baseRom = new BaseRom(context, packageName, createDir) {
             @Override
@@ -31,8 +32,8 @@ public abstract class CreateRom {
         return baseRom;
     }
 
-    public Context getContext() {
-        return context;
+    protected Context getContext() {
+        return baseRom.getContext();
     }
 
     protected String getPackageName() {
@@ -71,7 +72,7 @@ public abstract class CreateRom {
         return baseRom.getPackageDir();
     }
 
-    public String copyFiles(int index, String beauDir, String copyDir, BackupCallback callback, String... fileItems) {
+    protected String copyFiles(int index, String beauDir, String copyDir, BackupCallback callback, String... fileItems) {
         return baseRom.copyFiles(index, beauDir, copyDir, callback, fileItems);
     }
 
@@ -83,7 +84,7 @@ public abstract class CreateRom {
 
     protected abstract boolean isAppInXSpace(String packName);
 
-    public abstract class SystemUI {
+    public abstract static class SystemUI {
 
         private final boolean isUI;
         protected final Context context;

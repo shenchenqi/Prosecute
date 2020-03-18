@@ -23,8 +23,7 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation project(path: ':root')
-    compileOnly files('lib/xposed-89.jar')
-    api deps.sqlcipher
+    implementation project(path: ':hook')
+    implementation project(path: ':rom')
 }

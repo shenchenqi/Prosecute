@@ -25,6 +25,6 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation project(path: ':root')
-    compileOnly files('lib/xposed-89.jar')
-    api deps.sqlcipher
+    implementation files('libs/EnterpriseSDK.jar')
+    api deps.litepal
 }

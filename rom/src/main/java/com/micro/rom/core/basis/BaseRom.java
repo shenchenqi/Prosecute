@@ -1,4 +1,4 @@
-package com.micro.rom;
+package com.micro.rom.core.basis;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -66,7 +66,7 @@ public abstract class BaseRom {
 
     protected abstract boolean isRom();
 
-    protected String copyFiles(final int index, final String beauDir, final String copyDir, final BackupCallback callback, final String... fileItems) {
+    public String copyFiles(final int index, final String beauDir, final String copyDir, final BackupCallback callback, final String... fileItems) {
         if (!isBaseRom) {
             return "";
         }

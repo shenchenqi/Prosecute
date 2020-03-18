@@ -18,6 +18,12 @@ android {
             keyAlias "prosecute"
             keyPassword "123456"
         }
+        debug {
+            storeFile file('prosecute.jks')
+            storePassword '123456'
+            keyPassword '123456'
+            keyAlias = 'prosecute'
+        }
     }
     buildTypes {
         release {

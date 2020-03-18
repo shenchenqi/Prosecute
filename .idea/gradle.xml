@@ -13,7 +13,9 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/hook" />
             <option value="$PROJECT_DIR$/network" />
+            <option value="$PROJECT_DIR$/rom" />
             <option value="$PROJECT_DIR$/root" />
+            <option value="$PROJECT_DIR$/tremolo" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -8,6 +8,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 
+import com.micro.rom.core.basis.BackupCallback;
+import com.micro.rom.core.basis.BaseRom;
+import com.micro.rom.core.CreateRom;
 import com.micro.root.Logger;
 import com.miui.enterprise.sdk.ApplicationManager;
 
