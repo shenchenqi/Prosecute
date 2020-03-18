@@ -2,7 +2,7 @@ package com.micro.tremolo.folder;
 
 import android.content.Context;
 
-import com.micro.utils.CacheDefault;
+import com.micro.tremolo.utils.CacheDefault;
 import com.micro.rom.RootRom;
 
 import org.litepal.LitePal;

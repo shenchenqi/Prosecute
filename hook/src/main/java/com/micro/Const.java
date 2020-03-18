@@ -1,6 +1,5 @@
 package com.micro;
 
-import com.micro.hook.BuildConfig;
 import com.micro.root.Logger;
 
 /**
@@ -9,7 +8,4 @@ import com.micro.root.Logger;
 public interface Const {
 
     Logger hookLog = Logger.getLogger("HookPluginLog");
-    Logger romLog = Logger.getLogger("RomPluginLog");
-
-    boolean DEBUG = BuildConfig.DEBUG;
 }
