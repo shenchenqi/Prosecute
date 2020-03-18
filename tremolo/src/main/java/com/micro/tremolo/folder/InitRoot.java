@@ -47,5 +47,6 @@ public class InitRoot extends RootRom<InitPresenter, InitInter> {
     @Override
     protected void bindSetup(InitPresenter presenter) {
         logger.i(TAG, "循环扫描");
+
     }
 }

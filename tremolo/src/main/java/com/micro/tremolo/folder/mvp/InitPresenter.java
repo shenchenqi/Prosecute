@@ -3,6 +3,7 @@ package com.micro.tremolo.folder.mvp;
 import android.content.Context;
 
 import com.micro.rom.RomPresenter;
+import com.micro.tremolo.folder.InitRoot;
 import com.micro.tremolo.inflood.utils.CacheDefault;
 
 import org.litepal.LitePal;
@@ -18,7 +19,7 @@ public class InitPresenter extends RomPresenter<InitInter> {
 
     @Override
     protected void onAttached() {
-
+        InitRoot.logger.i("配置成功");
     }
 
     @Override
