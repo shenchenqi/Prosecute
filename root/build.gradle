@@ -25,4 +25,5 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     api deps.androidx.appcompat
     api deps.apache.lang3
+    api deps.permission
 }

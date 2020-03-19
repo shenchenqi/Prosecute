@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="my_app_name">权限申请</string>
+    <string name="message_permission_rationale">需要以下权限:\n\n%1$s</string>
+    <string name="message_permission_always_failed">请在设置中打开以下权限:\n\n%1$s</string>
+    <string name="resume">继续</string>
+    <string name="title_dialog">提示</string>
+    <string name="cancel">取消</string>
+    <string name="setting">设置</string>
+    <string name="retry">重试</string>
+</resources>

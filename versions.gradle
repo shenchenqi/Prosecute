@@ -5,6 +5,7 @@ deps.dom4j = "org.dom4j:dom4j:2.0.0"
 deps.sqlcipher = "net.zetetic:android-database-sqlcipher:4.2.0"
 deps.litepal = "org.litepal.android:core:1.5.1"
 deps.jxl = "net.sourceforge.jexcelapi:jxl:2.6.12"
+deps.permission = "com.yanzhenjie:permission:2.0.0-rc12"
 
 def alibaba = [:]
 alibaba.fastjson = "com.alibaba:fastjson:1.1.70.android"
