@@ -24,6 +24,7 @@ android {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(path: ':network')
     implementation project(path: ':root')
     implementation files('libs/EnterpriseSDK.jar')
     api deps.litepal

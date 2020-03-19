@@ -48,6 +48,11 @@ public class OkHttp3 extends BaseManager {
     }
 
     @Override
+    public  <T> T create(Class<T> service) {
+        return super.create(service);
+    }
+
+    @Override
     public void post(String url, RequestCallback callback) {
         Log.d(TAG, "post", String.format("POST请求 [链接： %s]", url));
         super.post(url, callback);

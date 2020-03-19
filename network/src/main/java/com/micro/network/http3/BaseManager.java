@@ -2,12 +2,16 @@ package com.micro.network.http3;
 
 import android.content.Context;
 
+import com.micro.network.Api;
+import com.micro.network.http3.converter.ResponseConverterFactory;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.ConnectionPool;
 import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
@@ -15,6 +19,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 /**
  * created by kilin on 20-3-17 上午9:42
@@ -38,12 +44,23 @@ public abstract class BaseManager {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
+                .connectionPool(new ConnectionPool(10, 3, TimeUnit.SECONDS))
                 .build();
     }
 
     protected abstract Interceptor getNetWorkConfig();
 
     protected abstract Interceptor getLoggingConfig();
+
+    protected <T> T create(Class<T> service) {
+        return new Retrofit.Builder()
+                .addConverterFactory(ResponseConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(okHttpClient)
+                .baseUrl(Api.BASE_URL)
+                .build()
+                .create(service);
+    }
 
     protected void post(String url, RequestCallback callback) {
         post(url, null, null, callback);

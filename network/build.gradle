@@ -27,5 +27,9 @@ dependencies {
 
     api deps.okhttp.okhttp
     api deps.okhttp.logging
-    api deps.fastjson
+    api deps.alibaba.fastjson
+    api deps.retrofit.runtime
+    api deps.retrofit.gson
+    api deps.retrofit.adapter
+    api deps.reactivex.rxandroid
 }

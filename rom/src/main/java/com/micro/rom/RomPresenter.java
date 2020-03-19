@@ -8,11 +8,19 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 
+import com.micro.network.http3.filter.BaseBean;
+import com.micro.network.http3.filter.MapResultFilter;
 import com.micro.rom.core.CreateRom;
 import com.micro.rom.core.basis.BackupCallback;
 import com.micro.rom.core.basis.BaseRom;
 import com.micro.root.Logger;
 import com.miui.enterprise.sdk.ApplicationManager;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * created by kilin on 20-3-18 下午1:26
@@ -81,6 +89,24 @@ public abstract class RomPresenter <Inter extends RomInter> extends CreateRom {
             return false;
         }
         return systemUI.isAppInXSpace(packName);
+    }
+
+    protected <P> Observable getObservable(Observable<BaseBean<P>> observable) {
+        return observable.compose(io2main()).flatMap(new MapResultFilter());
+    }
+
+    protected <P> Observable getObservable(Observable<BaseBean<P>> observable, Class<P> pClass) {
+        return observable.compose(io2main()).flatMap(new MapResultFilter(pClass));
+    }
+
+    private ObservableTransformer io2main() {
+        return new ObservableTransformer() {
+            @Override
+            public ObservableSource apply(Observable upstream) {
+                return upstream.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
     }
 
     private class MIUI extends SystemUI {
