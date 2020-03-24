@@ -20,7 +20,6 @@ public abstract class Plugin<P extends PluginPresenter<I>, I extends PluginInter
             this.presenter.setContext(context);
             this.presenter.setClazz((I) this);
         }
-        executeCachedThread();
     }
 
     protected Hook getHook() {

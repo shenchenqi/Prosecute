@@ -25,6 +25,9 @@ android {
             keyAlias = 'prosecute'
         }
     }
+    dataBinding {
+        enabled true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -44,4 +47,8 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation project(path: ':root')
+    implementation project(path: ':network')
+    implementation project(path: ':hook')
+    implementation project(path: ':rom')
+    implementation project(path: ':tremolo')
 }

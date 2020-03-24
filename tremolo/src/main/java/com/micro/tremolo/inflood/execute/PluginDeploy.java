@@ -37,8 +37,25 @@ public class PluginDeploy {
             logger.e("当前参数Hook值为空");
             return;
         }
+        logger.d("执行插件数 :" + registerPluginMap.size());
         for (Class clazz : registerPluginMap.values()) {
             Hook.method(clazz, "start", hookParam.getHook(), hookParam.getContext());
         }
+    }
+
+    private static final Map<String, Object> executePluginMap = new HashMap<>();
+
+    public static void setExecutePluginMap(String key, Object object) {
+        if (!executePluginMap.containsKey(key)) {
+            executePluginMap.put(key, object);
+        }
+    }
+
+    public static boolean isExist(String key) {
+        return executePluginMap.containsKey(key);
+    }
+
+    public static Object getExecutePlugin(String key) {
+        return executePluginMap.get(key);
     }
 }

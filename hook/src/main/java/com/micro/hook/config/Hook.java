@@ -4,7 +4,9 @@ import com.micro.original.InitHook;
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignUnHook;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -209,6 +211,16 @@ public class Hook {
 
     public Object newInstance(Class<?> clazz, Object... args) {
         return InitHook.newInstance(clazz, args);
+    }
+
+    public void destroy() {
+        Set<Integer> hookIds = new HashSet<>(unhookWrapperConcurrentHashMap.keySet());
+        for (Integer hookId : hookIds) {
+            ForeignUnHook unhook = unhookWrapperConcurrentHashMap.get(hookId);
+            if (null != unhook) {
+                unhook.unhook();
+            }
+        }
     }
 
     private static final Map<Integer, UnhookWrapper> unhookWrapperConcurrentHashMap = new ConcurrentHashMap<>();

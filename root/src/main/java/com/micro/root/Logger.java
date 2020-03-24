@@ -8,7 +8,7 @@ import com.micro.root.logcat.ILog;
  * created by kilin on 20-3-17 上午10:25
  */
 public abstract class Logger implements ILog {
-    private static int logLevel = android.util.Log.VERBOSE;
+    private static int logLevel = Log.VERBOSE;
     protected final String tag;
 
     public static synchronized Report getLogger(String tag) {
@@ -16,7 +16,7 @@ public abstract class Logger implements ILog {
     }
 
     private Logger(String tag) {
-        this.tag = tag;
+        this.tag = "Logger - " + tag;
     }
 
     private synchronized static String getMsg(String methodName, String msg) {

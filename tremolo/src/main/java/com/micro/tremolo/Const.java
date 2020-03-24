@@ -9,7 +9,7 @@ import java.util.List;
 public interface Const {
 
     String PACKAGE_NAME = "com.ss.android.ugc.aweme";
-    String APPLICATION = "com.ss.android.ugc.aweme.app.AwemeApplication";
-    List<String> VERSIONS = Arrays.asList("7.1.0", "7.1.1");
+    String APPLICATION = "android.app.Application";//"com.ss.android.ugc.aweme.app.AwemeApplication";
+    List<String> VERSIONS = Arrays.asList("9.6.0");
     String CREATE_DIR = "Micro/Backup/init";
 }

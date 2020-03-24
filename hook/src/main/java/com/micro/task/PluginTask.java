@@ -1,28 +1,29 @@
 package com.micro.task;
 
 import com.micro.root.Logger;
-import com.micro.root.task.BaseAsync;
-
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * created by kilin on 20-3-18 上午11:03
  */
-public abstract class PluginTask extends BaseAsync {
+public abstract class PluginTask implements Runnable {
 
     private static final Logger logger = Logger.getLogger("PluginLog");
 
-    private final TaskProcess taskProcess;
+    //private final TaskProcess taskProcess;
 
     public PluginTask() {
-        super(null);
-        taskProcess = new TaskProcess();
+        //super(null);
+        //taskProcess = new TaskProcess();
     }
 
-    protected void executeSingleThread() {
+    @Override
+    public void run() {
+        execute();
+    }
+
+    protected abstract void execute();
+
+    /*protected void executeSingleThread() {
         executeOnExecutor(taskProcess.singleExecutor);
     }
 
@@ -61,5 +62,5 @@ public abstract class PluginTask extends BaseAsync {
             singleExecutor = Executors.newSingleThreadExecutor(new BasicThreadFactory.Builder().uncaughtExceptionHandler(uncaughtExceptionHandler).build());
             cachedExecutor = Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern("plugin-%d").uncaughtExceptionHandler(uncaughtExceptionHandler).build());
         }
-    }
+    }*/
 }

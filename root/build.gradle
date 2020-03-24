@@ -9,6 +9,9 @@ android {
         versionCode build_versions.version_code
         versionName build_versions.version_name
     }
+    dataBinding {
+        enabled true
+    }
     buildTypes {
         release {
             minifyEnabled false

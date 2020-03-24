@@ -13,19 +13,7 @@ import static com.micro.tremolo.inflood.TremoloModule.logger;
  */
 public class Account extends Plugin<AccountPresenter, AccountInter> implements AccountInter {
 
-    static {
-        PluginDeploy.registerPlugin(Account.class.getSimpleName(), Account.class);
-    }
-
-    public static void start(Hook hook, Context context) {
-        try {
-            new Account(hook, context);
-        } catch (Throwable throwable) {
-            logger.e(throwable, "账户创建报错");
-        }
-    }
-
-    private Account(Hook hook, Context context) throws Throwable {
+    public Account(Hook hook, Context context) throws Throwable {
         super(hook, context);
     }
 
@@ -35,7 +23,7 @@ public class Account extends Plugin<AccountPresenter, AccountInter> implements A
     }
 
     @Override
-    protected void run() {
+    protected void execute() {
         monitor(getHook());
     }
 

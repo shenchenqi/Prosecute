@@ -1,5 +1,6 @@
 package com.micro.hook;
 
+import com.micro.Const;
 import com.micro.hook.config.HookParam;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
@@ -13,9 +14,17 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 public class NativeHook implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
 
+    static {
+        try {
+            ExecuteMonitor.setHookRegister("TremoloModule", Class.forName("com.micro.tremolo.inflood.TremoloModule"));
+        } catch (ClassNotFoundException e) {
+            Const.hookLog.e(e, "hook 注册不成功");
+        }
+    }
+
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        ExecuteMonitor.loadRegisterHook(new HookParam(loadPackageParam.isFirstApplication, null, loadPackageParam.classLoader));
+        ExecuteMonitor.loadRegisterHook(new HookParam(loadPackageParam.isFirstApplication, null, loadPackageParam.classLoader, loadPackageParam.packageName));
     }
 
     @Override

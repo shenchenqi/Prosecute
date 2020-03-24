@@ -3,6 +3,8 @@ package com.micro.tremolo.inflood;
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
 import com.micro.tremolo.inflood.execute.PluginDeploy;
+import com.micro.tremolo.inflood.execute.item.account.Account;
+import com.micro.tremolo.inflood.execute.item.author.Author;
 import com.micro.tremolo.inflood.mvp.EntranceInter;
 import com.micro.tremolo.inflood.mvp.EntrancePresenter;
 import com.micro.tremolo.inflood.version.TremoloParam;
@@ -16,7 +18,22 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     private static final String TAG = "DY-Entrance";
 
-    Entrance(HookParam hookParam) throws Throwable {
+    private static Entrance mEntrance;
+
+    public static Entrance getInstance(HookParam hookParam) {
+        if (mEntrance == null) {
+            try {
+                logger.i(TAG, "步骤事件: " + hookParam.getVersion());
+                mEntrance = new Entrance(hookParam);
+                mEntrance.init();
+            } catch (Throwable throwable) {
+                logger.e(throwable, TAG, "步骤事件失败");
+            }
+        }
+        return mEntrance;
+    }
+
+    private Entrance(HookParam hookParam) throws Throwable {
         super(hookParam);
     }
 
@@ -27,7 +44,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     public void initParam(String version) {
-        logger.i(TAG, "initParam", "参数初始化");
+        logger.i(TAG, "initParam", "参数初始化： " + version);
         TremoloParam.init(version);
     }
 
@@ -38,16 +55,25 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     public void executeSQL() {
-        logger.i(TAG, "executeSQL", "隐藏");
+        logger.i(TAG, "executeSQL", "数据库");
     }
+
+    private Account account;
+    private Author author;
 
     @Override
     public void config() {
-        logger.i(TAG, "config", "隐藏");
+        logger.i(TAG, "config", "配置");
+        try {
+            account = new Account(getHookParam().getHook(), getHookParam().getApplication());
+            author = new Author(getHookParam().getHook(), getHookParam().getApplication());
+        } catch (Throwable throwable) {
+            logger.e(throwable, "配置报错");
+        }
     }
 
     @Override
     public void execute() {
-        PluginDeploy.executePlugin(getHookParam());
+
     }
 }

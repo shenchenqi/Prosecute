@@ -1,10 +1,10 @@
 package com.micro.hook;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.text.TextUtils;
 
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
@@ -12,6 +12,7 @@ import com.micro.hook.config.EventCallback;
 import com.micro.hook.config.Hook;
 import com.micro.hook.config.HookParam;
 import com.micro.root.Logger;
+import com.micro.root.utils.Lang;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,7 @@ public abstract class ExecuteMonitor implements EventCallback {
     private final static Map<String, Class> mHookRegisterMap = new HashMap<>();
 
     public static void loadRegisterHook(HookParam hookParam) {
-        logger.i(TAG, "加载注册Hook");
+        logger.i(TAG, "加载注册Hook 数量有：" + mHookRegisterMap.size());
         for (Class clazz : mHookRegisterMap.values()) {
             Hook.method(clazz, "init", hookParam);
         }
@@ -83,11 +84,12 @@ public abstract class ExecuteMonitor implements EventCallback {
             hookApplication(this.hookParam, new HookParamCallback() {
                 @Override
                 public void appObject(Application application, ClassLoader classLoader) throws Throwable {
-                    loadVersion(hookParam.getHook());
                     hookParam.setApplication(application);
                     hookParam.setClassLoader(application.getClassLoader());
                     hookParam.setHook();
-                    hookEvent(hookParam);
+                    if (loadVersion(hookParam.getHook())) {
+                        hookEvent(hookParam);
+                    }
                 }
             });
         } catch (Throwable e) {
@@ -95,31 +97,42 @@ public abstract class ExecuteMonitor implements EventCallback {
         }
     }
 
-    private void loadVersion(Hook hook) throws Throwable {
-        String currentProcessName = hook.getCurrentProcessName();
-        String currentPackageName = hook.getCurrentPackageName();
-        logger.i(TAG, String.format("当前包信息: [%s]-[%s]", currentPackageName, currentProcessName));
+    private boolean loadVersion(Hook hook) throws Throwable {
+        if (Lang.isEmpty(hookParam.getPackageName())) {
+            String currentProcessName = hook.getCurrentProcessName();
+            String currentPackageName = hook.getCurrentPackageName();
+            logger.i(TAG, String.format("当前包信息: [%s]-[%s]", currentPackageName, currentProcessName));
 
-        if (TextUtils.isEmpty(getPackageName()) || !TextUtils.equals(currentProcessName, getPackageName())) {
+            if (Lang.isEmpty(getPackageName()) || Lang.isNotEquals(currentProcessName, getPackageName())) {
+                logger.e(TAG, "不是需求的包，过滤");
+                return false;
+            }
+        } else if (Lang.isEmpty(getPackageName()) || Lang.isNotEquals(hookParam.getPackageName(), getPackageName())) {
             logger.e(TAG, "不是需求的包，过滤");
-            return;
+            return false;
         }
 
-        PackageInfo packageInfo = hookParam.getContext().getPackageManager().getPackageInfo(getPackageName(), 0);
+        Context context;
+        if (hookParam.getContext() == null) {
+            context = hookParam.getApplication();
+        } else {
+            context = hookParam.getContext();
+        }
+        PackageInfo packageInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
         if (packageInfo == null) {
             logger.e(TAG, "获取当前app信息为空");
-            return;
+            return false;
         }
-        if (!isCurrentVersion(packageInfo.versionCode, packageInfo.versionName)) {
-            logger.e(TAG, "当前版本号不匹配");
-            return;
+        if (Lang.isEmpty(packageInfo.versionName) || !isCurrentVersion(packageInfo.versionCode, packageInfo.versionName)) {
+            logger.e(TAG, "当前版本号：" + packageInfo.versionCode + " - " + packageInfo.versionName + " 不匹配");
+            return false;
         }
-
         hookParam.setVersion(packageInfo.versionName);
+        return true;
     }
 
     private void hookApplication(final HookParam hookParam, final HookParamCallback callback) throws Exception {
-        if (!TextUtils.isEmpty(applicationPath())) {
+        if (!Lang.isEmpty(applicationPath())) {
             hookParam.getHook().methodMonitor(applicationPath(), "onCreate", new ForeignHook() {
                 @Override
                 public void beforeHookedMethod(final ForeignHookParam param) throws Throwable {
