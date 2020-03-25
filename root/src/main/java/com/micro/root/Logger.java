@@ -16,7 +16,7 @@ public abstract class Logger implements ILog {
     }
 
     private Logger(String tag) {
-        this.tag = "Logger - " + tag;
+        this.tag = "HookLogger - " + tag;
     }
 
     private synchronized static String getMsg(String methodName, String msg) {

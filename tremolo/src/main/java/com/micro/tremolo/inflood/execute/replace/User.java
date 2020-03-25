@@ -1,10 +1,11 @@
-package com.micro.tremolo.inflood.execute.item;
+package com.micro.tremolo.inflood.execute.replace;
 
-import com.alibaba.fastjson.JSON;
 import com.micro.hook.config.Hook;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.micro.tremolo.inflood.TremoloModule.logger;
 
 /**
  * @Author Kilin
@@ -21,14 +22,14 @@ public class User {
     private int allowStatus;
     private long authorityStatus;
     private Object avatarDecoration;//AvatarDecoration.class
-    private Object avatarLarger;//UrlModel.class
-    private Object avatarMedium;//UrlModel.class 中等头像
-    private Object avatarPendantLarger;//UrlModel.class
-    private Object avatarPendantMedium;//UrlModel.class
-    private Object avatarPendantThumb;//UrlModel.class
-    private Object avatarThumb;//UrlModel.class 小头像
+    private UrlModel avatarLarger;//UrlModel.class
+    private UrlModel avatarMedium;//UrlModel.class 中等头像
+    private UrlModel avatarPendantLarger;//UrlModel.class
+    private UrlModel avatarPendantMedium;//UrlModel.class
+    private UrlModel avatarPendantThumb;//UrlModel.class
+    private UrlModel avatarThumb;//UrlModel.class 小头像
     private boolean avatarUpdateReminder;
-    private Object avatarVideoUri;//UrlModel.class
+    private UrlModel avatarVideoUri;//UrlModel.class
     private int awemeCount;
     private Object awemeCover;//UserAwemeCover.class
     private String bindPhone;
@@ -150,7 +151,7 @@ public class User {
     private List<Object> relativeUserInfos;//RelativeUserInfo
     private String remarkName;
     private String requestId;
-    private Object roomCover;//UrlModel
+    private UrlModel roomCover;//UrlModel
     private String roomData;
     private long roomId;
     private String roomTypeTag;
@@ -227,218 +228,435 @@ public class User {
     private long youtubeExpireTime;
 
     public User(Hook hook, Object user) {
+        loadUser(hook, user);
+    }
+
+    public void loadUser(Hook hook, Object user) {
+        logger.d("User", String.format("当前抓取的抖音用户对象是否存在[%s]", user == null));
+        if (user == null) {
+            return;
+        }
         this.acceptPrivatePolicy = isAcceptPrivatePolicy(hook, user);
+        //logger.d("User", String.format("acceptPrivatePolicy[%s]", acceptPrivatePolicy));
         this.accountRegion = getAccountRegion(hook, user);
+        //logger.d("User", String.format("accountRegion[%s]", accountRegion));
         this.adCoverTitle = getAdCoverTitle(hook, user);
+        //logger.d("User", String.format("adCoverTitle[%s]", adCoverTitle));
         this.adCoverUrl = (List<Object>) getAdCoverUrl(hook, user);
+        //logger.d("User", String.format("adCoverUrl[%s]", JSON.toJSONString(adCoverUrl)));
         this.adOrderId = getAdOrderId(hook, user);
+        //logger.d("User", String.format("adOrderId[%s]", adOrderId));
         this.allowStatus = getAllowStatus(hook, user);
+        //logger.d("User", String.format("allowStatus[%s]", allowStatus));
         this.authorityStatus = getAuthorityStatus(hook, user);
+        //logger.d("User", String.format("authorityStatus[%s]", authorityStatus));
         this.avatarDecoration = getAvatarDecoration(hook, user);
-        this.avatarLarger = getAvatarLarger(hook, user);
-        this.avatarMedium = getAvatarMedium(hook, user);
-        this.avatarPendantLarger = getAvatarPendantLarger(hook, user);
-        this.avatarPendantMedium = getAvatarPendantMedium(hook, user);
-        this.avatarPendantThumb = getAvatarPendantThumb(hook, user);
-        this.avatarThumb = getAvatarThumb(hook, user);
+        //logger.d("User", String.format("avatarDecoration[%s]", avatarDecoration));
+        this.avatarLarger = new UrlModel(hook, getAvatarLarger(hook, user));
+        //logger.d("User", String.format("avatarLarger[%s]", JSON.toJSONString(avatarLarger)));
+        this.avatarMedium = new UrlModel(hook, getAvatarMedium(hook, user));
+        //logger.d("User", String.format("avatarMedium[%s]", JSON.toJSONString(avatarMedium)));
+        this.avatarPendantLarger = new UrlModel(hook, getAvatarPendantLarger(hook, user));
+        //logger.d("User", String.format("avatarPendantLarger[%s]", JSON.toJSONString(avatarPendantLarger)));
+        this.avatarPendantMedium = new UrlModel(hook, getAvatarPendantMedium(hook, user));
+        //logger.d("User", String.format("avatarPendantMedium[%s]", JSON.toJSONString(avatarPendantMedium)));
+        this.avatarPendantThumb = new UrlModel(hook, getAvatarPendantThumb(hook, user));
+        //logger.d("User", String.format("avatarPendantThumb[%s]", JSON.toJSONString(avatarPendantThumb)));
+        this.avatarThumb = new UrlModel(hook, getAvatarThumb(hook, user));
+        //logger.d("User", String.format("avatarThumb[%s]", JSON.toJSONString(avatarThumb)));
         this.avatarUpdateReminder = isAvatarUpdateReminder(hook, user);
-        this.avatarVideoUri = getAvatarVideoUri(hook, user);
+        //logger.d("User", String.format("avatarUpdateReminder[%s]", avatarUpdateReminder));
+        this.avatarVideoUri = new UrlModel(hook, getAvatarVideoUri(hook, user));
+        //logger.d("User", String.format("avatarVideoUri[%s]", JSON.toJSONString(avatarVideoUri)));
         this.awemeCount = getAwemeCount(hook, user);
+        //logger.d("User", String.format("awemeCount[%s]", awemeCount));
         this.awemeCover = getAwemeCover(hook, user);
+        //logger.d("User", String.format("awemeCover[%s]", awemeCover));
         this.bindPhone = getBindPhone(hook, user);
+        //logger.d("User", String.format("bindPhone[%s]", bindPhone));
         this.bioEmail = getBioEmail(hook, user);
+        //logger.d("User", String.format("bioEmail[%s]", bioEmail));
         this.bioSecureUrl = getBioSecureUrl(hook, user);
+        //logger.d("User", String.format("bioSecureUrl[%s]", bioSecureUrl));
         this.bioUrl = getBioUrl(hook, user);
+        //logger.d("User", String.format("bioUrl[%s]", bioUrl));
         this.birthday = getBirthday(hook, user);
+        //logger.d("User", String.format("birthday[%s]", birthday));
         this.birthdayHideLevel = getBirthdayHideLevel(hook, user);
+        //logger.d("User", String.format("birthdayHideLevel[%s]", birthdayHideLevel));
         this.brandInfo = getBrandInfo(hook, user);
+        //logger.d("User", String.format("brandInfo[%s]", brandInfo));
         this.canModifySchoolInfo = isCanModifySchoolInfo(hook, user);
+        //logger.d("User", String.format("canModifySchoolInfo[%s]", canModifySchoolInfo));
         this.challengeList = (List<Object>) getChallengeList(hook, user);
+        //logger.d("User", String.format("challengeList[%s]", JSON.toJSONString(challengeList)));
         this.city = getLocation(hook, user);
+        //logger.d("User", String.format("city[%s]", city));
         this.cityName = getCity(hook, user);
+        //logger.d("User", String.format("cityName[%s]", cityName));
         this.collectCount = getCollectCount(hook, user);
+        //logger.d("User", String.format("collectCount[%s]", collectCount));
         this.collegeName = getCollegeName(hook, user);
+        //logger.d("User", String.format("collegeName[%s]", collegeName));
         this.commentFilterStatus = getCommentFilterStatus(hook, user);
+        //logger.d("User", String.format("commentFilterStatus[%s]", commentFilterStatus));
         this.commentSetting = getCommentSetting(hook, user);
+        //logger.d("User", String.format("commentSetting[%s]", commentSetting));
         this.commerceInfo = getCommerceInfo(hook, user);
+        //logger.d("User", String.format("commerceInfo[%s]", commerceInfo));
         this.commercePermission = getCommercePermission(hook, user);
+        //logger.d("User", String.format("commercePermission[%s]", commercePermission));
         this.commerceUserInfo = getCommerceUserInfo(hook, user);
+        //logger.d("User", String.format("commerceUserInfo[%s]", commerceUserInfo));
         this.commerceUserLevel = getCommerceUserLevel(hook, user);
+        //logger.d("User", String.format("commerceUserLevel[%s]", commerceUserLevel));
         this.constellation = getConstellation(hook, user);
+        //logger.d("User", String.format("constellation[%s]", constellation));
         this.country = getCountry(hook, user);
+        //logger.d("User", String.format("country[%s]", country));
         this.coverUrls = (List<Object>) getCoverUrls(hook, user);
+        //logger.d("User", String.format("coverUrls[%s]", JSON.toJSONString(coverUrls)));
         /*this.createTime = getCreateTime(hook, user);*/
         this.customVerify = getCustomVerify(hook, user);
+        //logger.d("User", String.format("官方认证[%s]", customVerify));
         this.displayWvalantineActivityEntry = getDisplayWvalantineActivityEntry(hook, user);
+        //logger.d("User", String.format("displayWvalantineActivityEntry[%s]", displayWvalantineActivityEntry));
         this.district = getDistrict(hook, user);
+        //logger.d("User", String.format("district[%s]", district));
         this.dongtai_count = getDongtaiCount(hook, user);
+        //logger.d("User", String.format("dongtai_count[%s]", dongtai_count));
         this.douPlusShareLocation = getDouPlusShareLocation(hook, user);
+        //logger.d("User", String.format("douPlusShareLocation[%s]", douPlusShareLocation));
         this.downloadSetting = getDownloadSetting(hook, user);
+        //logger.d("User", String.format("downloadSetting[%s]", downloadSetting));
         this.duetSetting = getDuetSetting(hook, user);
+        //logger.d("User", String.format("duetSetting[%s]", duetSetting));
         this.education = getEducation(hook, user);
+        //logger.d("User", String.format("education[%s]", education));
         this.effectArtistDetail = getEffectArtistDetail(hook, user);
+        //logger.d("User", String.format("effectArtistDetail[%s]", effectArtistDetail));
         this.email = getEmail(hook, user);
+        //logger.d("User", String.format("email[%s]", email));
         this.enrollYear = getEnrollYear(hook, user);
+        //logger.d("User", String.format("enrollYear[%s]", enrollYear));
         this.enterpriseVerifyReason = getEnterpriseVerifyReason(hook, user);
+        //logger.d("User", String.format("企业认证[%s]", enterpriseVerifyReason));
         this.fansCount = getFansCount(hook, user);
+        //logger.d("User", String.format("fansCount[%s]", fansCount));
         this.favoritingCount = getFavoritingCount(hook, user);
+        //logger.d("User", String.format("favoritingCount[%s]", favoritingCount));
         this.fbExpireTime = getFbExpireTime(hook, user);
+        //logger.d("User", String.format("fbExpireTime[%s]", fbExpireTime));
         this.followStatus = getFollowStatus(hook, user);
+        //logger.d("User", String.format("followStatus[%s]", followStatus));
         this.followerCount = getFollowerCount(hook, user);
+        //logger.d("User", String.format("followerCount[%s]", followerCount));
         this.followerDetailList = (List<Object>) getFollowerDetailList(hook, user);
+        //logger.d("User", String.format("followerDetailList[%s]", JSON.toJSONString(followerDetailList)));
         this.followerStatus = getFollowerStatus(hook, user);
+        //logger.d("User", String.format("followerStatus[%s]", followerStatus));
         this.followingCount = getFollowingCount(hook, user);
+        //logger.d("User", String.format("followingCount[%s]", followingCount));
         this.forcePrivateAccount = getForcePrivateAccount(hook, user);
+        //logger.d("User", String.format("forcePrivateAccount[%s]", forcePrivateAccount));
         this.gender = getGender(hook, user);
+        //logger.d("User", String.format("gender[%s]", gender));
         this.googleAccount = getGoogleAccount(hook, user);
+        //logger.d("User", String.format("googleAccount[%s]", googleAccount));
         this.hasEmail = isHasEmail(hook, user);
+        //logger.d("User", String.format("hasEmail[%s]", hasEmail));
         this.hasFacebookToken = isHasFacebookToken(hook, user);
+        //logger.d("User", String.format("hasFacebookToken[%s]", hasFacebookToken));
         this.hasMedal = isHasMedal(hook, user);
+        //logger.d("User", String.format("hasMedal[%s]", hasMedal));
         this.hasOrders = isHasOrders(hook, user);
+        //logger.d("User", String.format("hasOrders[%s]", hasOrders));
         this.hasStory = getHasStory(hook, user);
+        //logger.d("User", String.format("hasStory[%s]", hasStory));
         this.hasTwitterToken = isHasTwitterToken(hook, user);
+        //logger.d("User", String.format("hasTwitterToken[%s]", hasTwitterToken));
         /*this.hasUnreadStory = isHasUnreadStory(hook, user);*/
         this.hasYoutubeToken = isHasYoutubeToken(hook, user);
+        //logger.d("User", String.format("hasYoutubeToken[%s]", hasYoutubeToken));
         this.hideCity = isHideCity(hook, user);
+        //logger.d("User", String.format("hideCity[%s]", hideCity));
         this.hideFollowingFollowerList = getHideFollowingFollowerList(hook, user);
+        //logger.d("User", String.format("hideFollowingFollowerList[%s]", hideFollowingFollowerList));
         this.hideSearch = isHideSearch(hook, user);
+        //logger.d("User", String.format("hideSearch[%s]", hideSearch));
         this.homepageBottomToast = (List<Object>) getHomepageBottomToast(hook, user);
+        //logger.d("User", String.format("homepageBottomToast[%s]", homepageBottomToast));
         this.honorStruct = getHonorStruct(hook, user);
+        //logger.d("User", String.format("honorStruct[%s]", honorStruct));
         this.insId = getInsId(hook, user);
+        //logger.d("User", String.format("insId[%s]", insId));
         this.isActivityUser = isActivityUser(hook, user);
+        //logger.d("User", String.format("isActivityUser[%s]", isActivityUser));
         this.isAdFake = isAdFake(hook, user);
+        //logger.d("User", String.format("isAdFake[%s]", isAdFake));
         this.isBindedWeibo = isBindedWeibo(hook, user);
+        //logger.d("User", String.format("isBindedWeibo[%s]", isBindedWeibo));
         this.isBlock = isBlock(hook, user);
+        //logger.d("User", String.format("isBlock[%s]", isBlock));
         this.isBlocked = isBlocked(hook, user);
+        //logger.d("User", String.format("isBlocked[%s]", isBlocked));
         this.isContentLanguageDialogShown = isContentLanguageDialogShown(hook, user);
+        //logger.d("User", String.format("isContentLanguageDialogShown[%s]", isContentLanguageDialogShown));
         this.isCreater = isCreater(hook, user);
+        //logger.d("User", String.format("isCreater[%s]", isCreater));
         this.isDisciplineMember = isDisciplineMember(hook, user);
+        //logger.d("User", String.format("isDisciplineMember[%s]", isDisciplineMember));
         this.isEffectArtist = isEffectArtist(hook, user);
+        //logger.d("User", String.format("isEffectArtist[%s]", isEffectArtist));
         this.isEmailVerified = isEmailVerified(hook, user);
+        //logger.d("User", String.format("isEmailVerified[%s]", isEmailVerified));
         this.isFlowcardMember = isFlowcardMember(hook, user);
+        //logger.d("User", String.format("isFlowcardMember[%s]", isFlowcardMember));
         this.isMinor = isMinor(hook, user);
+        //logger.d("User", String.format("isMinor[%s]", isMinor));
         this.isNewRecommend = isNewRecommend(hook, user);
+        //logger.d("User", String.format("isNewRecommend[%s]", isNewRecommend));
         this.isOldDouplusUser = isOldDouplusUser(hook, user);
+        //logger.d("User", String.format("isOldDouplusUser[%s]", isOldDouplusUser));
         this.isPhoneBinded = isPhoneBinded(hook, user);
+        //logger.d("User", String.format("isPhoneBinded[%s]", isPhoneBinded));
         this.isProAccount = isProAccount(hook, user);
+        //logger.d("User", String.format("isProAccount[%s]", isProAccount));
         this.isStar = isStar(hook, user);
+        //logger.d("User", String.format("isStar[%s]", isStar));
         this.isSyncToutiao = getIsSyncToutiao(hook, user);
+        //logger.d("User", String.format("isSyncToutiao[%s]", isSyncToutiao));
         this.isVerified = isVerified(hook, user);
+        //logger.d("User", String.format("isVerified[%s]", isVerified));
         this.isoCountryCode = getIsoCountryCode(hook, user);
+        //logger.d("User", String.format("isoCountryCode[%s]", isoCountryCode));
         this.language = getLanguage(hook, user);
+        //logger.d("User", String.format("language[%s]", language));
         /*this.latestOrderTime = getLatestOrderTime(hook, user);*/
         this.latestStoryCover = (List<Object>) getLatestStoryCover(hook, user);
+        //logger.d("User", String.format("latestStoryCover[%s]", JSON.toJSONString(latestStoryCover)));
         this.liveAgreement = getLiveAgreement(hook, user);
+        //logger.d("User", String.format("liveAgreement[%s]", liveAgreement));
         this.liveCommerce = isLiveCommerce(hook, user);
+        //logger.d("User", String.format("liveCommerce[%s]", liveCommerce));
         this.loginPlatform = getLoginPlatform(hook, user);
+        //logger.d("User", String.format("loginPlatform[%s]", loginPlatform));
         this.mAtType = getMAtType(hook, user);
+        //logger.d("User", String.format("mAtType[%s]", mAtType));
         this.mGeneralPermission = getMGeneralPermission(hook, user);
+        //logger.d("User", String.format("mGeneralPermission[%s]", mGeneralPermission));
         this.mHotListStruct = getMHotListStruct(hook, user);
+        //logger.d("User", String.format("mHotListStruct[%s]", mHotListStruct));
         this.mIsGovMediaVip = isMIsGovMediaVip(hook, user);
+        //logger.d("User", String.format("mIsGovMediaVip[%s]", mIsGovMediaVip));
         this.nameField = getNameField(hook, user);
+        //logger.d("User", String.format("nameField[%s]", nameField));
         this.needAddrCard = isNeedAddrCard(hook, user);
+        //logger.d("User", String.format("needAddrCard[%s]", needAddrCard));
         this.needPoints = (List<Object>) getNeedPoints(hook, user);
+        //logger.d("User", String.format("needPoints[%s]", needPoints));
         this.needRecommend = isNeedRecommend(hook, user);
+        //logger.d("User", String.format("needRecommend[%s]", needRecommend));
         this.neiguangShield = getNeiguangShield(hook, user);
+        //logger.d("User", String.format("neiguangShield[%s]", neiguangShield));
         this.nickname = getNickname(hook, user);
+        //logger.d("User", String.format("昵称[%s]", nickname));
         this.nicknameUpdateReminder = isNicknameUpdateReminder(hook, user);
+        //logger.d("User", String.format("nicknameUpdateReminder[%s]", nicknameUpdateReminder));
         this.notifyPrivateAccount = getNotifyPrivateAccount(hook, user);
+        //logger.d("User", String.format("notifyPrivateAccount[%s]", notifyPrivateAccount));
         this.originalMusician = getOriginalMusician(hook, user);
+        //logger.d("User", String.format("originalMusician[%s]", originalMusician));
         this.platformInfos = getPlatformInfos(hook, user);
+        //logger.d("User", String.format("platformInfos[%s]", JSON.toJSONString(platformInfos)));
         this.postDefaultDownloadSetting = isPostDefaultDownloadSetting(hook, user);
+        //logger.d("User", String.format("postDefaultDownloadSetting[%s]", postDefaultDownloadSetting));
         this.preventDownload = isPreventDownload(hook, user);
+        //logger.d("User", String.format("preventDownload[%s]", preventDownload));
         this.privateAwemeCount = getPrivateAwemeCount(hook, user);
+        //logger.d("User", String.format("privateAwemeCount[%s]", privateAwemeCount));
         this.profileCompletion = getProfileCompletion(hook, user);
+        //logger.d("User", String.format("profileCompletion[%s]", profileCompletion));
         this.profilePv = getProfilePv(hook, user);
+        //logger.d("User", String.format("profilePv[%s]", profilePv));
         this.province = getProvince(hook, user);
+        //logger.d("User", String.format("province[%s]", province));
         this.quickShopInfo = getQuickShopInfo(hook, user);
+        //logger.d("User", String.format("quickShopInfo[%s]", quickShopInfo));
         this.rFansGroupInfo = getRFansGroupInfo(hook, user);
+        //logger.d("User", String.format("rFansGroupInfo[%s]", rFansGroupInfo));
         this.recommendAwemeItems = (List<Object>) getRecommendAwemeItems(hook, user);
+        //logger.d("User", String.format("recommendAwemeItems[%s]", JSON.toJSONString(recommendAwemeItems)));
         this.recommendReason = getRecommendReason(hook, user);
+        //logger.d("User", String.format("recommendReason[%s]", recommendReason));
         this.recommendReasonRelation = getRecommendReasonRelation(hook, user);
+        //logger.d("User", String.format("recommendReasonRelation[%s]", recommendReasonRelation));
         this.recommendScore = getRecommendScore(hook, user);
+        //logger.d("User", String.format("recommendScore[%s]", recommendScore));
         this.region = getRegion(hook, user);
+        //logger.d("User", String.format("region[%s]", region));
         this.registerStatus = getRegisterStatus(hook, user);
+        //logger.d("User", String.format("registerStatus[%s]", registerStatus));
         this.registerTime = getRegisterTime(hook, user);
+        //logger.d("User", String.format("registerTime[%s]", registerTime));
         this.relationLabel = getRelationLabel(hook, user);
+        //logger.d("User", String.format("relationLabel[%s]", relationLabel));
         this.relativeUserInfos = (List<Object>) getRelativeUserInfos(hook, user);
+        //logger.d("User", String.format("relativeUserInfos[%s]", JSON.toJSONString(relativeUserInfos)));
         this.remarkName = getRemarkName(hook, user);
+        //logger.d("User", String.format("remarkName[%s]", remarkName));
         this.requestId = getRequestId(hook, user);
-        this.roomCover = getRoomCover(hook, user);
+        //logger.d("User", String.format("requestId[%s]", requestId));
+        this.roomCover = new UrlModel(hook, getRoomCover(hook, user));
+        //logger.d("User", String.format("roomCover[%s]", JSON.toJSONString(roomCover)));
         this.roomData = getRoomData(hook, user);
+        //logger.d("User", String.format("roomData[%s]", roomData));
         this.roomId = getRoomId(hook, user);
+        //logger.d("User", String.format("roomId[%s]", roomId));
         this.roomTypeTag = getRoomTypeTag(hook, user);
+        //logger.d("User", String.format("roomTypeTag[%s]", roomTypeTag));
         this.schoolInfoShowRange = getSchoolInfoShowRange(hook, user);
+        //logger.d("User", String.format("schoolInfoShowRange[%s]", schoolInfoShowRange));
         this.schoolName = getSchoolName(hook, user);
+        //logger.d("User", String.format("schoolName[%s]", schoolName));
         this.schoolPoiId = getSchoolPoiId(hook, user);
+        //logger.d("User", String.format("schoolPoiId[%s]", schoolPoiId));
         this.schoolType = getSchoolType(hook, user);
+        //logger.d("User", String.format("schoolType[%s]", schoolType));
         this.secUid = getSecUid(hook, user);
+        //logger.d("User", String.format("secUid[%s]", secUid));
         this.secret = isSecret(hook, user);
+        //logger.d("User", String.format("secret[%s]", secret));
         this.shareInfo = getShareInfo(hook, user);
+        //logger.d("User", String.format("shareInfo[%s]", JSON.toJSONString(shareInfo)));
         this.shieldCommentNotice = getShieldCommentNotice(hook, user);
+        //logger.d("User", String.format("shieldCommentNotice[%s]", shieldCommentNotice));
         this.shieldDiggNotice = getShieldDiggNotice(hook, user);
+        //logger.d("User", String.format("shieldDiggNotice[%s]", shieldDiggNotice));
         this.shieldFollowNotice = getShieldFollowNotice(hook, user);
+        //logger.d("User", String.format("shieldFollowNotice[%s]", shieldFollowNotice));
         this.shopMicroApp = getShopMicroApp(hook, user);
+        //logger.d("User", String.format("shopMicroApp[%s]", shopMicroApp));
         this.shortId = getShortId(hook, user);
+        //logger.d("User", String.format("抖音号(2)[%s]", shortId));
         this.showArtistPlaylist = getShowArtistPlaylist(hook, user);
+        //logger.d("User", String.format("showArtistPlaylist[%s]", showArtistPlaylist));
         this.showFavoriteList = isShowFavoriteList(hook, user);
+        //logger.d("User", String.format("showFavoriteList[%s]", showFavoriteList));
         this.showGenderStrategy = getShowGenderStrategy(hook, user);
+        //logger.d("User", String.format("showGenderStrategy[%s]", showGenderStrategy));
         this.showImageBubble = isShowImageBubble(hook, user);
+        //logger.d("User", String.format("showImageBubble[%s]", showImageBubble));
         this.signature = getSignature(hook, user);
+        //logger.d("User", String.format("签名[%s]", signature));
         this.signatureLanguage = getSignatureLanguage(hook, user);
+        //logger.d("User", String.format("signatureLanguage[%s]", signatureLanguage));
         this.sprintSupportUserInfo = getSprintSupportUserInfo(hook, user);
+        //logger.d("User", String.format("sprintSupportUserInfo[%s]", sprintSupportUserInfo));
         this.starBillboardRank = getStarBillboardRank(hook, user);
+        //logger.d("User", String.format("starBillboardRank[%s]", starBillboardRank));
         this.starUseNewDownload = isStarUseNewDownload(hook, user);
+        //logger.d("User", String.format("starUseNewDownload[%s]", starUseNewDownload));
         this.storyBlockInfo = getStoryBlockInfo(hook, user);
+        //logger.d("User", String.format("storyBlockInfo[%s]", storyBlockInfo));
         this.storyCount = getStoryCount(hook, user);
+        //logger.d("User", String.format("storyCount[%s]", storyCount));
         this.storyOpen = isStoryOpen(hook, user);
+        //logger.d("User", String.format("storyOpen[%s]", storyOpen));
         this.tabSetting = getTabSetting(hook, user);
+        //logger.d("User", String.format("tabSetting[%s]", tabSetting));
         this.tabType = getTabType(hook, user);
+        //logger.d("User", String.format("tabType[%s]", tabType));
         this.thirdName = getThirdName(hook, user);
+        //logger.d("User", String.format("thirdName[%s]", thirdName));
         this.totalFavorited = getTotalFavorited(hook, user);
+        //logger.d("User", String.format("totalFavorited[%s]", totalFavorited));
         this.twExpireTime = getTwExpireTime(hook, user);
+        //logger.d("User", String.format("twExpireTime[%s]", twExpireTime));
         this.twitterId = getTwitterId(hook, user);
+        //logger.d("User", String.format("twitterId[%s]", twitterId));
         this.twitterName = getTwitterName(hook, user);
+        //logger.d("User", String.format("twitterName[%s]", twitterName));
         this.typeLabels = getTypeLabels(hook, user);
+        //logger.d("User", String.format("typeLabels[%s]", JSON.toJSONString(typeLabels)));
         this.uid = getUid(hook, user);
+        //logger.d("User", String.format("用户Id[%s]", uid));
         this.uniqueId = getUniqueId(hook, user);
+        //logger.d("User", String.format("抖音号(1)[%s]", uniqueId));
         this.unique_id_modify_time = getUniqueIdModifyTime(hook, user);
+        //logger.d("User", String.format("unique_id_modify_time[%s]", unique_id_modify_time));
         this.urgeDetail = getUrgeDetail(hook, user);
+        //logger.d("User", String.format("urgeDetail[%s]", urgeDetail));
         this.userCancelled = isUserCancelled(hook, user);
+        //logger.d("User", String.format("userCancelled[%s]", userCancelled));
         this.userHonor = getUserHonor(hook, user);
+        //logger.d("User", String.format("userHonor[%s]", userHonor));
         this.userMode = getUserMode(hook, user);
+        //logger.d("User", String.format("userMode[%s]", userMode));
         this.userPeriod = getUserPeriod(hook, user);
+        //logger.d("User", String.format("userPeriod[%s]", userPeriod));
         this.userRate = getUserRate(hook, user);
+        //logger.d("User", String.format("userRate[%s]", userRate));
         this.userRateRemindInfo = getUserRateRemindInfo(hook, user);
+        //logger.d("User", String.format("userRateRemindInfo[%s]", userRateRemindInfo));
         this.userStoryCount = getUserStoryCount(hook, user);
+        //logger.d("User", String.format("userStoryCount[%s]", userStoryCount));
         this.vcdSchemaUrl = getVcdSchemaUrl(hook, user);
+        //logger.d("User", String.format("vcdSchemaUrl[%s]", vcdSchemaUrl));
         this.verificationBadgeType = getVerificationBadgeType(hook, user);
+        //logger.d("User", String.format("verificationBadgeType[%s]", verificationBadgeType));
         this.verificationType = getVerificationType(hook, user);
+        //logger.d("User", String.format("verificationType[%s]", verificationType));
         this.verifyInfo = getVerifyInfo(hook, user);
+        //logger.d("User", String.format("verifyInfo[%s]", JSON.toJSONString(verifyInfo)));
         this.verifyStatus = getVerifyStatus(hook, user);
+        //logger.d("User", String.format("verifyStatus[%s]", verifyStatus));
         this.videoCover = getVideoCover(hook, user);
+        //logger.d("User", String.format("videoCover[%s]", videoCover));
         this.watchStatus = getWatchStatus(hook, user);
+        //logger.d("User", String.format("watchStatus[%s]", watchStatus));
         this.weiboNickname = getWeiboNickname(hook, user);
+        //logger.d("User", String.format("weiboNickname[%s]", weiboNickname));
         this.weiboSchema = getWeiboSchema(hook, user);
+        //logger.d("User", String.format("weiboSchema[%s]", weiboSchema));
         this.weiboUrl = getWeiboUrl(hook, user);
+        //logger.d("User", String.format("weiboUrl[%s]", weiboUrl));
         this.weiboVerify = getWeiboVerify(hook, user);
+        //logger.d("User", String.format("weiboVerify[%s]", weiboVerify));
         this.withCommerceEnterpriseTabEntry = isWithCommerceEnterpriseTabEntry(hook, user);
+        //logger.d("User", String.format("withCommerceEnterpriseTabEntry[%s]", withCommerceEnterpriseTabEntry));
         this.withCommerceEntry = isWithCommerceEntry(hook, user);
+        //logger.d("User", String.format("withCommerceEntry[%s]", withCommerceEntry));
         this.withCommerceNewbieTask = isWithCommerceNewbieTask(hook, user);
+        //logger.d("User", String.format("withCommerceNewbieTask[%s]", withCommerceNewbieTask));
         this.withDouEntry = isWithDouEntry(hook, user);
+        //logger.d("User", String.format("withDouEntry[%s]", withDouEntry));
         this.withDouplusEntry = isWithDouplusEntry(hook, user);
+        //logger.d("User", String.format("withDouplusEntry[%s]", withDouplusEntry));
         this.withFusionShopEntry = isWithFusionShopEntry(hook, user);
+        //logger.d("User", String.format("withFusionShopEntry[%s]", withFusionShopEntry));
         this.withItemCommerceEntry = isWithItemCommerceEntry(hook, user);
+        //logger.d("User", String.format("withItemCommerceEntry[%s]", withItemCommerceEntry));
         this.withLubanEntry = isWithLubanEntry(hook, user);
+        //logger.d("User", String.format("withLubanEntry[%s]", withLubanEntry));
         this.withNewGoods = isWithNewGoods(hook, user);
+        //logger.d("User", String.format("withNewGoods[%s]", withNewGoods));
         this.withStarAtlasEntry = isWithStarAtlasEntry(hook, user);
+        //logger.d("User", String.format("withStarAtlasEntry[%s]", withStarAtlasEntry));
         this.wxTag = getWxTag(hook, user);
+        //logger.d("User", String.format("wxTag[%s]", wxTag));
         this.xmasUnlockCount = getXmasUnlockCount(hook, user);
+        //logger.d("User", String.format("xmasUnlockCount[%s]", xmasUnlockCount));
         this.youTubeLastRefreshTime = getYouTubeLastRefreshTime(hook, user);
+        //logger.d("User", String.format("youTubeLastRefreshTime[%s]", youTubeLastRefreshTime));
         this.youTubeRefreshToken = getYouTubeRefreshToken(hook, user);
+        //logger.d("User", String.format("youTubeRefreshToken[%s]", youTubeRefreshToken));
         this.youtubeChannelId = getYoutubeChannelId(hook, user);
+        //logger.d("User", String.format("youtubeChannelId[%s]", youtubeChannelId));
         this.youtubeChannelTitle = getYoutubeChannelTitle(hook, user);
+        //logger.d("User", String.format("youtubeChannelTitle[%s]", youtubeChannelTitle));
         this.youtubeExpireTime = getYoutubeExpireTime(hook, user);
+        //logger.d("User", String.format("youtubeExpireTime[%s]", youtubeExpireTime));
     }
 
     public boolean isAcceptPrivatePolicy() {
@@ -473,27 +691,27 @@ public class User {
         return avatarDecoration;
     }
 
-    public Object getAvatarLarger() {
+    public UrlModel getAvatarLarger() {
         return avatarLarger;
     }
 
-    public Object getAvatarMedium() {
+    public UrlModel getAvatarMedium() {
         return avatarMedium;
     }
 
-    public Object getAvatarPendantLarger() {
+    public UrlModel getAvatarPendantLarger() {
         return avatarPendantLarger;
     }
 
-    public Object getAvatarPendantMedium() {
+    public UrlModel getAvatarPendantMedium() {
         return avatarPendantMedium;
     }
 
-    public Object getAvatarPendantThumb() {
+    public UrlModel getAvatarPendantThumb() {
         return avatarPendantThumb;
     }
 
-    public Object getAvatarThumb() {
+    public UrlModel getAvatarThumb() {
         return avatarThumb;
     }
 
@@ -501,7 +719,7 @@ public class User {
         return avatarUpdateReminder;
     }
 
-    public Object getAvatarVideoUri() {
+    public UrlModel getAvatarVideoUri() {
         return avatarVideoUri;
     }
 
@@ -989,7 +1207,7 @@ public class User {
         return requestId;
     }
 
-    public Object getRoomCover() {
+    public UrlModel getRoomCover() {
         return roomCover;
     }
 

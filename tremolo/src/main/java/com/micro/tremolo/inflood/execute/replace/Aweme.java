@@ -1,10 +1,15 @@
-package com.micro.tremolo.inflood.execute.item;
+package com.micro.tremolo.inflood.execute.replace;
 
+import com.alibaba.fastjson.JSON;
+import com.micro.foreign.ForeignHook;
+import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
+import com.micro.tremolo.inflood.version.TremoloParam;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.micro.tremolo.inflood.TremoloModule.logger;
 
 /**
  * @Author Kilin
@@ -13,8 +18,26 @@ import java.util.List;
  */
 public class Aweme {
 
+    public static void update(final Hook hook, final Callback callback) {
+        hook.methodMonitor(TremoloParam.AWEME_FEED_MODEL_AWEME_CLASS, TremoloParam.AWEME_UPDATE_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                callback.loadData(new Aweme(hook, param.getArgs()[0]), monitorToString(hook, param.getArgs()[0]));
+            }
+        }, hook.findClass(TremoloParam.AWEME_FEED_MODEL_AWEME_CLASS));
+    }
+
+    public static Aweme clone(final Hook hook, Object aweme) {
+        return new Aweme(hook, hook.callMethod(aweme, TremoloParam.AWEME_CLONE_METHOD));
+    }
+
+    public static String monitorToString(Hook hook, Object aweme) {
+        return hook.callMethod(aweme, TremoloParam.AWEME_TO_STRING_METHOD).toString();
+    }
+
     private String activityId;
-    private Object activityPendant;//b.class
+    private CommerceActivityStruct activityPendant;//b.class
     private int adAwemeSource;
     private boolean adDescHandle = true;
     private int adDescMaxLines = 4;
@@ -24,7 +47,7 @@ public class Aweme {
     private String aid;
     private Object anchor;//Anchor.class
     private Object anchorInfo;//AnchorInfo.class
-    private Object author;//User.class
+    private User author;//User.class
     private Object awemeACLShareInfo;//AwemeACLShare.class
     //private AwemeControl awemeControl = new AwemeControl();
     private Object awemeNationalTask;//AwemeNationalTask.class
@@ -87,10 +110,10 @@ public class Aweme {
     private boolean isRelieve;
     private int isTop;
     private boolean isVr;
-    private Object labelLarge;//UrlModel.class
-    private Object labelPrivate;//UrlModel.class
-    private Object labelThumb;//UrlModel.class
-    private Object labelTop;//UrlModel.class
+    private UrlModel labelLarge;//UrlModel.class
+    private UrlModel labelPrivate;//UrlModel.class
+    private UrlModel labelThumb;//UrlModel.class
+    private UrlModel labelTop;//UrlModel.class
     private String landingPage;
     private boolean lawCriticalCountry;
     private Object linkAdData;//r.class
@@ -106,7 +129,7 @@ public class Aweme {
     private Object microAppInfo;//MicroAppInfo.class
     private Object mixInfo;//MixStruct.class
     private Object music;//Music.class
-    private Object musicStarter;//UrlModel.class
+    private UrlModel musicStarter;//UrlModel.class
     private Object nearbyCardStruct;//NearbyCardStruct.class
     private boolean needVisionSearchEntry;
     private String newSourceId;
@@ -114,7 +137,7 @@ public class Aweme {
     private List<Object> nicknamePosition;//Position.class
     private String openPlatformName;
     private Object openPlatformStruct;//e.class
-    private Object originAuthor;//UrlModel.class
+    private UrlModel originAuthor;//UrlModel.class
     private List<String> originCommentIds;
     private int originalPos;
     private Object poiOpCardStruct;//ak.class
@@ -148,7 +171,7 @@ public class Aweme {
     private Object starAtlasInfo;//AwemeStarAtlas.class
     private long starAtlasOrderId;
     private String starRecommendTag;
-    private Object statistics;//AwemeStatistics.class
+    private AwemeStatistics statistics;//AwemeStatistics.class
     private Object status;//AwemeStatus.class
     private Object stickerEntranceInfo;//com.ss.android.ugc.aweme.sticker.model.e.class
     private String stickerIDs;
@@ -171,163 +194,322 @@ public class Aweme {
     private Object xiGuaTask;//XiGuaTaskStruct.class
 
     public Aweme(Hook hook, Object aweme) {
+        loadAweme(hook, aweme);
+        monitorToString(hook, aweme);
+    }
+
+    public void loadAweme(Hook hook, Object aweme) {
+        logger.d("Aweme", String.format("当前抓取的视频对象是否存在[%s]", aweme == null));
+        if (aweme == null) {
+            return;
+        }
         this.activityId = getActivityId(hook, aweme);
-        this.activityPendant = getActivityPendant(hook, aweme);
+        //logger.d("Aweme", String.format("activityId[%s]", activityId));
+        this.activityPendant = new CommerceActivityStruct(hook, getActivityPendant(hook, aweme));
+        //logger.d("Aweme", String.format("activityPendant[%s]", activityPendant));
         this.adAwemeSource = getAdAwemeSource(hook, aweme);
+        //logger.d("Aweme", String.format("adAwemeSource[%s]", adAwemeSource));
         this.adDescHandle = isAdDescHandle(hook, aweme);
+        //logger.d("Aweme", String.format("adDescHandle[%s]", adDescHandle));
         this.adDescMaxLines = getAdDescMaxLines(hook, aweme);
+        //logger.d("Aweme", String.format("adDescMaxLines[%s]", adDescMaxLines));
         this.adLinkType = getAdLinkType(hook, aweme);
+        //logger.d("Aweme", String.format("adLinkType[%s]", adLinkType));
         this.adOrderId = getAdOrderId(hook, aweme);
+        //logger.d("Aweme", String.format("adOrderId[%s]", adOrderId));
         this.adSchedule = getAdSchedule(hook, aweme);
+        //logger.d("Aweme", String.format("adSchedule[%s]", adSchedule));
         this.aid = getAid(hook, aweme);
+        //logger.d("Aweme", String.format("视频Id[%s]", aid));
         this.anchor = getAnchor(hook, aweme);
+        //logger.d("Aweme", String.format("anchor[%s]", anchor));
         this.anchorInfo = getAnchorInfo(hook, aweme);
-        this.author = getAuthor(hook, aweme);
+        //logger.d("Aweme", String.format("anchorInfo[%s]", anchorInfo));
+        this.author = new User(hook, getAuthor(hook, aweme));
+        //logger.d("Aweme", String.format("author[%s]", author));
         this.awemeACLShareInfo = getAwemeACLShareInfo(hook, aweme);
+        //logger.d("Aweme", String.format("awemeACLShareInfo[%s]", awemeACLShareInfo));
         this.awemeNationalTask = getAwemeNationalTask(hook, aweme);
+        //logger.d("Aweme", String.format("awemeNationalTask[%s]", awemeNationalTask));
         this.awemePosition = getAwemePosition(hook, aweme);
+        //logger.d("Aweme", String.format("awemePosition[%s]", awemePosition));
         this.awemeRawAd = getAwemeRawAd(hook, aweme);
+        //logger.d("Aweme", String.format("awemeRawAd[%s]", awemeRawAd));
         this.awemeRiskModel = getAwemeRiskModel(hook, aweme);
+        //logger.d("Aweme", String.format("awemeRiskModel[%s]", JSON.toJSONString(awemeRiskModel)));
         this.awemeType = getAwemeType(hook, aweme);
+        //logger.d("Aweme", String.format("awemeType[%s]", awemeType));
         this.bannerTip = getBannerTip(hook, aweme);
+        //logger.d("Aweme", String.format("bannerTip[%s]", bannerTip));
         this.canPlay = isCanPlay(hook, aweme);
+        //logger.d("Aweme", String.format("canPlay[%s]", canPlay));
         this.challengeList = (List<Object>) getChallengeList(hook, aweme);
+        //logger.d("Aweme", String.format("challengeList[%s]", JSON.toJSONString(challengeList)));
         this.cmtSwt = isCmtSwt(hook, aweme);
+        //logger.d("Aweme", String.format("cmtSwt[%s]", cmtSwt));
         this.collectStatus = getCollectStatus(hook, aweme);
+        //logger.d("Aweme", String.format("collectStatus[%s]", collectStatus));
         this.commentSetting = getCommentSetting(hook, aweme);
+        //logger.d("Aweme", String.format("commentSetting[%s]", commentSetting));
         this.commerceConfigDataList = (List<Object>) getCommerceConfigDataList(hook, aweme);
+        //logger.d("Aweme", String.format("commerceConfigDataList[%s]", JSON.toJSONString(commerceConfigDataList)));
         this.commerceStickerInfo = getCommerceStickerInfo(hook, aweme);
+        //logger.d("Aweme", String.format("commerceStickerInfo[%s]", commerceStickerInfo));
         this.createTime = getCreateTime(hook, aweme);
+        //logger.d("Aweme", String.format("创建时间[%s]", createTime));
         this.date = getDate(hook, aweme);
+        //logger.d("Aweme", String.format("date[%s]", date));
         this.dcdVideoExtra = getDcdVideoExtra(hook, aweme);
+        //logger.d("Aweme", String.format("dcdVideoExtra[%s]", dcdVideoExtra));
         this.desc = getDesc(hook, aweme);
+        //logger.d("Aweme", String.format("标题[%s]", desc));
         this.descLanguage = getDescLanguage(hook, aweme);
+        //logger.d("Aweme", String.format("descLanguage[%s]", descLanguage));
         this.descendantsModel = getDescendantsModel(hook, aweme);
+        //logger.d("Aweme", String.format("descendantsModel[%s]", descendantsModel));
         this.distance = getDistance(hook, aweme);
+        //logger.d("Aweme", String.format("distance[%s]", JSON.toJSONString(distance)));
         this.distributeType = getDistributeType(hook, aweme);
+        //logger.d("Aweme", String.format("distributeType[%s]", distributeType));
         this.downloadWithoutWatermark = isDownloadWithoutWatermark(hook, aweme);
+        //logger.d("Aweme", String.format("downloadWithoutWatermark[%s]", downloadWithoutWatermark));
         this.duetSetting = getDuetSetting(hook, aweme);
+        //logger.d("Aweme", String.format("duetSetting[%s]", duetSetting));
         this.enableTopView = isEnableTopView(hook, aweme);
+        //logger.d("Aweme", String.format("enableTopView[%s]", enableTopView));
         this.externalType = getExternalType(hook, aweme);
+        //logger.d("Aweme", String.format("externalType[%s]", externalType));
         this.extra = getExtra(hook, aweme);
+        //logger.d("Aweme", String.format("extra[%s]", extra));
         this.familiarRecommendUser = (List<Object>) getFamiliarRecommendUser(hook, aweme);
+        //logger.d("Aweme", String.format("familiarRecommendUser[%s]", familiarRecommendUser));
         this.feedCount = getFeedCount(hook, aweme);
+        //logger.d("Aweme", String.format("feedCount[%s]", feedCount));
         this.feedRelationLabel = getFeedRelationLabel(hook, aweme);
+        //logger.d("Aweme", String.format("feedRelationLabel[%s]", feedRelationLabel));
         this.floatingCardInfo = getFloatingCardInfo(hook, aweme);
+        //logger.d("Aweme", String.format("floatingCardInfo[%s]", floatingCardInfo));
         this.forwardCommentId = getForwardCommentId(hook, aweme);
+        //logger.d("Aweme", String.format("forwardCommentId[%s]", forwardCommentId));
         this.forwardItem = getForwardItem(hook, aweme);
+        //logger.d("Aweme", String.format("forwardItem[%s]", forwardItem));
         this.forwardItemId = getForwardItemId(hook, aweme);
+        //logger.d("Aweme", String.format("forwardItemId[%s]", forwardItemId));
         this.fromRawChallenge = getFromRawChallenge(hook, aweme);
+        //logger.d("Aweme", String.format("fromRawChallenge[%s]", fromRawChallenge));
         this.gameInfo = getGameInfo(hook, aweme);
+        //logger.d("Aweme", String.format("gameInfo[%s]", gameInfo));
         this.hasVisionSearchEntry = isHasVisionSearchEntry(hook, aweme);
+        //logger.d("Aweme", String.format("hasVisionSearchEntry[%s]", hasVisionSearchEntry));
         this.hotListStruct = getHotListStruct(hook, aweme);
+        //logger.d("Aweme", String.format("hotListStruct[%s]", hotListStruct));
         this.hotSearchInfo = getHotSearchInfo(hook, aweme);
+        //logger.d("Aweme", String.format("hotSearchInfo[%s]", hotSearchInfo));
         this.hotSpot = getHotSpot(hook, aweme);
+        //logger.d("Aweme", String.format("hotSpot[%s]", hotSpot));
         this.imageInfos = (List<Object>) getImageInfos(hook, aweme);
+        //logger.d("Aweme", String.format("imageInfos[%s]", JSON.toJSONString(imageInfos)));
         this.interactStickerStructs = (List<Object>) getInteractStickerStructs(hook, aweme);
+        //logger.d("Aweme", String.format("interactStickerStructs[%s]", JSON.toJSONString(interactStickerStructs)));
         this.isAd = isAd(hook, aweme);
+        //logger.d("Aweme", String.format("isAd[%s]", isAd));
         this.isCanCache = isCanCache(hook, aweme);
+        //logger.d("Aweme", String.format("isCanCache[%s]", isCanCache));
         this.isEffectDesigner = isEffectDesigner(hook, aweme);
+        //logger.d("Aweme", String.format("isEffectDesigner[%s]", isEffectDesigner));
         this.isFakeResponse = isFakeResponse(hook, aweme);
+        //logger.d("Aweme", String.format("isFakeResponse[%s]", isFakeResponse));
         this.isFamiliar = isFamiliar(hook, aweme);
+        //logger.d("Aweme", String.format("isFamiliar[%s]", isFamiliar));
         this.isFirstInSpot = isFirstInSpot(hook, aweme);
+        //logger.d("Aweme", String.format("isFirstInSpot[%s]", isFirstInSpot));
         this.isFromDouPlusGuideAnimate = isFromDouPlusGuideAnimate(hook, aweme);
+        //logger.d("Aweme", String.format("isFromDouPlusGuideAnimate[%s]", isFromDouPlusGuideAnimate));
         this.isHashTag = getIsHashTag(hook, aweme);
+        //logger.d("Aweme", String.format("isHashTag[%s]", isHashTag));
         this.isLastInSpot = isLastInSpot(hook, aweme);
+        //logger.d("Aweme", String.format("isLastInSpot[%s]", isLastInSpot));
         this.isPgcShow = isPgcShow(hook, aweme);
+        //logger.d("Aweme", String.format("isPgcShow[%s]", isPgcShow));
         this.isPreloadScroll = isPreloadScroll(hook, aweme);
+        //logger.d("Aweme", String.format("isPreloadScroll[%s]", isPreloadScroll));
         this.isPreview = getIsPreview(hook, aweme);
+        //logger.d("Aweme", String.format("isPreview[%s]", isPreview));
         this.isProhibited = isProhibited(hook, aweme);
+        //logger.d("Aweme", String.format("isProhibited[%s]", isProhibited));
         this.isRelieve = isRelieve(hook, aweme);
+        //logger.d("Aweme", String.format("isRelieve[%s]", isRelieve));
         this.isTop = getIsTop(hook, aweme);
+        //logger.d("Aweme", String.format("isTop[%s]", isTop));
         this.isVr = isVr(hook, aweme);
-        this.labelLarge = getLabelLarge(hook, aweme);
-        this.labelPrivate = getLabelPrivate(hook, aweme);
-        this.labelThumb = getLabelThumb(hook, aweme);
-        this.labelTop = getLabelTop(hook, aweme);
+        //logger.d("Aweme", String.format("isVr[%s]", isVr));
+        this.labelLarge = new UrlModel(hook, getLabelLarge(hook, aweme));
+        //logger.d("Aweme", String.format("labelLarge[%s]", JSON.toJSONString(labelLarge)));
+        this.labelPrivate = new UrlModel(hook, getLabelPrivate(hook, aweme));
+        //logger.d("Aweme", String.format("labelPrivate[%s]", JSON.toJSONString(labelPrivate)));
+        this.labelThumb = new UrlModel(hook, getLabelThumb(hook, aweme));
+        //logger.d("Aweme", String.format("labelThumb[%s]", JSON.toJSONString(labelThumb)));
+        this.labelTop = new UrlModel(hook, getLabelThumb(hook, aweme));
+        //logger.d("Aweme", String.format("labelTop[%s]", JSON.toJSONString(labelTop)));
         this.landingPage = getLandingPage(hook, aweme);
+        //logger.d("Aweme", String.format("landingPage[%s]", landingPage));
         this.lawCriticalCountry = isLawCriticalCountry(hook, aweme);
+        //logger.d("Aweme", String.format("lawCriticalCountry[%s]", lawCriticalCountry));
         this.linkAdData = getLinkAdData(hook, aweme);
+        //logger.d("Aweme", String.format("linkAdData[%s]", linkAdData));
         this.longVideos = (List<Object>) getLongVideos(hook, aweme);
+        //logger.d("Aweme", String.format("longVideos[%s]", JSON.toJSONString(longVideos)));
         this.mCommerceVideoAuthInfo = getmCommerceVideoAuthInfo(hook, aweme);
+        //logger.d("Aweme", String.format("mCommerceVideoAuthInfo[%s]", mCommerceVideoAuthInfo));
         this.mConcatAndUploadState = getmConcatAndUploadState(hook, aweme);
+        //logger.d("Aweme", String.format("mConcatAndUploadState[%s]", mConcatAndUploadState));
         this.mLabelMusicStarterText = getmLabelMusicStarterText(hook, aweme);
+        //logger.d("Aweme", String.format("mLabelMusicStarterText[%s]", mLabelMusicStarterText));
         this.mLabelOriginAuthorText = getmLabelOriginAuthorText(hook, aweme);
+        //logger.d("Aweme", String.format("mLabelOriginAuthorText[%s]", mLabelOriginAuthorText));
         this.mLiveAwesomeSplashInfo = getmLiveAwesomeSplashInfo(hook, aweme);
+        //logger.d("Aweme", String.format("mLiveAwesomeSplashInfo[%s]", mLiveAwesomeSplashInfo));
         this.mMobParams = getmMobParams(hook, aweme);
+        //logger.d("Aweme", String.format("mMobParams[%s]", mMobParams));
         this.mNewRelationLabel = (List<Object>) getmNewRelationLabel(hook, aweme);
+        //logger.d("Aweme", String.format("mNewRelationLabel[%s]", mNewRelationLabel));
         this.mRoomFeedCellStruct = getmRoomFeedCellStruct(hook, aweme);
+        //logger.d("Aweme", String.format("mRoomFeedCellStruct[%s]", mRoomFeedCellStruct));
         this.microAppInfo = getMicroAppInfo(hook, aweme);
+        //logger.d("Aweme", String.format("microAppInfo[%s]", microAppInfo));
         this.mixInfo = getMixInfo(hook, aweme);
+        //logger.d("Aweme", String.format("mixInfo[%s]", mixInfo));
         this.music = getMusic(hook, aweme);
-        this.musicStarter = getMusicStarter(hook, aweme);
+        //logger.d("Aweme", String.format("music[%s]", JSON.toJSONString(music)));
+        this.musicStarter = new UrlModel(hook, getMusicStarter(hook, aweme));
+        //logger.d("Aweme", String.format("musicStarter[%s]", JSON.toJSONString(musicStarter)));
         this.nearbyCardStruct = getNearbyCardStruct(hook, aweme);
+        //logger.d("Aweme", String.format("nearbyCardStruct[%s]", nearbyCardStruct));
         this.needVisionSearchEntry = isNeedVisionSearchEntry(hook, aweme);
+        //logger.d("Aweme", String.format("needVisionSearchEntry[%s]", needVisionSearchEntry));
         this.newSourceId = getNewSourceId(hook, aweme);
+        //logger.d("Aweme", String.format("newSourceId[%s]", newSourceId));
         this.newSourceType = getNewSourceType(hook, aweme);
+        //logger.d("Aweme", String.format("newSourceType[%s]", newSourceType));
         this.nicknamePosition = (List<Object>) getNicknamePosition(hook, aweme);
+        //logger.d("Aweme", String.format("nicknamePosition[%s]", JSON.toJSONString(nicknamePosition)));
         this.openPlatformName = getOpenPlatformName(hook, aweme);
+        //logger.d("Aweme", String.format("openPlatformName[%s]", openPlatformName));
         this.openPlatformStruct = getOpenPlatformStruct(hook, aweme);
-        this.originAuthor = getOriginAuthor(hook, aweme);
+        //logger.d("Aweme", String.format("openPlatformStruct[%s]", openPlatformStruct));
+        this.originAuthor = new UrlModel(hook, getOriginAuthor(hook, aweme));
+        //logger.d("Aweme", String.format("originAuthor[%s]", JSON.toJSONString(originAuthor)));
         this.originCommentIds = getOriginCommentIds(hook, aweme);
+        //logger.d("Aweme", String.format("originCommentIds[%s]", JSON.toJSONString(originCommentIds)));
         this.originalPos = getOriginalPos(hook, aweme);
+        //logger.d("Aweme", String.format("originalPos[%s]", originalPos));
         this.poiOpCardStruct = getPoiOpCardStruct(hook, aweme);
+        //logger.d("Aweme", String.format("poiOpCardStruct[%s]", poiOpCardStruct));
         this.poiRankCardStruct = getPoiRankCardStruct(hook, aweme);
+        //logger.d("Aweme", String.format("poiRankCardStruct[%s]", poiRankCardStruct));
         this.poiStruct = getPoiStruct(hook, aweme);
+        //logger.d("Aweme", String.format("poiStruct[%s]", poiStruct));
         this.position = (List<Object>) getPosition(hook, aweme);
+        //logger.d("Aweme", String.format("position[%s]", JSON.toJSONString(position)));
         this.preForwardId = getPreForwardId(hook, aweme);
+        //logger.d("Aweme", String.format("preForwardId[%s]", preForwardId));
         this.preload = getPreload(hook, aweme);
+        //logger.d("Aweme", String.format("preload[%s]", preload));
         this.preventDownload = isPreventDownload(hook, aweme);
+        //logger.d("Aweme", String.format("preventDownload[%s]", preventDownload));
         this.promotionOtherInfo = getPromotionOtherInfo(hook, aweme);
+        //logger.d("Aweme", String.format("promotionOtherInfo[%s]", promotionOtherInfo));
         this.rate = getRate(hook, aweme);
+        //logger.d("Aweme", String.format("rate[%s]", rate));
         this.rateScore = getRateScore(hook, aweme);
+        //logger.d("Aweme", String.format("rateScore[%s]", rateScore));
         this.reactFrom = getReactFrom(hook, aweme);
+        //logger.d("Aweme", String.format("reactFrom[%s]", reactFrom));
         this.reactOrigin = getReactOrigin(hook, aweme);
+        //logger.d("Aweme", String.format("reactOrigin[%s]", reactOrigin));
         this.reactSetting = getReactSetting(hook, aweme);
+        //logger.d("Aweme", String.format("reactSetting[%s]", reactSetting));
         this.reactView = getReactView(hook, aweme);
+        //logger.d("Aweme", String.format("reactView[%s]", reactView));
         this.region = getRegion(hook, aweme);
+        //logger.d("Aweme", String.format("region[%s]", JSON.toJSONString(region)));
         this.relationLabel = getRelationLabel(hook, aweme);
+        //logger.d("Aweme", String.format("relationLabel[%s]", relationLabel));
         this.repostFromGroupId = getRepostFromGroupId(hook, aweme);
+        //logger.d("Aweme", String.format("repostFromGroupId[%s]", repostFromGroupId));
         this.repostFromUserId = getRepostFromUserId(hook, aweme);
+        //logger.d("Aweme", String.format("repostFromUserId[%s]", repostFromUserId));
         this.requestId = getRequestId(hook, aweme);
+        //logger.d("Aweme", String.format("requestId[%s]", requestId));
         this.room = getRoom(hook, aweme);
+        //logger.d("Aweme", String.format("room[%s]", room));
         this.scenario = getScenario(hook, aweme);
+        //logger.d("Aweme", String.format("scenario[%s]", scenario));
         this.shareInfo = getShareInfo(hook, aweme);
+        //logger.d("Aweme", String.format("shareInfo[%s]", JSON.toJSONString(shareInfo)));
         this.shareUrl = getShareUrl(hook, aweme);
+        //logger.d("Aweme", String.format("分享链接[%s]", shareUrl));
         this.simplePoiInfoStruct = getSimplePoiInfoStruct(hook, aweme);
+        //logger.d("Aweme", String.format("simplePoiInfoStruct[%s]", simplePoiInfoStruct));
         this.simplePromotions = (List<Object>) getSimplePromotions(hook, aweme);
+        //logger.d("Aweme", String.format("simplePromotions[%s]", simplePromotions));
         this.simplePromotionsString = getSimplePromotionsString(hook, aweme);
+        //logger.d("Aweme", String.format("simplePromotionsString[%s]", simplePromotionsString));
         this.simpleShopSeeding = getSimpleShopSeeding(hook, aweme);
+        //logger.d("Aweme", String.format("simpleShopSeeding[%s]", simpleShopSeeding));
         this.specialSticker = getSpecialSticker(hook, aweme);
+        //logger.d("Aweme", String.format("specialSticker[%s]", specialSticker));
         this.starAtlasInfo = getStarAtlasInfo(hook, aweme);
+        //logger.d("Aweme", String.format("starAtlasInfo[%s]", starAtlasInfo));
         this.starAtlasOrderId = getStarAtlasOrderId(hook, aweme);
+        //logger.d("Aweme", String.format("starAtlasOrderId[%s]", starAtlasOrderId));
         this.starRecommendTag = getStarRecommendTag(hook, aweme);
-        this.statistics = getStatistics(hook, aweme);
+        //logger.d("Aweme", String.format("starRecommendTag[%s]", starRecommendTag));
+        this.statistics = new AwemeStatistics(hook, getStatistics(hook, aweme));
+        //logger.d("Aweme", String.format("statistics[%s]", JSON.toJSONString(statistics)));
         this.status = getStatus(hook, aweme);
+        //logger.d("Aweme", String.format("status[%s]", status));
         this.stickerEntranceInfo = getStickerEntranceInfo(hook, aweme);
+        //logger.d("Aweme", String.format("stickerEntranceInfo[%s]", stickerEntranceInfo));
         this.stickerIDs = getStickerIDs(hook, aweme);
+        //logger.d("Aweme", String.format("stickerIDs[%s]", stickerIDs));
         this.streamUrlModel = getStreamUrlModel(hook, aweme);
+        //logger.d("Aweme", String.format("streamUrlModel[%s]", streamUrlModel));
         this.takeDownDesc = getTakeDownDesc(hook, aweme);
+        //logger.d("Aweme", String.format("takeDownDesc[%s]", takeDownDesc));
         this.takeDownReason = getTakeDownReason(hook, aweme);
+        //logger.d("Aweme", String.format("takeDownReason[%s]", takeDownReason));
         this.textExtra = (List<Object>) getTextExtra(hook, aweme);
+        //logger.d("Aweme", String.format("textExtra[%s]", JSON.toJSONString(textExtra)));
         this.textTopLabels = (List<Object>) getTextTopLabels(hook, aweme);
+        //logger.d("Aweme", String.format("textTopLabels[%s]", JSON.toJSONString(textTopLabels)));
         this.textVideoLabels = (List<Object>) getTextVideoLabels(hook, aweme);
+        //logger.d("Aweme", String.format("textVideoLabels[%s]", JSON.toJSONString(textVideoLabels)));
         this.title = getTitle(hook, aweme);
+        //logger.d("Aweme", String.format("title[%s]", title));
         this.uniqidPosition = (List<Object>) getUniqidPosition(hook, aweme);
+        //logger.d("Aweme", String.format("uniqidPosition[%s]", JSON.toJSONString(uniqidPosition)));
         this.uploadMiscInfoStructStr = getUploadMiscInfoStructStr(hook, aweme);
+        //logger.d("Aweme", String.format("uploadMiscInfoStructStr[%s]", uploadMiscInfoStructStr));
         this.userDigg = getUserDigg(hook, aweme);
+        //logger.d("Aweme", String.format("userDigg[%s]", userDigg));
         this.video = getVideo(hook, aweme);
+        //logger.d("Aweme", String.format("video[%s]", video));
         this.videoControl = getVideoControl(hook, aweme);
+        //logger.d("Aweme", String.format("videoControl[%s]", JSON.toJSONString(videoControl)));
         this.videoLabels = (List<Object>) getVideoLabels(hook, aweme);
+        //logger.d("Aweme", String.format("videoLabels[%s]", JSON.toJSONString(videoLabels)));
         this.withPromotionalMusic = isWithPromotionalMusic(hook, aweme);
+        //logger.d("Aweme", String.format("withPromotionalMusic[%s]", withPromotionalMusic));
         this.xiGuaTask = getXiGuaTask(hook, aweme);
+        //logger.d("Aweme", String.format("xiGuaTask[%s]", JSON.toJSONString(xiGuaTask)));
     }
 
     public String getActivityId() {
         return activityId;
     }
 
-    public Object getActivityPendant() {
+    public CommerceActivityStruct getActivityPendant() {
         return activityPendant;
     }
 
@@ -367,7 +549,7 @@ public class Aweme {
         return anchorInfo;
     }
 
-    public Object getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
@@ -603,19 +785,19 @@ public class Aweme {
         return isVr;
     }
 
-    public Object getLabelLarge() {
+    public UrlModel getLabelLarge() {
         return labelLarge;
     }
 
-    public Object getLabelPrivate() {
+    public UrlModel getLabelPrivate() {
         return labelPrivate;
     }
 
-    public Object getLabelThumb() {
+    public UrlModel getLabelThumb() {
         return labelThumb;
     }
 
-    public Object getLabelTop() {
+    public UrlModel getLabelTop() {
         return labelTop;
     }
 
@@ -679,7 +861,7 @@ public class Aweme {
         return music;
     }
 
-    public Object getMusicStarter() {
+    public UrlModel getMusicStarter() {
         return musicStarter;
     }
 
@@ -711,7 +893,7 @@ public class Aweme {
         return openPlatformStruct;
     }
 
-    public Object getOriginAuthor() {
+    public UrlModel getOriginAuthor() {
         return originAuthor;
     }
 
@@ -847,7 +1029,7 @@ public class Aweme {
         return starRecommendTag;
     }
 
-    public Object getStatistics() {
+    public AwemeStatistics getStatistics() {
         return statistics;
     }
 
@@ -1236,7 +1418,7 @@ public class Aweme {
     }
 
     private Object getmCommerceVideoAuthInfo(Hook hook, Object aweme) {
-        return hook.getField(aweme, "Hook hook, Object aweme");
+        return hook.getField(aweme, "mCommerceVideoAuthInfo");
     }
 
     private int getmConcatAndUploadState(Hook hook, Object aweme) {
@@ -1521,5 +1703,9 @@ public class Aweme {
 
     private Object getXiGuaTask(Hook hook, Object aweme) {
         return hook.getField(aweme, "xiGuaTask");
+    }
+
+    public interface Callback {
+        void loadData(Aweme aweme, String msg);
     }
 }
