@@ -15,7 +15,8 @@ public class V960 extends TremoloParam {
 
     @Override
     protected void mainClass() {
-        AWEME_MAIN_CLASS = "com.ss.android.ugc.aweme.main.MainActivity";
+        AWEME_MAIN_ACTIVITY_CLASS = "com.ss.android.ugc.aweme.main.MainActivity";
+        AWEME_MAIN_FRAGMENT_CLASS = "com.ss.android.ugc.aweme.main.MainFragment";
         AWEME_VIDEO_CHANGE_METHOD = "onVideoPageChangeEvent";
     }
 

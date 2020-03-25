@@ -42,7 +42,7 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
     }
 
     public void test() {
-        getHook().methodMonitor(TremoloParam.AWEME_MAIN_CLASS, TremoloParam.AWEME_VIDEO_CHANGE_METHOD, new ForeignHook() {
+        getHook().methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_VIDEO_CHANGE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
@@ -63,6 +63,11 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
                 UrlModel avatarThumb = author.getAvatarThumb();
                 logger.d(String.format("用户缩略头像：{高[%s], 宽[%s], uri[%s], urlKey[%s], 网址列表[%s]}",
                         avatarThumb.getHeight(), avatarThumb.getWidth(), avatarThumb.getUri(), avatarThumb.getUrlKey(), JSON.toJSONString(avatarThumb.getUrlList())));
+                logger.d(String.format("用户统计数：{[%s], [%s], [%s], [%s], [%s], [%s], [%s], [%s], [%s], [%s], [%s]}",
+                        author.getFollowingCount(), author.getFollowerCount(), author.getFavoritingCount(),
+                        author.getStoryCount(), author.getCollectCount(), author.getAwemeCount(),
+                        author.getFansCount(), author.getPrivateAwemeCount(), author.getUserStoryCount(),
+                        author.getXmasUnlockCount(), author.getDongtai_count()));
             }
         }, getHook().findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
     }

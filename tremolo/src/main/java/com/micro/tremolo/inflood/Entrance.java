@@ -1,10 +1,15 @@
 package com.micro.tremolo.inflood;
 
+import com.alibaba.fastjson.JSON;
+import com.micro.foreign.ForeignHook;
+import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
+import com.micro.root.Logger;
 import com.micro.tremolo.inflood.execute.PluginDeploy;
 import com.micro.tremolo.inflood.execute.item.account.Account;
 import com.micro.tremolo.inflood.execute.item.author.Author;
+import com.micro.tremolo.inflood.execute.replace.Logcat;
 import com.micro.tremolo.inflood.mvp.EntranceInter;
 import com.micro.tremolo.inflood.mvp.EntrancePresenter;
 import com.micro.tremolo.inflood.version.TremoloParam;
@@ -40,6 +45,17 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     @Override
     protected EntrancePresenter getPresenter() {
         return new EntrancePresenter();
+    }
+
+    @Override
+    protected void log() {
+        getHookParam().getHook().methodMonitor("com.ss.android.agilelogger.ALog", "println", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                new Logcat(getHookParam().getHook(), param.getArgs()[0]);
+            }
+        }, getHookParam().getHook().findClass("com.ss.android.agilelogger.d"));
     }
 
     @Override

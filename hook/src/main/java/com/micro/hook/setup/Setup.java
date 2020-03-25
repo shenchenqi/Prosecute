@@ -31,10 +31,13 @@ public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> i
         if (this.presenter == null) {
             throw new Throwable("未实例接口");
         }
+        log();
         executeSQL();
         config();
         execute();
     }
+
+    protected abstract void log();
 
     protected abstract void executeSQL();
 
