@@ -75,6 +75,7 @@ public abstract class ExecuteMonitor implements EventCallback {
         try {
             if (!hookParam.isFirstApplication()) {
                 logger.e(TAG, "当前包不是第一次开启");
+                return;
             }
 
             hookParam.setHook();

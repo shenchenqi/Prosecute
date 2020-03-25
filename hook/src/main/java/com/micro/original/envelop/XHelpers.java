@@ -122,11 +122,23 @@ public class XHelpers {
     }
 
     public static XC_MethodHook.Unhook classMonitor(String clazzName, ClassLoader classLoader, XC_MethodHook callback, Object... parameterTypes) {
-        Class clazz = findClass(clazzName, classLoader);
+        Object[] parameterTypesAndCallback;
+        if (parameterTypes.length == 0) {
+            parameterTypesAndCallback = new Object[1];
+            parameterTypesAndCallback[0] = callback;
+        } else {
+            parameterTypesAndCallback = new Object[parameterTypes.length + 1];
+            for (int i = 0; i < parameterTypes.length; i++) {
+                parameterTypesAndCallback[i] = parameterTypes[i];
+            }
+            parameterTypesAndCallback[parameterTypes.length] = callback;
+        }
+        return XposedHelpers.findAndHookConstructor(clazzName, classLoader, parameterTypesAndCallback);
+        /*Class clazz = findClass(clazzName, classLoader);
         if (clazz != null) {
             return monitorClass(clazz, callback, parameterTypes);
         }
-        return null;
+        return null;*/
     }
 
     /**
@@ -187,7 +199,24 @@ public class XHelpers {
     }
 
     public static void setField(Object treat, String fieldName, Object value) {
-        Field field = findField(treat.getClass(), fieldName);
+        if (value instanceof Boolean) {
+            XposedHelpers.setBooleanField(treat, fieldName, (boolean) value);
+        } else if (value instanceof Byte) {
+            XposedHelpers.setByteField(treat, fieldName, (byte) value);
+        } else if (value instanceof Double) {
+            XposedHelpers.setDoubleField(treat, fieldName, (double) value);
+        } else if (value instanceof Float) {
+            XposedHelpers.setFloatField(treat, fieldName, (float) value);
+        } else if (value instanceof Integer) {
+            XposedHelpers.setIntField(treat, fieldName, (int) value);
+        } else if (value instanceof Long) {
+            XposedHelpers.setLongField(treat, fieldName, (long) value);
+        } else if (value instanceof Short) {
+            XposedHelpers.setLongField(treat, fieldName, (short) value);
+        } else {
+            XposedHelpers.setObjectField(treat, fieldName, value);
+        }
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 if (value instanceof Boolean) {
@@ -211,11 +240,12 @@ public class XHelpers {
                 Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-设置值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));*/
     }
 
     public static void setCharField(Object treat, String fieldName, char value) {
-        Field field = findField(treat.getClass(), fieldName);
+        XposedHelpers.setCharField(treat, fieldName, value);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 field.setChar(treat, value);
@@ -223,11 +253,12 @@ public class XHelpers {
                 Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-设置值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));*/
     }
 
     public static Object getField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getObjectField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.get(treat);
@@ -236,11 +267,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Boolean getBooleanField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getBooleanField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.getBoolean(treat);
@@ -249,11 +281,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Byte getByteField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getByteField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.getByte(treat);
@@ -262,11 +295,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Double getDoubleField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getDoubleField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.getDouble(treat);
@@ -275,11 +309,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Float getFloatField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getFloatField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.getFloat(treat);
@@ -288,11 +323,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Integer getIntegerField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getIntField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.getInt(treat);
@@ -301,11 +337,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Long getLongField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getLongField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.getLong(treat);
@@ -314,11 +351,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Short getShortField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getShortField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.getShort(treat);
@@ -327,11 +365,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static char getCharField(Object treat, String fieldName) {
-        Field field = findField(treat.getClass(), fieldName);
+        return XposedHelpers.getCharField(treat, fieldName);
+        /*Field field = findField(treat.getClass(), fieldName);
         if (field != null) {
             try {
                 return field.getChar(treat);
@@ -340,7 +379,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
-        return 0;
+        return 0;*/
     }
 
     public static void setStaticField(String clazzName, ClassLoader classLoader, String fieldName, Object value) {
@@ -351,7 +390,24 @@ public class XHelpers {
     }
 
     public static void setStaticField(Class<?> clazz, String fieldName, Object value) {
-        Field field = findField(clazz, fieldName);
+        if (value instanceof Boolean) {
+            XposedHelpers.setStaticBooleanField(clazz, fieldName, (boolean) value);
+        } else if (value instanceof Byte) {
+            XposedHelpers.setStaticByteField(clazz, fieldName, (byte) value);
+        } else if (value instanceof Double) {
+            XposedHelpers.setStaticDoubleField(clazz, fieldName, (double) value);
+        } else if (value instanceof Float) {
+            XposedHelpers.setStaticFloatField(clazz, fieldName, (float) value);
+        } else if (value instanceof Integer) {
+            XposedHelpers.setStaticIntField(clazz, fieldName, (int) value);
+        } else if (value instanceof Long) {
+            XposedHelpers.setStaticLongField(clazz, fieldName, (long) value);
+        } else if (value instanceof Short) {
+            XposedHelpers.setStaticLongField(clazz, fieldName, (short) value);
+        } else {
+            XposedHelpers.setStaticObjectField(clazz, fieldName, value);
+        }
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 if (value instanceof Boolean) {
@@ -375,7 +431,7 @@ public class XHelpers {
                 Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-设置值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));*/
     }
 
     public static void setStaticCharField(String clazzName, ClassLoader classLoader, String fieldName, char value) {
@@ -386,7 +442,8 @@ public class XHelpers {
     }
 
     public static void setStaticCharField(Class<?> clazz, String fieldName, char value) {
-        Field field = findField(clazz, fieldName);
+        XposedHelpers.setStaticCharField(clazz, fieldName, value);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 field.setChar(null, value);
@@ -394,7 +451,7 @@ public class XHelpers {
                 Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-设置值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));*/
     }
 
     public static Object getStaticField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -406,7 +463,8 @@ public class XHelpers {
     }
 
     public static Object getStaticField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticObjectField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.get(null);
@@ -415,7 +473,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Boolean getStaticBooleanField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -427,7 +485,8 @@ public class XHelpers {
     }
 
     public static Boolean getStaticBooleanField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticBooleanField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.getBoolean(null);
@@ -436,7 +495,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Byte getStaticByteField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -448,7 +507,8 @@ public class XHelpers {
     }
 
     public static Byte getStaticByteField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticByteField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.getByte(null);
@@ -457,7 +517,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Double getStaticDoubleField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -469,7 +529,8 @@ public class XHelpers {
     }
 
     public static Double getStaticDoubleField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticDoubleField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.getDouble(null);
@@ -478,7 +539,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Float getStaticFloatField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -490,7 +551,8 @@ public class XHelpers {
     }
 
     public static Float getStaticFloatField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticFloatField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.getFloat(null);
@@ -499,7 +561,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Integer getStaticIntegerField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -511,7 +573,8 @@ public class XHelpers {
     }
 
     public static Integer getStaticIntegerField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticIntField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.getInt(null);
@@ -520,7 +583,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Long getStaticLongField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -532,7 +595,8 @@ public class XHelpers {
     }
 
     public static Long getStaticLongField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticLongField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.getLong(null);
@@ -541,7 +605,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static Short getStaticShortField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -553,7 +617,8 @@ public class XHelpers {
     }
 
     public static Short getStaticShortField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticShortField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.getShort(null);
@@ -562,7 +627,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return null;
+        return null;*/
     }
 
     public static char getStaticCharField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -574,7 +639,8 @@ public class XHelpers {
     }
 
     public static char getStaticCharField(Class<?> clazz, String fieldName) {
-        Field field = findField(clazz, fieldName);
+        return XposedHelpers.getStaticCharField(clazz, fieldName);
+        /*Field field = findField(clazz, fieldName);
         if (field != null) {
             try {
                 return field.getChar(null);
@@ -583,11 +649,12 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
-        return 0;
+        return 0;*/
     }
 
     public static Object callMethod(Object treat, String methodName, Object... args) {
-        Method method = newMethod(treat.getClass(), methodName, args);
+        return XposedHelpers.callMethod(treat, methodName, args);
+        /*Method method = newMethod(treat.getClass(), methodName, args);
         if (method != null) {
             try {
                 return method.invoke(treat, args);
@@ -596,7 +663,7 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]私有方法[%s]-匹配未成功", treat.getClass().getSimpleName(), methodName));
-        return null;
+        return null;*/
     }
 
     public static Object callStaticMethod(String clazzName, ClassLoader classLoader, String methodName, Object... args) {
@@ -630,7 +697,8 @@ public class XHelpers {
     }
 
     public static Object newInstance(Class<?> clazz, Object... args) {
-        Constructor constructor = newClass(clazz, args);
+        return XposedHelpers.newInstance(clazz, args);
+        /*Constructor constructor = newClass(clazz, args);
         if (constructor != null) {
             try {
                 return constructor.newInstance(args);
@@ -639,6 +707,6 @@ public class XHelpers {
             }
         }
         Const.hookLog.e("XHelpers", String.format("类[%s]-匹配未成功", clazz.getSimpleName()));
-        return null;
+        return null;*/
     }
 }

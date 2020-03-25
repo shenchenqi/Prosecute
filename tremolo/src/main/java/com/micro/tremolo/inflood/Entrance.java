@@ -74,6 +74,11 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     public void execute() {
+        if (account != null) {
 
+        }
+        if (author != null) {
+            author.test();
+        }
     }
 }
