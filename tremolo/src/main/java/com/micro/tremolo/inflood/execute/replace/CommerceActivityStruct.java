@@ -30,7 +30,7 @@ public class CommerceActivityStruct {
     }
 
     public void loadCommerceActivityStruct(Hook hook, Object commerce) {
-        logger.d("CommerceActivityStruct", String.format("当前抓取的抖音商业活动结构对象是否存在[%s]", commerce == null));
+        logger.d("CommerceActivityStruct", String.format("当前抓取的抖音商业活动结构对象是否存在[%s]", commerce != null));
         if (commerce == null) {
             return;
         }

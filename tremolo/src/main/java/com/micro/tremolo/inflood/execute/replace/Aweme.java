@@ -1,6 +1,5 @@
 package com.micro.tremolo.inflood.execute.replace;
 
-import com.alibaba.fastjson.JSON;
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
@@ -199,14 +198,14 @@ public class Aweme {
     }
 
     public void loadAweme(Hook hook, Object aweme) {
-        logger.d("Aweme", String.format("当前抓取的视频对象是否存在[%s]", aweme == null));
+        logger.d("Aweme", String.format("当前抓取的视频对象是否存在[%s]", aweme != null));
         if (aweme == null) {
             return;
         }
         this.activityId = getActivityId(hook, aweme);
         //logger.d("Aweme", String.format("activityId[%s]", activityId));
         this.activityPendant = new CommerceActivityStruct(hook, getActivityPendant(hook, aweme));
-        //logger.d("Aweme", String.format("activityPendant[%s]", activityPendant));
+        //logger.d("Aweme", String.format("activityPendant[%s]", JSON.toJSONString(activityPendant)));
         this.adAwemeSource = getAdAwemeSource(hook, aweme);
         //logger.d("Aweme", String.format("adAwemeSource[%s]", adAwemeSource));
         this.adDescHandle = isAdDescHandle(hook, aweme);

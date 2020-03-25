@@ -232,7 +232,7 @@ public class User {
     }
 
     public void loadUser(Hook hook, Object user) {
-        logger.d("User", String.format("当前抓取的抖音用户对象是否存在[%s]", user == null));
+        logger.d("User", String.format("当前抓取的抖音用户对象是否存在[%s]", user != null));
         if (user == null) {
             return;
         }

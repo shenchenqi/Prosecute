@@ -25,7 +25,7 @@ public class UrlModel {
     }
 
     public void loadUrlModel(Hook hook, Object urlModel) {
-        logger.d("AwemeStatistics", String.format("当前抓取的视频链接数据对象是否存在[%s]", urlModel == null));
+        logger.d("AwemeStatistics", String.format("当前抓取的视频链接数据对象是否存在[%s]", urlModel != null));
         if (urlModel == null) {
             return;
         }

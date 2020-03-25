@@ -8,7 +8,21 @@ import com.micro.tremolo.inflood.version.TremoloParam;
 public class V960 extends TremoloParam {
 
     public V960() {
+        mainClass();
+        feedClass();
         awemeClass();
+    }
+
+    @Override
+    protected void mainClass() {
+        AWEME_MAIN_CLASS = "com.ss.android.ugc.aweme.main.MainActivity";
+        AWEME_VIDEO_CHANGE_METHOD = "onVideoPageChangeEvent";
+    }
+
+    @Override
+    protected void feedClass() {
+        AWEME_FEED_VIDEO_CLASS = "com.ss.android.ugc.aweme.feed.e.ae";
+        AWEME_FEED_MODEL_AWEME_FIELD = "a";
     }
 
     @Override

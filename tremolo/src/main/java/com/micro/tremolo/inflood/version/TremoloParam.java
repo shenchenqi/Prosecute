@@ -17,6 +17,16 @@ public abstract class TremoloParam {
         }
     }
 
+    protected abstract void mainClass();
+
+    public static String AWEME_MAIN_CLASS;
+    public static String AWEME_VIDEO_CHANGE_METHOD;
+
+    protected abstract void feedClass();
+
+    public static String AWEME_FEED_VIDEO_CLASS;
+    public static String AWEME_FEED_MODEL_AWEME_FIELD;
+
     protected abstract void awemeClass();
 
     public static String AWEME_FEED_MODEL_AWEME_CLASS;

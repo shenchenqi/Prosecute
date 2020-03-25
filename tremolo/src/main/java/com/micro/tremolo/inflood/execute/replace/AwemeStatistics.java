@@ -24,7 +24,7 @@ public class AwemeStatistics {
     }
 
     public void loadAwemeStatistics(Hook hook, Object awemeStatistics) {
-        logger.d("AwemeStatistics", String.format("当前抓取的视频统计数据对象是否存在[%s]", awemeStatistics == null));
+        logger.d("AwemeStatistics", String.format("当前抓取的视频统计数据对象是否存在[%s]", awemeStatistics != null));
         if (awemeStatistics == null) {
             return;
         }
