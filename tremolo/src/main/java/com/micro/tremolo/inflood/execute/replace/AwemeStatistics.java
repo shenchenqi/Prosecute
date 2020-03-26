@@ -7,6 +7,7 @@ import static com.micro.tremolo.inflood.TremoloModule.logger;
 /**
  * @Author Kilin
  * @Date 2020/3/25 10:26
+ * @Source 抖音版本960 com.ss.android.ugc.aweme.feed.model.AwemeStatistics
  */
 public class AwemeStatistics {
     private String aid;

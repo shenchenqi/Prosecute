@@ -1,15 +1,12 @@
 package com.micro.tremolo.inflood;
 
-import com.alibaba.fastjson.JSON;
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
-import com.micro.root.Logger;
-import com.micro.tremolo.inflood.execute.PluginDeploy;
 import com.micro.tremolo.inflood.execute.item.account.Account;
 import com.micro.tremolo.inflood.execute.item.author.Author;
-import com.micro.tremolo.inflood.execute.replace.Logcat;
+import com.micro.tremolo.inflood.execute.other.Logcat;
 import com.micro.tremolo.inflood.mvp.EntranceInter;
 import com.micro.tremolo.inflood.mvp.EntrancePresenter;
 import com.micro.tremolo.inflood.version.TremoloParam;

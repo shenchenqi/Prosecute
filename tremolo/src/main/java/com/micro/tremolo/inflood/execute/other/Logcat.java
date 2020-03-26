@@ -1,4 +1,4 @@
-package com.micro.tremolo.inflood.execute.replace;
+package com.micro.tremolo.inflood.execute.other;
 
 import com.micro.hook.config.Hook;
 import com.micro.root.Logger;

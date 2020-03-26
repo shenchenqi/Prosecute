@@ -9,6 +9,7 @@ import static com.micro.tremolo.inflood.TremoloModule.logger;
 /**
  * @Author Kilin
  * @Date 2020/3/25 11:01
+ * @Source 抖音版本960 com.ss.android.ugc.aweme.commerce.model.b
  */
 public class CommerceActivityStruct {
     private int actType;

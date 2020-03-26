@@ -1,6 +1,5 @@
 package com.micro.tremolo.inflood.execute.replace;
 
-import com.alibaba.fastjson.JSON;
 import com.micro.hook.config.Hook;
 
 import java.util.List;
@@ -10,6 +9,7 @@ import static com.micro.tremolo.inflood.TremoloModule.logger;
 /**
  * @Author Kilin
  * @Date 2020/3/25 11:03
+ * @Source 抖音版本960 com.ss.android.ugc.aweme.base.model.UrlModel
  */
 public class UrlModel {
     private String fileHash;

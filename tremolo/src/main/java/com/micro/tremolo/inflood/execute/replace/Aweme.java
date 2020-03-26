@@ -5,6 +5,7 @@ import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class Aweme {
     private boolean enableTopView = true;
     private int externalType;
     private String extra;
-    private List<Object> familiarRecommendUser;//User.class
+    private List<User> familiarRecommendUser;//User.class
     private long feedCount;
     private Object feedRelationLabel;//RelationLabelNew.class
     private Object floatingCardInfo;//FloatingCardInfo.class
@@ -280,7 +281,7 @@ public class Aweme {
         //logger.d("Aweme", String.format("externalType[%s]", externalType));
         this.extra = getExtra(hook, aweme);
         //logger.d("Aweme", String.format("extra[%s]", extra));
-        this.familiarRecommendUser = (List<Object>) getFamiliarRecommendUser(hook, aweme);
+        this.familiarRecommendUser = getFamiliarRecommendUser(hook, aweme);
         //logger.d("Aweme", String.format("familiarRecommendUser[%s]", familiarRecommendUser));
         this.feedCount = getFeedCount(hook, aweme);
         //logger.d("Aweme", String.format("feedCount[%s]", feedCount));
@@ -660,7 +661,7 @@ public class Aweme {
         return extra;
     }
 
-    public List<Object> getFamiliarRecommendUser() {
+    public List<User> getFamiliarRecommendUser() {
         return familiarRecommendUser;
     }
 
@@ -1260,8 +1261,16 @@ public class Aweme {
         return (String) hook.getField(aweme, "extra");
     }
 
-    private List<?> getFamiliarRecommendUser(Hook hook, Object aweme) {
-        return (List<?>) hook.getField(aweme, "familiarRecommendUser");
+    private List<User> getFamiliarRecommendUser(Hook hook, Object aweme) {
+        List<User> users = new ArrayList<>();
+        List<Object> objects = (List<Object>) hook.getField(aweme, "familiarRecommendUser");
+        if (objects != null) {
+            for (Object object : objects) {
+                User user = new User(hook, object);
+                users.add(user);
+            }
+        }
+        return users;
     }
 
     private long getFeedCount(Hook hook, Object aweme) {
