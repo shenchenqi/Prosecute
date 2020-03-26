@@ -1,5 +1,6 @@
 package com.micro.hook.setup;
 
+import com.micro.hook.BuildConfig;
 import com.micro.hook.config.HookParam;
 
 /**
@@ -34,7 +35,9 @@ public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> i
         log();
         executeSQL();
         config();
-        test();
+        if (BuildConfig.DEBUG) {
+            test();
+        }
         execute();
     }
 

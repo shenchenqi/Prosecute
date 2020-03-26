@@ -1,66 +1,101 @@
 package com.micro.task;
 
-import com.micro.root.Logger;
+import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 
 /**
  * created by kilin on 20-3-18 上午11:03
  */
 public abstract class PluginTask implements Runnable {
 
-    private static final Logger logger = Logger.getLogger("PluginLog");
+    private final String taskName;
+    private final long timeout;
+    private final boolean isCycle;
+    private final boolean isSingle;
 
-    //private final TaskProcess taskProcess;
+    protected PluginTask() {
+        this.taskName = taskName();
+        this.timeout = timeout();
+        this.isCycle = isCycleConfig();
+        this.isSingle = isSingleConfig();
+    }
 
-    public PluginTask() {
-        //super(null);
-        //taskProcess = new TaskProcess();
+    protected abstract String taskName();
+
+    protected long timeout() {
+        return 60 * 1000L;
+    }
+
+    protected boolean isCycleConfig() {
+        return false;
+    }
+
+    protected boolean isSingleConfig() {
+        return false;
+    }
+
+    public boolean isCycle() {
+        return isCycle;
+    }
+
+    public boolean isSingle() {
+        return isSingle;
+    }
+
+    private long startTime;
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public boolean isTimeOut() {
+        return startTime > 0 && System.currentTimeMillis() > startTime + timeout;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    private Future future;
+    private Semaphore semaphore;
+
+    public Future getFuture() {
+        return future;
+    }
+
+    public void setFuture(Future future) {
+        this.future = future;
+    }
+
+    public Semaphore getSemaphore() {
+        return semaphore;
+    }
+
+    public void setSemaphore(Semaphore semaphore) {
+        this.semaphore = semaphore;
     }
 
     @Override
     public void run() {
-        execute();
-    }
-
-    protected abstract void execute();
-
-    /*protected void executeSingleThread() {
-        executeOnExecutor(taskProcess.singleExecutor);
-    }
-
-    protected void executeCachedThread() {
-        executeOnExecutor(taskProcess.cachedExecutor);
-    }
-
-    @Override
-    protected void preExecute() {
-        super.preExecute();
-    }
-
-    @Override
-    protected Object asyncRun(Object[] objects) {
-        run();
-        return null;
-    }
-
-    protected abstract void run();
-
-    @Override
-    protected void postExecute(Object object) {
-        super.postExecute(object);
-    }
-
-    private static class TaskProcess {
-        private Executor cachedExecutor, singleExecutor;
-
-        TaskProcess() {
-            Thread.UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(Thread thread, Throwable throwable) {
-                    logger.e(throwable, thread.getName(), "任务执行异常");
-                }
-            };
-            singleExecutor = Executors.newSingleThreadExecutor(new BasicThreadFactory.Builder().uncaughtExceptionHandler(uncaughtExceptionHandler).build());
-            cachedExecutor = Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern("plugin-%d").uncaughtExceptionHandler(uncaughtExceptionHandler).build());
+        try {
+            process();
+        } catch (Throwable e) {
+            error(e);
+        } finally {
+            if (semaphore != null) {
+                semaphore.release();
+            }
+            finish(true);
         }
-    }*/
+    }
+
+    protected abstract void process();
+
+    protected abstract void error(Throwable throwable);
+
+    public abstract void finish(boolean success);
 }

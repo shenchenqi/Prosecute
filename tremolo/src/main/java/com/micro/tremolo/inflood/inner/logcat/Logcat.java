@@ -26,7 +26,7 @@ public class Logcat {
         this.threadId = getThreadId(hook, msg);
         this.isLooperMain = isLooperMain(hook, msg);
         this.object = getMsg(hook, msg);
-        logger.i(String.format("tag[%s], status[%s], type[%s], threadId[%s], isLooperMain[%s] \n content[%s] \n msg[%s]", tag, status, type, threadId, isLooperMain, content, object.toString()));
+        logger.i(String.format("tag[%s], status[%s], type[%s], threadId[%s], isLooperMain[%s] \n content[%s] \n msg[%s]", tag, status, type, threadId, isLooperMain, content, object == null ? "" : object.toString()));
     }
 
     private int getStatus(Hook hook, Object msg) {

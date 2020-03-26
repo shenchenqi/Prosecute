@@ -14,6 +14,7 @@ public abstract class Plugin<P extends PluginPresenter<I>, I extends PluginInter
     protected final P presenter;
 
     protected Plugin(Hook hook, Context context) throws Throwable {
+        super();
         this.hook = hook;
         this.presenter = getPresenter();
         if (this.presenter != null) {

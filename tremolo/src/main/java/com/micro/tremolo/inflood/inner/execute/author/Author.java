@@ -15,7 +15,7 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
 
     public Author(Hook hook, Context context) throws Throwable {
         super(hook, context);
-        logger.i("博主初始化");
+        logger.i("作者初始化");
     }
 
     @Override
@@ -29,7 +29,22 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
     }
 
     @Override
-    protected void execute() {
-        monitor(getHook());
+    protected String taskName() {
+        return Author.class.getSimpleName();
+    }
+
+    @Override
+    protected void process() {
+
+    }
+
+    @Override
+    protected void error(Throwable throwable) {
+
+    }
+
+    @Override
+    public void finish(boolean success) {
+        logger.i(String.format("作者任务[%s]", success));
     }
 }
