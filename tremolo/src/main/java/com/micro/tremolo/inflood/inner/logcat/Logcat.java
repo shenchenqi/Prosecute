@@ -1,4 +1,4 @@
-package com.micro.tremolo.inflood.execute.other;
+package com.micro.tremolo.inflood.inner.logcat;
 
 import com.micro.hook.config.Hook;
 import com.micro.root.Logger;

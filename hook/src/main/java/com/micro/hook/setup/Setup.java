@@ -34,6 +34,7 @@ public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> i
         log();
         executeSQL();
         config();
+        test();
         execute();
     }
 
@@ -42,6 +43,8 @@ public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> i
     protected abstract void executeSQL();
 
     protected abstract void config();
+
+    protected abstract void test();
 
     protected abstract void execute();
 }
