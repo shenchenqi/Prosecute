@@ -2,6 +2,7 @@ package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class User {
     private long fbExpireTime;
     private int followStatus;
     private int followerCount; //关注数
-    private List<Object> followerDetailList;//FollowerDetail.class 关注者列表
+    private List<FollowerDetail> followerDetailList;//FollowerDetail.class 关注者列表
     private int followerStatus;
     private int followingCount;//关注
     private boolean forcePrivateAccount;
@@ -351,7 +352,7 @@ public class User {
         //logger.d("User", String.format("followStatus[%s]", followStatus));
         this.followerCount = getFollowerCount(hook, user);
         //logger.d("User", String.format("followerCount[%s]", followerCount));
-        this.followerDetailList = (List<Object>) getFollowerDetailList(hook, user);
+        this.followerDetailList = getFollowerDetailList(hook, user);
         //logger.d("User", String.format("followerDetailList[%s]", JSON.toJSONString(followerDetailList)));
         this.followerStatus = getFollowerStatus(hook, user);
         //logger.d("User", String.format("followerStatus[%s]", followerStatus));
@@ -891,7 +892,7 @@ public class User {
         return followerCount;
     }
 
-    public List<Object> getFollowerDetailList() {
+    public List<FollowerDetail> getFollowerDetailList() {
         return followerDetailList;
     }
 
@@ -1933,8 +1934,16 @@ public class User {
         return hook.getIntegerField(user, "followerCount");
     }
 
-    private List<?> getFollowerDetailList(Hook hook, Object user) {//List<FollowerDetail>
-        return (List<?>) hook.getField(user, "followerDetailList");
+    private List<FollowerDetail> getFollowerDetailList(Hook hook, Object user) {//List<FollowerDetail>
+        List<FollowerDetail> followerDetails = new ArrayList<>();
+        List<Object> objects = (List<Object>) hook.getField(user, "followerDetailList");
+        if (objects != null) {
+            for (Object object : objects) {
+                FollowerDetail followerDetail = new FollowerDetail(hook, object);
+                followerDetails.add(followerDetail);
+            }
+        }
+        return followerDetails;
     }
 
     private Integer getFollowerStatus(Hook hook, Object user) {

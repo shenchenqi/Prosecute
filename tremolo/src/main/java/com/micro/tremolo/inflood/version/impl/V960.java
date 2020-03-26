@@ -11,6 +11,7 @@ public class V960 extends TremoloParam {
         mainClass();
         feedClass();
         awemeClass();
+        userClass();
     }
 
     @Override
@@ -33,5 +34,10 @@ public class V960 extends TremoloParam {
         AWEME_UPDATE_METHOD = "update";
         AWEME_CLONE_METHOD = "clone";
         AWEME_TO_STRING_METHOD = "toString";
+    }
+
+    @Override
+    protected void userClass() {
+        AWEME_PROFILE_USER_CLASS = "com.ss.android.ugc.aweme.profile.model.User";
     }
 }

@@ -35,4 +35,8 @@ public abstract class TremoloParam {
     public static String AWEME_UPDATE_METHOD;
     public static String AWEME_CLONE_METHOD;
     public static String AWEME_TO_STRING_METHOD;
+
+    protected abstract void userClass();
+
+    public static String AWEME_PROFILE_USER_CLASS;
 }

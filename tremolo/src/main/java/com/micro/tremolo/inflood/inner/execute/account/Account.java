@@ -2,15 +2,10 @@ package com.micro.tremolo.inflood.inner.execute.account;
 
 import android.content.Context;
 
-import com.alibaba.fastjson.JSON;
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.micro.tremolo.inflood.TremoloModule.logger;
+import static com.micro.tremolo.inflood.inner.execute.Deploy.logger;
 
 /**
  * created by kilin on 20-3-18 上午10:21
@@ -29,6 +24,7 @@ public class Account extends Plugin<AccountPresenter, AccountInter> implements A
 
     @Override
     public void monitor(Hook hook) {
+
     }
 
     @Override
@@ -49,5 +45,10 @@ public class Account extends Plugin<AccountPresenter, AccountInter> implements A
     @Override
     public void finish(boolean success) {
         logger.i(String.format("账户任务[%s]", success));
+    }
+
+    @Override
+    public void loadAccount() {
+
     }
 }

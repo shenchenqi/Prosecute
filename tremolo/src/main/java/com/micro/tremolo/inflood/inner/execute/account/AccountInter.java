@@ -7,4 +7,5 @@ import com.micro.hook.plugin.PluginInter;
  */
 public interface AccountInter extends PluginInter {
 
+    void loadAccount();
 }

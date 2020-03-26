@@ -10,4 +10,18 @@ public class AccountPresenter extends PluginPresenter<AccountInter> {
     public void onAttached() {
 
     }
+
+    private Object accountInfo;
+
+    public Object getAccountInfo() {
+        return accountInfo;
+    }
+
+    public void setAccountInfo(Object accountInfo) {
+        this.accountInfo = accountInfo;
+    }
+
+    /*public void obtainAuthor(User user){
+        getClazz().loadUser(user);
+    }*/
 }
