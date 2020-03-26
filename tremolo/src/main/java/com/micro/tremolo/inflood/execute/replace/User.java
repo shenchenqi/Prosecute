@@ -22,7 +22,7 @@ public class User {
     private int allowStatus;
     private long authorityStatus;
     private Object avatarDecoration;//AvatarDecoration.class
-    private UrlModel avatarLarger;//UrlModel.class
+    private UrlModel avatarLarger;//UrlModel.class 头像
     private UrlModel avatarMedium;//UrlModel.class 中等头像
     private UrlModel avatarPendantLarger;//UrlModel.class
     private UrlModel avatarPendantMedium;//UrlModel.class
@@ -30,7 +30,7 @@ public class User {
     private UrlModel avatarThumb;//UrlModel.class 小头像
     private boolean avatarUpdateReminder;
     private UrlModel avatarVideoUri;//UrlModel.class
-    private int awemeCount;
+    private int awemeCount;//作品数
     private Object awemeCover;//UserAwemeCover.class
     private String bindPhone;
     private String bioEmail;
@@ -58,7 +58,7 @@ public class User {
     private String customVerify;//官方认证
     private boolean displayWvalantineActivityEntry;
     private String district;
-    private int dongtai_count;
+    private int dongtai_count;//动态数
     private int douPlusShareLocation;
     private int downloadSetting;
     private int duetSetting;
@@ -68,13 +68,13 @@ public class User {
     private String enrollYear;
     private String enterpriseVerifyReason;//企业认证
     private int fansCount; //粉丝数
-    private int favoritingCount; //获赞数
+    private int favoritingCount; //喜欢数
     private long fbExpireTime;
     private int followStatus;
     private int followerCount; //关注数
     private List<Object> followerDetailList;//FollowerDetail.class 关注者列表
     private int followerStatus;
-    private int followingCount;
+    private int followingCount;//关注
     private boolean forcePrivateAccount;
     private int gender;
     private String googleAccount;

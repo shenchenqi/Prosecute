@@ -54,9 +54,13 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
                         aweme.getAid(), aweme.getDesc(), aweme.getCreateTime(), aweme.getShareUrl(),
                         statistics.getCommentCount(), statistics.getDiggCount(), statistics.getDownloadCount(), statistics.getShareCount()));
                 User author = aweme.getAuthor();
-                logger.d(String.format("用户信息：{用户Id[%s], 昵称[%s], 抖音号[%s > %s], 签名[%s], 官方认证[%s]，企业认证[%s]，请求ID[%s]}",
-                        author.getUid(), author.getNickname(), author.getUniqueId(), author.getShortId(), author.getSignature(),
-                        author.getCustomVerify(), author.getEnterpriseVerifyReason(), author.getRequestId()));
+                logger.d(String.format("用户信息：{用户Id[%s], 昵称[%s], 抖音号[%s > %s], 生日[%s], 城市[%s]，国籍[%s]，地区[%s]}",
+                        author.getUid(), author.getNickname(), author.getUniqueId(), author.getShortId(), author.getBirthday(), author.getCity(), author.getCountry(), author.getDistrict()));
+                logger.d(String.format("签名[%s], 官方认证[%s]，企业认证[%s]，请求ID[%s]}",
+                        author.getSignature(), author.getCustomVerify(), author.getEnterpriseVerifyReason(), author.getRequestId()));
+                UrlModel avatarLarger = author.getAvatarLarger();
+                logger.d(String.format("用户头像：{高[%s], 宽[%s], uri[%s], urlKey[%s], 网址列表[%s]}",
+                        avatarLarger.getHeight(), avatarLarger.getWidth(), avatarLarger.getUri(), avatarLarger.getUrlKey(), JSON.toJSONString(avatarLarger.getUrlList())));
                 UrlModel avatarMedium = author.getAvatarMedium();
                 logger.d(String.format("用户中等头像：{高[%s], 宽[%s], uri[%s], urlKey[%s], 网址列表[%s]}",
                         avatarMedium.getHeight(), avatarMedium.getWidth(), avatarMedium.getUri(), avatarMedium.getUrlKey(), JSON.toJSONString(avatarMedium.getUrlList())));
