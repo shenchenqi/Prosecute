@@ -92,8 +92,9 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     protected void test() {
-        //TestHook.testMainFragment(getHookParam().getHook());
-        TestHook.testProfileApi(getHookParam().getHook());
+        //TestHook.testMain(getHookParam().getHook());
+        TestHook.testApi(getHookParam().getHook());
+        TestHook.testUser(getHookParam().getHook());
     }
 
     @Override

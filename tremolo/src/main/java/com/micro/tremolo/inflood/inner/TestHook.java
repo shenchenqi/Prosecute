@@ -5,11 +5,14 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.root.Logger;
+import com.micro.tremolo.inflood.inner.execute.author.Author;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.version.TremoloParam;
+
+import java.util.Map;
 
 /**
  * @Author Kilin
@@ -19,7 +22,7 @@ public class TestHook {
 
     private static final Logger logger = Logger.getLogger("Test-Log");
 
-    public static void testMainFragment(final Hook hook) {
+    public static void testMain(final Hook hook) {
         hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_VIDEO_CHANGE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
@@ -54,7 +57,25 @@ public class TestHook {
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
     }
 
-    public static void testProfileApi(final Hook hook) {
+    public static void testApi(final Hook hook) {
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.ProfileServiceImpl.a", "call", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                Object object = param.getThisObject();
+                String b = (String) hook.getField(object, "b");
+                String c = (String) hook.getField(object, "c");
+                String d = (String) hook.getField(object, "d");
+                logger.d(String.format("%s,%s,%s", b, c, d));
+            }
+        });
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.api.ProfileApi", "b", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.d(String.format("%s - %s", JSON.toJSONString(param.getArgs()), param.getResult()));
+            }
+        }, String.class, String.class, int.class);
         hook.methodMonitor("com.ss.android.ugc.aweme.profile.api.ProfileApi", "b", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
@@ -95,5 +116,44 @@ public class TestHook {
                         author.getXmasUnlockCount(), author.getDongtai_count()));
             }
         }, String.class, boolean.class, String.class);
+        hook.methodMonitor("com.ss.android.ugc.aweme.common.a", "sendRequest", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.d(String.format("sendRequest : %s", JSON.toJSONString(param.getArgs())));
+            }
+        }, Object[].class);
+    }
+
+    public static void testUser(final Hook hook) {
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.presenter.ai", "b", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                Object b = hook.getField(param.getThisObject(), "b");
+                Object d = hook.getField(param.getThisObject(), "d");
+                Object e = hook.getField(param.getThisObject(), "e");
+                int f = hook.getIntegerField(param.getThisObject(), "f");
+                logger.d(String.format("准备的数据： %s, %s, %s, %s", b, d, e, f));
+                Object h = hook.getField(param.getThisObject(), "h");
+                Object data = hook.callMethod(h, "getData");
+                Object getUser = JSON.toJSONString(hook.callMethod(data, "getUser"));
+                logger.d(JSON.toJSONString(getUser));
+            }
+        });
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.ui.UserProfileFragment", "a", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.d(" >>>>" + JSON.toJSONString(param.getArgs()));
+            }
+        }, String.class, Map.class);
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.ui.UserProfileFragment", "onAntiCrawlerEvent", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.d("Crawler >>>>" + JSON.toJSONString(param.getArgs()));
+            }
+        }, hook.findClass("com.ss.android.ugc.aweme.base.a.a"));
     }
 }

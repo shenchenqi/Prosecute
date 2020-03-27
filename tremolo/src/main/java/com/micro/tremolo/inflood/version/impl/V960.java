@@ -38,6 +38,8 @@ public class V960 extends TremoloParam {
 
     @Override
     protected void userClass() {
+        AWEME_PROFILE_USER_FRAGMENT_CLASS = "com.ss.android.ugc.aweme.profile.ui.UserProfileFragment";
+        AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD = "a";
         AWEME_PROFILE_USER_CLASS = "com.ss.android.ugc.aweme.profile.model.User";
     }
 }

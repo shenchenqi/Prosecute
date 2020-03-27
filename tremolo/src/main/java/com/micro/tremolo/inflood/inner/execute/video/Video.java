@@ -47,7 +47,7 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
         Aweme.update(hook, new Aweme.Callback() {
             @Override
             public void loadData(Aweme aweme, String msg) {
-                logger.i(String.format("视频信息 [%s]", msg));
+                //logger.i(String.format("视频信息 [%s]", msg));
                 presenter.obtainVideo(aweme);
             }
         });
@@ -79,6 +79,6 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
         logger.i(String.format("当前视频信息：{视频Id[%s], 标题[%s], 创建时间[%s], 分享链接[%s], 评论数[%s], 爱心数[%s], 下载数[%s], 分享数[%s]}",
                 aweme.getAid(), aweme.getDesc(), aweme.getCreateTime(), aweme.getShareUrl(),
                 statistics.getCommentCount(), statistics.getDiggCount(), statistics.getDownloadCount(), statistics.getShareCount()));
-        Author.loadStaticUser(aweme.getAuthor());
+        //Author.loadStaticUser(aweme.getAuthor());
     }
 }
