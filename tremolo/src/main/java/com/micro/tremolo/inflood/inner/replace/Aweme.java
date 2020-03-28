@@ -187,7 +187,7 @@ public class Aweme {
     private List<Object> uniqidPosition;//Position.class
     private String uploadMiscInfoStructStr;
     private int userDigg;
-    private Object video;//Video.class
+    private Video video;//Video.class
     private Object videoControl;//VideoControl.class
     private List<Object> videoLabels;//AwemeLabelModel.class
     private boolean withPromotionalMusic;
@@ -1085,7 +1085,7 @@ public class Aweme {
         return userDigg;
     }
 
-    public Object getVideo() {
+    public Video getVideo() {
         return video;
     }
 
@@ -1693,8 +1693,8 @@ public class Aweme {
         return hook.getIntegerField(aweme, "userDigg");
     }
 
-    private Object getVideo(Hook hook, Object aweme) {
-        return hook.getField(aweme, "video");
+    private Video getVideo(Hook hook, Object aweme) {
+        return new Video(hook, hook.getField(aweme, "video"));
     }
 
     private Object getVideoControl(Hook hook, Object aweme) {

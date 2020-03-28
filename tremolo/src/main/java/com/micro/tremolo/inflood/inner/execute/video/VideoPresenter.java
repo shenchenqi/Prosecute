@@ -1,7 +1,17 @@
 package com.micro.tremolo.inflood.inner.execute.video;
 
+import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.PluginPresenter;
+import com.micro.tremolo.inflood.inner.execute.Deploy;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
+import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
+import com.micro.tremolo.inflood.inner.replace.User;
+import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
+import com.micro.tremolo.sqlite.DataTable;
+import com.micro.tremolo.sqlite.table.VideoModelTable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author Kilin
@@ -23,7 +33,113 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
         this.itemVideoInfo = itemVideoInfo;
     }
 
-    public void obtainVideo(Aweme aweme){
-        getClazz().loadVideo(aweme);
+    public void obtainVideoItem(Aweme aweme) {
+        getClazz().loadVideoItem(aweme);
+    }
+
+    public void obtainVideoList(Hook hook, List<Object> list) {
+        if (list != null) {
+            List<Aweme> awemeList = new ArrayList<>();
+            for (Object object : list) {
+                Aweme aweme = new Aweme(hook, object);
+                awemeList.add(aweme);
+            }
+            getClazz().loadVideoList(awemeList);
+        }
+    }
+
+    public void saveVideoTableList(List<Aweme> awemeList) {
+        for (Aweme aweme : awemeList) {
+            saveVideoTableItem(aweme);
+        }
+    }
+
+    public synchronized void saveVideoTableItem(Aweme aweme) {
+        /*VideoModelTable videoTable = DataTable.getDataItem(VideoModelTable.class, new String[]{"id = ?", aweme.getAid()});
+        if (videoTable == null) {
+            videoTable = loadVideoTable(aweme);
+        } else if (videoTable.getUpdate() == -3) {
+            User user = aweme.getAuthor();
+            if (user != null) {
+                videoTable.setUserId(user.getUid());
+                videoTable.setNickname(user.getNickname());
+            } else {
+                videoTable.setUpdate(-3);
+            }
+            if (videoTable.getUpdate() == 0 || videoTable.getUpdate() == 2) {
+                videoTable.setUpdate(1);
+            }
+        } else if (videoTable.getUpdate() == -2) {
+            com.micro.tremolo.inflood.inner.replace.Video video = aweme.getVideo();
+            if (video != null) {
+                VideoUrlModel videoUrlModel = video.getPlayAddr();
+                if (videoUrlModel != null) {
+                    videoTable.setUrlList(videoUrlModel.getUrlList());
+                } else {
+                    videoTable.setUpdate(-2);
+                }
+            } else {
+                videoTable.setUpdate(-2);
+            }
+            if (videoTable.getUpdate() == 0 || videoTable.getUpdate() == 2) {
+                videoTable.setUpdate(1);
+            }
+        } else if (videoTable.getUpdate() == -1) {
+            AwemeStatistics statistics = aweme.getStatistics();
+            if (statistics != null) {
+                videoTable.setCommentCount(statistics.getCommentCount());
+                videoTable.setDiggCount(statistics.getDiggCount());
+                videoTable.setDownloadCount(statistics.getDownloadCount());
+                videoTable.setShareCount(statistics.getShareCount());
+            } else {
+                videoTable.setUpdate(-1);
+            }
+            if (videoTable.getUpdate() == 0 || videoTable.getUpdate() == 2) {
+                videoTable.setUpdate(1);
+            }
+        }
+        Deploy.logger.d(videoTable.toString());
+        DataTable.saveOrUpdate(videoTable, "id=?", videoTable.getId());*/
+        VideoModelTable videoTable = loadVideoTable(aweme);
+        Deploy.logger.d(videoTable.toString());
+    }
+
+    private synchronized VideoModelTable loadVideoTable(Aweme aweme) {
+        VideoModelTable videoTable = new VideoModelTable();
+        videoTable.setId(aweme.getAid());
+        videoTable.setTitle(aweme.getDesc());
+        videoTable.setCreateTime(aweme.getCreateTime());
+        videoTable.setShareUrl(aweme.getShareUrl());
+        AwemeStatistics statistics = aweme.getStatistics();
+        if (statistics != null) {
+            videoTable.setCommentCount(statistics.getCommentCount());
+            videoTable.setDiggCount(statistics.getDiggCount());
+            videoTable.setDownloadCount(statistics.getDownloadCount());
+            videoTable.setShareCount(statistics.getShareCount());
+        } else {
+            videoTable.setUpdate(-1);
+        }
+        com.micro.tremolo.inflood.inner.replace.Video video = aweme.getVideo();
+        if (video != null) {
+            VideoUrlModel videoUrlModel = video.getPlayAddr();
+            if (videoUrlModel != null) {
+                videoTable.setUrlList(videoUrlModel.getUrlList());
+            } else {
+                videoTable.setUpdate(-2);
+            }
+        } else {
+            videoTable.setUpdate(-2);
+        }
+        User user = aweme.getAuthor();
+        if (user != null) {
+            videoTable.setUserId(user.getUid());
+            videoTable.setNickname(user.getNickname());
+        } else {
+            videoTable.setUpdate(-3);
+        }
+        if (videoTable.getUpdate() == 0) {
+            videoTable.setUpdate(1);
+        }
+        return videoTable;
     }
 }

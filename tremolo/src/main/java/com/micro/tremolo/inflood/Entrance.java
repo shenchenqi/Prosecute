@@ -14,6 +14,8 @@ import com.micro.tremolo.inflood.mvp.EntranceInter;
 import com.micro.tremolo.inflood.mvp.EntrancePresenter;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
+import org.litepal.LitePal;
+
 import static com.micro.tremolo.inflood.TremoloModule.logger;
 
 /**
@@ -82,6 +84,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     public void config() {
         logger.i(TAG, "config", "配置");
         try {
+            /*LitePal.initialize(getHookParam().getApplication());*/
             account = new Account(getHookParam().getHook(), getHookParam().getApplication());
             author = new Author(getHookParam().getHook(), getHookParam().getApplication());
             video = new Video(getHookParam().getHook(), getHookParam().getApplication());
@@ -93,8 +96,8 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     @Override
     protected void test() {
         //TestHook.testMain(getHookParam().getHook());
-        TestHook.testApi(getHookParam().getHook());
-        TestHook.testUser(getHookParam().getHook());
+        //TestHook.testApi(getHookParam().getHook());
+        //TestHook.testUser(getHookParam().getHook());
     }
 
     @Override

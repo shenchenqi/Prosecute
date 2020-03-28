@@ -41,4 +41,10 @@ public abstract class TremoloParam {
     public static String AWEME_PROFILE_USER_FRAGMENT_CLASS;
     public static String AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD;
     public static String AWEME_PROFILE_USER_CLASS;
+
+    protected abstract void callClass();
+
+    public static String AWEME_PROFILE_VIDEO_CALL_CLASS;
+    public static String AWEME_PROFILE_VIDEO_CALL_REQUEST_METHOD;
+    public static String AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD;
 }

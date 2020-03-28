@@ -12,7 +12,10 @@ import com.micro.tremolo.inflood.inner.replace.UrlModel;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
+import java.util.List;
 import java.util.Map;
+
+import static com.micro.tremolo.inflood.inner.execute.Deploy.logger;
 
 /**
  * @Author Kilin
@@ -58,6 +61,21 @@ public class TestHook {
     }
 
     public static void testApi(final Hook hook) {
+        hook.classMonitor("com.ss.android.ugc.aweme.feed.model.FeedItemList", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.d(String.format("FeedItemList[%s]", JSON.toJSONString(param.getThisObject())));
+            }
+        });
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.viewmodel.MediaMixListViewModel.a", "a", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.d(String.format("请求[%s]", JSON.toJSONString(param.getArgs())));
+                logger.d(String.format("返回数据[%s]", JSON.toJSONString(param.getResult())));
+            }
+        }, String.class, String.class, int.class, long.class);
         hook.methodMonitor("com.ss.android.ugc.aweme.profile.ProfileServiceImpl.a", "call", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
@@ -123,6 +141,30 @@ public class TestHook {
                 logger.d(String.format("sendRequest : %s", JSON.toJSONString(param.getArgs())));
             }
         }, Object[].class);
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.presenter.b", "a", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.d(String.format("presenter.b : %s", JSON.toJSONString(param.getArgs())));
+            }
+        }, boolean.class, String.class, int.class, long.class, int.class, String.class);
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.presenter.b", "getItems", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                List<Object> list = (List<Object>) param.getResult();
+                logger.d(String.format("presenter.b list : %s", list != null));
+                if (list != null) {
+                    for (Object object : list) {
+                        Aweme aweme = new Aweme(hook, object);
+                        AwemeStatistics statistics = aweme.getStatistics();
+                        logger.i(String.format("当前视频信息：{视频Id[%s], 标题[%s], 创建时间[%s], 分享链接[%s], 评论数[%s], 爱心数[%s], 下载数[%s], 分享数[%s]}",
+                                aweme.getAid(), aweme.getDesc(), aweme.getCreateTime(), aweme.getShareUrl(),
+                                statistics.getCommentCount(), statistics.getDiggCount(), statistics.getDownloadCount(), statistics.getShareCount()));
+                    }
+                }
+            }
+        });
     }
 
     public static void testUser(final Hook hook) {
@@ -141,13 +183,6 @@ public class TestHook {
                 logger.d(JSON.toJSONString(getUser));
             }
         });
-        hook.methodMonitor("com.ss.android.ugc.aweme.profile.ui.UserProfileFragment", "a", new ForeignHook() {
-            @Override
-            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                logger.d(" >>>>" + JSON.toJSONString(param.getArgs()));
-            }
-        }, String.class, Map.class);
         hook.methodMonitor("com.ss.android.ugc.aweme.profile.ui.UserProfileFragment", "onAntiCrawlerEvent", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
@@ -155,5 +190,12 @@ public class TestHook {
                 logger.d("Crawler >>>>" + JSON.toJSONString(param.getArgs()));
             }
         }, hook.findClass("com.ss.android.ugc.aweme.base.a.a"));
+        hook.methodMonitor("com.ss.android.ugc.aweme.profile.ui.UserProfileFragment", "onMobRequestIdEvent", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.d("MobRequest >>>>" + JSON.toJSONString(param.getArgs()));
+            }
+        }, hook.findClass("com.ss.android.ugc.aweme.feed.e.z"));
     }
 }

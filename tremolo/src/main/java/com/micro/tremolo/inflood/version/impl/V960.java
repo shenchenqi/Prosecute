@@ -12,6 +12,7 @@ public class V960 extends TremoloParam {
         feedClass();
         awemeClass();
         userClass();
+        callClass();
     }
 
     @Override
@@ -41,5 +42,12 @@ public class V960 extends TremoloParam {
         AWEME_PROFILE_USER_FRAGMENT_CLASS = "com.ss.android.ugc.aweme.profile.ui.UserProfileFragment";
         AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD = "a";
         AWEME_PROFILE_USER_CLASS = "com.ss.android.ugc.aweme.profile.model.User";
+    }
+
+    @Override
+    protected void callClass() {
+        AWEME_PROFILE_VIDEO_CALL_CLASS = "com.ss.android.ugc.aweme.profile.presenter.b";
+        AWEME_PROFILE_VIDEO_CALL_REQUEST_METHOD = "a";
+        AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD = "getItems";
     }
 }
