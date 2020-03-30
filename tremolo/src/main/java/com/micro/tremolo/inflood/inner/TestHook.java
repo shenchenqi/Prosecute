@@ -1,5 +1,7 @@
 package com.micro.tremolo.inflood.inner;
 
+import android.content.Context;
+
 import com.alibaba.fastjson.JSON;
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
@@ -15,8 +17,6 @@ import com.micro.tremolo.inflood.version.TremoloParam;
 import java.util.List;
 import java.util.Map;
 
-import static com.micro.tremolo.inflood.inner.execute.Deploy.logger;
-
 /**
  * @Author Kilin
  * @Date 2020/3/26 13:34
@@ -26,7 +26,14 @@ public class TestHook {
     private static final Logger logger = Logger.getLogger("Test-Log");
 
     public static void testMain(final Hook hook) {
-        hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_VIDEO_CHANGE_METHOD, new ForeignHook() {
+       /* hook.classMonitor("com.ss.android.ugc.aweme.homepage.ui.d", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                logger.i(JSON.toJSONString(param.getArgs()));
+            }
+        }, hook.findClass("com.bytedance.ies.uikit.base.AbsFragment"), Context.class, hook.findClass("android.support.v4.app.FragmentManager"), hook.findClass("com.ss.android.ugc.aweme.homepage.ui.a.a"));*/
+        /*hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_MAIN_FRAGMENT_VIDEO_CHANGE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
@@ -57,7 +64,7 @@ public class TestHook {
                         author.getFansCount(), author.getPrivateAwemeCount(), author.getUserStoryCount(),
                         author.getXmasUnlockCount(), author.getDongtai_count()));
             }
-        }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
+        }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));*/
     }
 
     public static void testApi(final Hook hook) {

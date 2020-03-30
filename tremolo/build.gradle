@@ -27,4 +27,6 @@ dependencies {
     implementation project(path: ':root')
     implementation project(path: ':hook')
     implementation project(path: ':rom')
+
+    api deps.support.supportv4
 }

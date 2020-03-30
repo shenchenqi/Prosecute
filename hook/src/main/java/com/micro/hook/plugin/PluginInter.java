@@ -15,4 +15,6 @@ public interface PluginInter {
     long week = new AtomicLong(7 * 24 * 60 * 60 * 1000).get();
 
     void monitor(Hook hook);
+
+    void autoControl();
 }

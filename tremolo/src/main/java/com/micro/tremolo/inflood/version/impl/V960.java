@@ -18,8 +18,10 @@ public class V960 extends TremoloParam {
     @Override
     protected void mainClass() {
         AWEME_MAIN_ACTIVITY_CLASS = "com.ss.android.ugc.aweme.main.MainActivity";
+        AWEME_MAIN_ACTIVITY_VIDEO_CHANGE_METHOD = "onVideoPageChangeEvent";
         AWEME_MAIN_FRAGMENT_CLASS = "com.ss.android.ugc.aweme.main.MainFragment";
-        AWEME_VIDEO_CHANGE_METHOD = "onVideoPageChangeEvent";
+        AWEME_MAIN_FRAGMENT_VIEW_CREATE_METHOD = "onViewCreated";
+        AWEME_MAIN_FRAGMENT_VIDEO_CHANGE_METHOD = "onVideoPageChangeEvent";
     }
 
     @Override
@@ -41,6 +43,7 @@ public class V960 extends TremoloParam {
     protected void userClass() {
         AWEME_PROFILE_USER_FRAGMENT_CLASS = "com.ss.android.ugc.aweme.profile.ui.UserProfileFragment";
         AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD = "a";
+        AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD = "onViewCreated";
         AWEME_PROFILE_USER_CLASS = "com.ss.android.ugc.aweme.profile.model.User";
     }
 

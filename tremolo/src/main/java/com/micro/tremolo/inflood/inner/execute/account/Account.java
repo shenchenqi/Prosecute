@@ -14,7 +14,7 @@ public class Account extends Plugin<AccountPresenter, AccountInter> implements A
 
     public Account(Hook hook, Context context) throws Throwable {
         super(hook, context);
-        logger.i("账户初始化");
+        //logger.i("账户初始化");
     }
 
     @Override
@@ -24,6 +24,11 @@ public class Account extends Plugin<AccountPresenter, AccountInter> implements A
 
     @Override
     public void monitor(Hook hook) {
+
+    }
+
+    @Override
+    public void autoControl() {
 
     }
 

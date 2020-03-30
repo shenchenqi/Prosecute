@@ -95,7 +95,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     protected void test() {
-        //TestHook.testMain(getHookParam().getHook());
+        TestHook.testMain(getHookParam().getHook());
         //TestHook.testApi(getHookParam().getHook());
         //TestHook.testUser(getHookParam().getHook());
     }
@@ -107,9 +107,11 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         }
         if (author != null) {
             author.monitor(getHookParam().getHook());
+            //author.autoControl();
         }
         if (video != null) {
             video.monitor(getHookParam().getHook());
+            video.autoControl();
         }
     }
 }

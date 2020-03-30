@@ -2,6 +2,7 @@ package com.micro.hook.plugin;
 
 import android.content.Context;
 
+import com.micro.hook.AutoControlLayout;
 import com.micro.network.http3.filter.BaseBean;
 import com.micro.network.http3.filter.MapResultFilter;
 
@@ -14,7 +15,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * created by kilin on 20-3-18 上午9:49
  */
-public abstract class PluginPresenter<Inter extends PluginInter> {
+public abstract class PluginPresenter<Inter extends PluginInter> extends AutoControlLayout {
     private Inter clazz;
 
     public Inter getClazz() {

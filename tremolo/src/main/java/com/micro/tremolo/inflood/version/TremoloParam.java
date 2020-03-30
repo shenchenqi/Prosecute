@@ -20,8 +20,10 @@ public abstract class TremoloParam {
     protected abstract void mainClass();
 
     public static String AWEME_MAIN_ACTIVITY_CLASS;
+    public static String AWEME_MAIN_ACTIVITY_VIDEO_CHANGE_METHOD;
     public static String AWEME_MAIN_FRAGMENT_CLASS;
-    public static String AWEME_VIDEO_CHANGE_METHOD;
+    public static String AWEME_MAIN_FRAGMENT_VIEW_CREATE_METHOD;
+    public static String AWEME_MAIN_FRAGMENT_VIDEO_CHANGE_METHOD;
 
     protected abstract void feedClass();
 
@@ -40,6 +42,7 @@ public abstract class TremoloParam {
 
     public static String AWEME_PROFILE_USER_FRAGMENT_CLASS;
     public static String AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD;
+    public static String AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD;
     public static String AWEME_PROFILE_USER_CLASS;
 
     protected abstract void callClass();

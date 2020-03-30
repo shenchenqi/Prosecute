@@ -1,6 +1,8 @@
 package com.micro.tremolo.inflood.inner.execute.video;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.micro.foreign.ForeignHook;
@@ -24,7 +26,7 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
 
     public Video(Hook hook, Context context) throws Throwable {
         super(hook, context);
-        logger.i("视频初始化");
+        //logger.i("视频初始化");
     }
 
     @Override
@@ -34,7 +36,7 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
 
     @Override
     public void monitor(final Hook hook) {
-        hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_VIDEO_CHANGE_METHOD, new ForeignHook() {
+        hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_MAIN_FRAGMENT_VIDEO_CHANGE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
@@ -62,6 +64,27 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
     }
 
     @Override
+    public void autoControl() {
+        getHook().methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_MAIN_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (presenter == null) {
+                    logger.e("当前工厂未实例");
+                    return;
+                }
+                logger.e("main fragment");
+                View view = (View) param.getArgs()[0];
+                //presenter.clickAttentionView(view);
+                //presenter.clickRecommendView(view);
+                //presenter.clickSearchView(view);
+                //presenter.clickLiveView(view);
+                presenter.clickUserView(view);
+            }
+        }, View.class, Bundle.class);
+    }
+
+    @Override
     protected String taskName() {
         return Video.class.getSimpleName();
     }
@@ -81,7 +104,7 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
         logger.i(String.format("视频任务[%s]", success));
     }
 
-    public static void loadStaticVideo(Aweme aweme){
+    public static void loadStaticVideo(Aweme aweme) {
         AwemeStatistics statistics = aweme.getStatistics();
         logger.i(String.format("当前视频信息：{视频Id[%s], 标题[%s], 创建时间[%s], 分享链接[%s], 评论数[%s], 爱心数[%s], 下载数[%s], 分享数[%s]}",
                 aweme.getAid(), aweme.getDesc(), aweme.getCreateTime(), aweme.getShareUrl(),

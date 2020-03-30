@@ -1,18 +1,17 @@
 package com.micro.tremolo.inflood.inner.execute.author;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
-import com.micro.tremolo.inflood.inner.replace.FollowerDetail;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.version.TremoloParam;
-
-import java.util.List;
 
 import static com.micro.tremolo.inflood.inner.execute.Deploy.logger;
 
@@ -24,7 +23,7 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
 
     public Author(Hook hook, Context context) throws Throwable {
         super(hook, context);
-        logger.i("作者初始化");
+        //logger.i("作者初始化");
     }
 
     @Override
@@ -46,6 +45,23 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
                 presenter.obtainAuthor(new User(hook, presenter.getAuthorInfo()));
             }
         }, TremoloParam.AWEME_PROFILE_USER_CLASS);
+    }
+
+    @Override
+    public void autoControl() {
+        getHook().methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (presenter == null) {
+                    logger.e("当前工厂未实例");
+                    return;
+                }
+                logger.e("suer fragment");
+                /*View view = (View) param.getThisObject();
+                presenter.clickBackView(view);*/
+            }
+        }, View.class, Bundle.class);
     }
 
     @Override
