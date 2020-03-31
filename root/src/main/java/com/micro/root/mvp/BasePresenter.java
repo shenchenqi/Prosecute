@@ -12,12 +12,16 @@ public abstract class BasePresenter<Interface extends BaseInterface> {
     protected Interface clazz;
     protected Handler handler;
 
-    public void setClass(final Interface clazz) {
+    public void setClass(Interface clazz) {
         if (clazz == null) {
             throw new NullPointerException("clazz cannot be null");
         }
         this.clazz = clazz;
         this.onAttached();
+    }
+
+    public Interface getClazz() {
+        return clazz;
     }
 
     public abstract void onAttached();

@@ -1,14 +1,12 @@
-package com.micro.tremolo.inflood.inner.execute.author;
-
-import android.os.Handler;
-import android.view.View;
+package com.micro.tremolo.inflood.inner.execute.monitor.author;
 
 import com.micro.hook.plugin.PluginPresenter;
 import com.micro.root.utils.Lang;
-import com.micro.tremolo.inflood.inner.execute.Deploy;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.sqlite.table.UserModelTable;
+
+import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
 
 /**
  * @Author Kilin
@@ -16,11 +14,9 @@ import com.micro.tremolo.sqlite.table.UserModelTable;
  */
 public class AuthorPresenter extends PluginPresenter<AuthorInter> {
 
-    private Handler handler;
-
     @Override
     public void onAttached() {
-        handler = getHandler(getContext().getMainLooper());
+
     }
 
     private Object authorInfo;
@@ -39,7 +35,7 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
 
     public synchronized void saveUserTableItem(User user) {
         UserModelTable userTable = loadUserTable(user);
-        //Deploy.logger.d(userTable.toString());
+        monitorLogger.d(userTable.toString());
     }
 
     private synchronized UserModelTable loadUserTable(User user) {
@@ -89,17 +85,5 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
             }
         }
         return userTable;
-    }
-
-    protected void clickBackView(View rootView) {//com.ss.android.ugc.aweme:id/ko 0x7f0701ae (2131165614)
-        handlerPost(handler, new Runnable() {
-            @Override
-            public void run() {
-                Deploy.logger.d(String.format("rootView:[%s]", rootView));
-                /*if (isClickText(rootView, "返回")) {
-
-                }*/
-            }
-        }, AuthorInter.second * 15);
     }
 }

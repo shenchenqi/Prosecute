@@ -1,11 +1,9 @@
-package com.micro.tremolo.inflood.inner.execute.account;
+package com.micro.tremolo.inflood.inner.execute.monitor.account;
 
 import android.content.Context;
 
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
-
-import static com.micro.tremolo.inflood.inner.execute.Deploy.logger;
 
 /**
  * created by kilin on 20-3-18 上午10:21
@@ -28,32 +26,16 @@ public class Account extends Plugin<AccountPresenter, AccountInter> implements A
     }
 
     @Override
-    public void autoControl() {
-
-    }
-
-    @Override
-    protected String taskName() {
-        return Account.class.getSimpleName();
-    }
-
-    @Override
-    protected void process() {
-
-    }
-
-    @Override
-    protected void error(Throwable throwable) {
-
-    }
-
-    @Override
-    public void finish(boolean success) {
-        logger.i(String.format("账户任务[%s]", success));
-    }
-
-    @Override
     public void loadAccount() {
 
+    }
+
+    @Override
+    public Context getIContext() {
+        if (presenter != null) {
+            return presenter.getContext();
+        } else {
+            return null;
+        }
     }
 }

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AutoControlLayout {
+public abstract class AutoControlLayout {
 
     private HandlerThread handlerThread;
 
@@ -25,19 +25,23 @@ public class AutoControlLayout {
         return handlerThread.getLooper();
     }
 
+    private Handler handler;
     protected Handler getHandler(Looper looper) {
-        return new Handler(looper == null ? loadLooper() : looper);
+        if (handler == null) {
+            handler = new Handler(looper == null ? loadLooper() : looper);
+        }
+        return handler;
     }
 
-    protected void handlerPost(Handler handler, Runnable runnable) {
+    protected synchronized void handlerPost(Handler handler, Runnable runnable) {
         handler.post(runnable);
     }
 
-    protected void handlerPost(Handler handler, Runnable runnable, long time) {
+    protected synchronized void handlerPost(Handler handler, Runnable runnable, long time) {
         handler.postDelayed(runnable, time);
     }
 
-    protected <T extends View> T bindView(View rootView, int resId) {
+    protected synchronized  <T extends View> T bindView(View rootView, int resId) {
         return rootView.findViewById(resId);
     }
 
@@ -134,5 +138,13 @@ public class AutoControlLayout {
             }
         }
         return allChildren;
+    }
+
+    public interface Callback {
+        void success(String value);
+
+        void fail(String msg);
+
+        long sleep();
     }
 }

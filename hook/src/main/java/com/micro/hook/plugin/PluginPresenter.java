@@ -5,6 +5,7 @@ import android.content.Context;
 import com.micro.hook.AutoControlLayout;
 import com.micro.network.http3.filter.BaseBean;
 import com.micro.network.http3.filter.MapResultFilter;
+import com.micro.root.mvp.BasePresenter;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -15,20 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * created by kilin on 20-3-18 上午9:49
  */
-public abstract class PluginPresenter<Inter extends PluginInter> extends AutoControlLayout {
-    private Inter clazz;
-
-    public Inter getClazz() {
-        return clazz;
-    }
-
-    void setClazz(Inter clazz) throws Throwable {
-        if (clazz == null) {
-            throw new Throwable("clazz cannot be null");
-        }
-        this.clazz = clazz;
-        this.onAttached();
-    }
+public abstract class PluginPresenter<Inter extends PluginInter> extends BasePresenter<Inter> {
 
     private Context context;
 
@@ -39,8 +27,6 @@ public abstract class PluginPresenter<Inter extends PluginInter> extends AutoCon
     public void setContext(Context context) {
         this.context = context;
     }
-
-    public abstract void onAttached();
 
     protected <P> Observable getObservable(Observable<BaseBean<P>> observable) {
         return observable.compose(io2main()).flatMap(new MapResultFilter());

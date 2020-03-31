@@ -1,20 +1,20 @@
 package com.micro.tremolo.inflood;
 
+import android.content.Context;
+
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
-import com.micro.tremolo.inflood.inner.PluginTaskExecutor;
 import com.micro.tremolo.inflood.inner.TestHook;
-import com.micro.tremolo.inflood.inner.execute.account.Account;
-import com.micro.tremolo.inflood.inner.execute.author.Author;
-import com.micro.tremolo.inflood.inner.execute.video.Video;
+import com.micro.tremolo.inflood.inner.execute.control.AutoControl;
+import com.micro.tremolo.inflood.inner.execute.monitor.account.Account;
+import com.micro.tremolo.inflood.inner.execute.monitor.author.Author;
+import com.micro.tremolo.inflood.inner.execute.monitor.video.Video;
 import com.micro.tremolo.inflood.inner.logcat.Logcat;
 import com.micro.tremolo.inflood.mvp.EntranceInter;
 import com.micro.tremolo.inflood.mvp.EntrancePresenter;
 import com.micro.tremolo.inflood.version.TremoloParam;
-
-import org.litepal.LitePal;
 
 import static com.micro.tremolo.inflood.TremoloModule.logger;
 
@@ -76,6 +76,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         logger.i(TAG, "executeSQL", "数据库");
     }
 
+    private AutoControl autoControl;
     private Account account;
     private Author author;
     private Video video;
@@ -85,6 +86,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         logger.i(TAG, "config", "配置");
         try {
             /*LitePal.initialize(getHookParam().getApplication());*/
+            autoControl = new AutoControl(getHookParam().getHook(), getHookParam().getApplication());
             account = new Account(getHookParam().getHook(), getHookParam().getApplication());
             author = new Author(getHookParam().getHook(), getHookParam().getApplication());
             video = new Video(getHookParam().getHook(), getHookParam().getApplication());
@@ -102,16 +104,25 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     public void execute() {
+        if (autoControl != null) {
+            autoControl.autoControl(getHookParam().getHook());
+        }
         if (account != null) {
             account.monitor(getHookParam().getHook());
         }
         if (author != null) {
             author.monitor(getHookParam().getHook());
-            //author.autoControl();
         }
         if (video != null) {
             video.monitor(getHookParam().getHook());
-            video.autoControl();
         }
+    }
+
+    @Override
+    public Context getIContext() {
+        if (presenter != null) {
+            return presenter.getContext();
+        }
+        return null;
     }
 }

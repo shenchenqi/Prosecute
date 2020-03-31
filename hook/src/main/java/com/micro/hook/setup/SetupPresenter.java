@@ -2,24 +2,12 @@ package com.micro.hook.setup;
 
 import android.content.Context;
 
+import com.micro.root.mvp.BasePresenter;
+
 /**
  * created by kilin on 20-3-18 上午9:36
  */
-public abstract class SetupPresenter<Inter extends SetupInter> {
-
-    private Inter clazz;
-
-    void setClazz(Inter clazz) throws Throwable {
-        if (clazz == null) {
-            throw new Throwable("clazz cannot be null");
-        }
-        this.clazz = clazz;
-        this.onAttached();
-    }
-
-    public Inter getClazz() {
-        return clazz;
-    }
+public abstract class SetupPresenter<Inter extends SetupInter> extends BasePresenter<Inter> {
 
     private Context context;
 
@@ -30,6 +18,4 @@ public abstract class SetupPresenter<Inter extends SetupInter> {
     public void setContext(Context context) {
         this.context = context;
     }
-
-    public abstract void onAttached();
 }

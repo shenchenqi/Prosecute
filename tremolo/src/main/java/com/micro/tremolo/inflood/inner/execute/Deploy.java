@@ -7,5 +7,6 @@ import com.micro.root.Logger;
  * @Date 2020/3/26 16:56
  */
 public interface Deploy {
-    Logger logger = com.micro.root.Logger.getLogger("Execute-Log");
+    Logger monitorLogger = com.micro.root.Logger.getLogger("Execute-monitor-Log");
+    Logger controlLogger = com.micro.root.Logger.getLogger("Execute-control-Log");
 }
