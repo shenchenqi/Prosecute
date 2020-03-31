@@ -1,10 +1,15 @@
 package com.micro.hook;
 
+import android.app.Instrumentation;
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.SystemClock;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,7 +30,12 @@ public abstract class AutoControlLayout {
         return handlerThread.getLooper();
     }
 
+    protected void startThread(Runnable runnable) {
+        new Thread(runnable).start();
+    }
+
     private Handler handler;
+
     protected Handler getHandler(Looper looper) {
         if (handler == null) {
             handler = new Handler(looper == null ? loadLooper() : looper);
@@ -41,7 +51,29 @@ public abstract class AutoControlLayout {
         handler.postDelayed(runnable, time);
     }
 
-    protected synchronized  <T extends View> T bindView(View rootView, int resId) {
+    protected int[] phoneScreen(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        int width = wm.getDefaultDisplay().getWidth();
+        int height = wm.getDefaultDisplay().getHeight();
+        return new int[]{width, height};
+    }
+
+    protected void sendPointerSync(List<MotionEvent> events) {
+        Instrumentation instrumentation = getInstrumentation();
+        for (MotionEvent event : events) {
+            instrumentation.sendPointerSync(event);
+        }
+    }
+
+    private Instrumentation getInstrumentation() {
+        return new Instrumentation();
+    }
+
+    protected synchronized MotionEvent getObtain(int eventTime, int action, float x, float y) {
+        return MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis() + eventTime, action, x, y, 0);
+    }
+
+    protected synchronized <T extends View> T bindView(View rootView, int resId) {
         return rootView.findViewById(resId);
     }
 

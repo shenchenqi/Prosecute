@@ -1,9 +1,14 @@
 package com.micro.tremolo;
 
+import com.micro.network.http3.filter.BaseBean;
+
+import java.util.Map;
+
 import io.reactivex.Observable;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 
 /**
@@ -12,11 +17,11 @@ import retrofit2.http.POST;
 public interface ApiService {
 
     @FormUrlEncoded
-    @POST("/uaa/post")
-    Observable<Object> post(@Field("username") String username, @Field("password") String password);
+    @POST("/Media/Dy/uadd")
+    Observable<BaseBean<Object>> uploadTremolo(@FieldMap Map<String, Object> userModelTable);
 
 
     @FormUrlEncoded
-    @GET("/uaa/post")
-    Observable<Object> get(@Field("username") String username, @Field("password") String password);
+    @POST("/Media/Dy/vadd")
+    Observable<BaseBean<Object>> uploadVideo(@Field("videoModelTable") String videoModelTable);
 }

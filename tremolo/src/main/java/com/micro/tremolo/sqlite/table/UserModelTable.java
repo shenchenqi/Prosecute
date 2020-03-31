@@ -1,6 +1,8 @@
 package com.micro.tremolo.sqlite.table;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserModelTable {
     private String userId;
@@ -238,5 +240,33 @@ public class UserModelTable {
                 ", \nuri='" + uri + '\'' +
                 ", \nurlKey='" + urlKey + '\'' +
                 "\n}";
+    }
+
+    public Map<String, Object> getUserMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", getUserId() + "");
+        map.put("nickname", getNickname() + "");
+        map.put("tremoloId", getTremoloId() + "");
+        map.put("tremoloNumberId", getTremoloNumberId() + "");
+        map.put("birthday", getBirthday() + "");
+        map.put("city", getCity() + "");
+        map.put("country", getCountry() + "");
+        map.put("district", getDistrict() + "");
+        map.put("schoolName", getSchoolName() + "");
+        map.put("signature", getSignature() + "");
+        map.put("customVerify", getCustomVerify() + "");
+        map.put("enterpriseVerify", getEnterpriseVerify() + "");
+        map.put("requestId", getRequestId() + "");
+        map.put("followingCount", getFollowingCount() + "");
+        map.put("favoritingCount", getFavoritingCount() + "");
+        map.put("awemeCount", getAwemeCount() + "");
+        map.put("fansCount", getFansCount() + "");
+        map.put("movingCount", getMovingCount() + "");
+        map.put("avatarList", getAvatarList() + "");
+        map.put("avatarMediumList", getAvatarMediumList() + "");
+        map.put("avatarThumbList", getAvatarThumbList() + "");
+        map.put("uri", getUri() + "");
+        map.put("urlKey", getUrlKey() + "");
+        return map;
     }
 }

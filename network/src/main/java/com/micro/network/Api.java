@@ -9,11 +9,11 @@ public interface Api {
     /**
      * 测试服默认地址
      */
-    String DEF_TEST_URL = "http://api.worken.cn/";
+    String DEF_TEST_URL = "http://skingsoft.cn";
     /**
      * 正式服默认地址
      */
-    String DEF_RELEASE_URL = "https://api.worken.cn/";
+    String DEF_RELEASE_URL = "http://skingsoft.cn";
     /**
      * baseUrl
      */

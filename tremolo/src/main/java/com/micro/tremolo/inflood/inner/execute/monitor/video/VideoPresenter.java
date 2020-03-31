@@ -1,7 +1,10 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.video;
 
+import com.alibaba.fastjson.JSON;
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.PluginPresenter;
+import com.micro.network.OkHttp3;
+import com.micro.tremolo.ApiService;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.User;
@@ -19,9 +22,21 @@ import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
  */
 public class VideoPresenter extends PluginPresenter<VideoInter> {
 
+    private static List<Object> videos = new ArrayList<>();
+
     @Override
     public void onAttached() {
-
+        /*setHandlerPost(0, null, new Runnable() {
+            @Override
+            public void run() {
+                monitorLogger.d("视频数：" + videos.size());
+                for (Object object : videos) {
+                    uploadVideo(JSON.toJSONString(object));
+                    videos.remove(object);
+                }
+                handler.postDelayed(this::run, VideoInter.second * 10);
+            }
+        });*/
     }
 
     private Object itemVideoInfo;
@@ -49,15 +64,18 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
         }
     }
 
-    public void saveVideoTableList(List<Aweme> awemeList) {
+    public synchronized void saveVideoTableList(List<Aweme> awemeList) {
+        List<VideoModelTable> videoModelTables = new ArrayList<>();
         for (Aweme aweme : awemeList) {
-            saveVideoTableItem(aweme);
+            videoModelTables.add(loadVideoTable(aweme));
         }
+        videos.add(videoModelTables);
     }
 
     public synchronized void saveVideoTableItem(Aweme aweme) {
-        VideoModelTable videoTable = loadVideoTable(aweme);
-        monitorLogger.d(videoTable.toString());
+        List<VideoModelTable> videoModelTables = new ArrayList<>();
+        videoModelTables.add(loadVideoTable(aweme));
+        videos.add(videoModelTables);
     }
 
     private synchronized VideoModelTable loadVideoTable(Aweme aweme) {
@@ -96,6 +114,15 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
         if (videoTable.getUpdate() == 0) {
             videoTable.setUpdate(1);
         }
+        //monitorLogger.d(videoTable.toString());
         return videoTable;
+    }
+
+    private synchronized void uploadVideo(final String data) {
+        monitorLogger.d("视频上传");
+        OkHttp3.getInstance(getContext()).create(ApiService.class)
+                .uploadVideo(data)
+                .subscribe(objectBaseBean -> monitorLogger.i(String.format("抖音视频[%s][%s]", objectBaseBean.getCode(), objectBaseBean.getMessage())),
+                        throwable -> monitorLogger.e(throwable, "抖音视频上传报错")).dispose();
     }
 }

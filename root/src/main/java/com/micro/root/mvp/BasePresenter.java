@@ -1,6 +1,7 @@
 package com.micro.root.mvp;
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 
 /**
@@ -32,11 +33,17 @@ public abstract class BasePresenter<Interface extends BaseInterface> {
         }
     }
 
-    protected void setHandlerPost(long time, boolean isLooper, Runnable runnable) {
-        if (isLooper) {
-            handler = new Handler(Looper.getMainLooper());
+    private HandlerThread handlerThread;
+
+    protected void setHandlerPost(long time, Looper looper, Runnable runnable) {
+        if (looper != null) {
+            handler = new Handler(looper);
         } else {
-            handler = new Handler();
+            if (handlerThread == null) {
+                handlerThread = new HandlerThread("sub_post");
+                handlerThread.start();
+            }
+            handler = new Handler(handlerThread.getLooper());
         }
         if (time > 0) {
             handler.postDelayed(runnable, time);
