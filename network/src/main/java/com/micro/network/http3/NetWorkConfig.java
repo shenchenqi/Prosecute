@@ -2,6 +2,7 @@ package com.micro.network.http3;
 
 import android.content.Context;
 
+import com.micro.network.Log;
 import com.micro.network.NetManager;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class NetWorkConfig implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
+        Log.d("NetWorkConfig", request.url().toString());
         if (NetManager.isNetworkConnected(context)) {
             Response response = chain.proceed(request);
             // read from cache for 60 s

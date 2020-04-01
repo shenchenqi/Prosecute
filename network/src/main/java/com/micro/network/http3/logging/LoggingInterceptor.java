@@ -2,6 +2,9 @@ package com.micro.network.http3.logging;
 
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.micro.network.Log;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -105,6 +108,7 @@ public class LoggingInterceptor implements Interceptor {
             Printer.printFileResponse(builder, chainMs, isSuccessful, code, header, segmentList);
             return response;
         }
+        Log.d("NetWorkConfig", String.format("链接：[%s], 内容：[%s]",  request.url().toString(), JSON.toJSONString(body)));
         return response.newBuilder().body(body).build();
     }
 

@@ -2,6 +2,7 @@ package com.micro.tremolo.inflood.inner.execute.control;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 
 import com.micro.hook.AutoControlLayout;
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.InspectApply;
+import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import java.util.ArrayList;
@@ -53,40 +56,31 @@ public class ControlPresenter<Interface extends ControlInter> extends AutoContro
         this.hook = hook;
     }
 
-    private void onAttached() {
-        handler = getHandler(getClazz().getIContext().getMainLooper());
-        screenData = phoneScreen(getContext());
-    }
+    private final static int openDouYin = 999;
+    private final static int moveUser = 1000;
+    private final static int loadMoreVideo = 1001;
+    private final static int moveVideo = 1002;
+    private final static int changeVideo = 1003;
 
-    public void autoExecuteView() {
-        moveToUser(screenData[0], screenData[1], new Callback() {
+    private boolean isTopDouYin;
+    private int moreCount;
+    private int count;
+
+    private void onAttached() {
+        isTopDouYin = InspectApply.isAppOnForeground(getContext(), Const.PACKAGE_NAME) == 100;
+        handler = new Handler(getClazz().getIContext().getMainLooper()) {
             @Override
-            public void success(String value) {
-                controlLogger.d(value);
-                loadMoreVideo(new Callback() {
-                    @Override
-                    public void success(String value) {
-                        controlLogger.d(value);
-                        clickBackView(new Callback() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case openDouYin:
+                        InspectApply.openApply(getContext(), Const.PACKAGE_NAME);
+                        isTopDouYin = InspectApply.isAppOnForeground(getContext(), Const.PACKAGE_NAME) == 100;
+                        break;
+                    case moveUser:
+                        moveToUser(screenData[0], screenData[1], new AutoControlLayout.Callback() {
                             @Override
                             public void success(String value) {
                                 controlLogger.d(value);
-                                moveChangeVideo(screenData[0], screenData[1], new Callback() {
-                                    @Override
-                                    public void success(String value) {
-                                        controlLogger.d(value);
-                                    }
-
-                                    @Override
-                                    public void fail(String msg) {
-                                        controlLogger.e(msg);
-                                    }
-
-                                    @Override
-                                    public long sleep() {
-                                        return 10 * ControlInter.second;
-                                    }
-                                });
                             }
 
                             @Override
@@ -99,30 +93,82 @@ public class ControlPresenter<Interface extends ControlInter> extends AutoContro
                                 return 10 * ControlInter.second;
                             }
                         });
-                    }
+                        break;
+                    case loadMoreVideo:
+                        moveToUserMoreVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                            @Override
+                            public void success(String value) {
+                                controlLogger.d(value + String.format("滑动[%s][%s]", (count / 10), moreCount));
+                                if (moreCount < (count / 10)) {
+                                    moreCount++;
+                                    handler.sendEmptyMessageDelayed(loadMoreVideo, sleep());
+                                } else {
+                                    moreCount = 0;
+                                    handler.sendEmptyMessageDelayed(moveVideo, sleep());
+                                }
+                            }
 
-                    @Override
-                    public void fail(String msg) {
-                        controlLogger.e(msg);
-                    }
+                            @Override
+                            public void fail(String msg) {
+                                controlLogger.e(msg);
+                            }
 
-                    @Override
-                    public long sleep() {
-                        return 0;
-                    }
-                });
+                            @Override
+                            public long sleep() {
+                                return 5 * ControlInter.second;
+                            }
+                        });
+                        break;
+                    case moveVideo:
+                        moveToVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                            @Override
+                            public void success(String value) {
+                                controlLogger.d(value);
+                                handler.sendEmptyMessageDelayed(changeVideo, sleep());
+                            }
+
+                            @Override
+                            public void fail(String msg) {
+                                controlLogger.e(msg);
+                            }
+
+                            @Override
+                            public long sleep() {
+                                return 10 * ControlInter.second;
+                            }
+                        });
+                        break;
+                    case changeVideo:
+                        moveChangeVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                            @Override
+                            public void success(String value) {
+                                controlLogger.d(value);
+                            }
+
+                            @Override
+                            public void fail(String msg) {
+                                controlLogger.e(msg);
+                            }
+
+                            @Override
+                            public long sleep() {
+                                return 10 * ControlInter.second;
+                            }
+                        });
+                        break;
+                }
             }
+        };
+        screenData = phoneScreen(getContext());
+    }
 
-            @Override
-            public void fail(String msg) {
-                controlLogger.e(msg);
-            }
+    public void autoMoveUser() {
+        handler.sendEmptyMessageDelayed(moveUser, 10 * ControlInter.second);
+    }
 
-            @Override
-            public long sleep() {
-                return 10 * ControlInter.second;
-            }
-        });
+    public void autoLoadMoreVideo(int count) {
+        this.count = count;
+        handler.sendEmptyMessageDelayed(loadMoreVideo, 5 * ControlInter.second);
     }
 
     private View mainActivityView;
@@ -130,22 +176,6 @@ public class ControlPresenter<Interface extends ControlInter> extends AutoContro
     public void setMainActivityView(View mainActivityView) {
         this.mainActivityView = mainActivityView;
     }
-
-    /*private void clickHomeView(final Callback callback) { // id/e6h 2131171887
-        if (mainActivityView == null) {
-            callback.fail("Main 未实例");
-            return;
-        }
-        handlerPost(handler, () -> {
-            TextView attentionTv = bindView(mainActivityView, 2131171887);
-            if (attentionTv != null) {
-                attentionTv.performClick();
-                callback.success("Home按钮点击成功");
-            } else {
-                callback.fail("Home按钮未绑定");
-            }
-        }, callback.sleep());
-    }*/
 
     private View mainFragmentView;
 
@@ -272,138 +302,97 @@ public class ControlPresenter<Interface extends ControlInter> extends AutoContro
             callback.fail("主 布局不存在");
             return;
         }
-        handlerPost(handler, () -> {
-            FrameLayout touchEventFrameLayout = bindView(mainFragmentView, TremoloParam.MAIN_FRAGMENT_TOUCH_EVENT_INTEGER);
-            if (touchEventFrameLayout != null) {
-                startThread(() -> {
-                    List<MotionEvent> events = new ArrayList<>();
-                    events.add(getObtain(0, MotionEvent.ACTION_DOWN, x - 10, y / 2));
-                    events.add(getObtain(0, MotionEvent.ACTION_MOVE, x - 10, y / 2));
-                    events.add(getObtain(100, MotionEvent.ACTION_MOVE, (x / 10) * 9, y / 2));
-                    events.add(getObtain(200, MotionEvent.ACTION_MOVE, (x / 10) * 8, y / 2));
-                    events.add(getObtain(300, MotionEvent.ACTION_MOVE, (x / 10) * 7, y / 2));
-                    events.add(getObtain(400, MotionEvent.ACTION_MOVE, (x / 10) * 6, y / 2));
-                    events.add(getObtain(500, MotionEvent.ACTION_MOVE, (x / 10) * 5, y / 2));
-                    events.add(getObtain(600, MotionEvent.ACTION_MOVE, (x / 10) * 4, y / 2));
-                    events.add(getObtain(700, MotionEvent.ACTION_MOVE, (x / 10) * 3, y / 2));
-                    events.add(getObtain(800, MotionEvent.ACTION_MOVE, (x / 10) * 2, y / 2));
-                    events.add(getObtain(900, MotionEvent.ACTION_MOVE, (x / 10) * 1, y / 2));
-                    events.add(getObtain(1000, MotionEvent.ACTION_MOVE, 10, y / 2));
-                    events.add(getObtain(1000, MotionEvent.ACTION_UP, 10, y / 2));
-                    sendPointerSync(events);
-                    callback.success("用户滑动成功");
-                });
-            } else {
-                callback.fail("关注按钮未绑定");
-            }
-        }, callback.sleep());
-    }
-
-    private void loadMoreVideo(final Callback callback) {
-        moveToUserMoreVideo(screenData[0], screenData[1], new Callback() {
-            @Override
-            public void success(String value) {
-                controlLogger.d(value);
-                moveToUserMoreVideo(screenData[0], screenData[1], new Callback() {
-                    @Override
-                    public void success(String value) {
-                        controlLogger.d(value);
-                        moveToUserMoreVideo(screenData[0], screenData[1], new Callback() {
-                            @Override
-                            public void success(String value) {
-                                controlLogger.d(value);
-                                moveToUserMoreVideo(screenData[0], screenData[1], new Callback() {
-                                    @Override
-                                    public void success(String value) {
-                                        controlLogger.d(value);
-                                        moveToUserMoreVideo(screenData[0], screenData[1], new Callback() {
-                                            @Override
-                                            public void success(String value) {
-                                                callback.success(value + " 加载完成");
-                                            }
-
-                                            @Override
-                                            public void fail(String msg) {
-                                                callback.fail(msg + " 5次");
-                                            }
-
-                                            @Override
-                                            public long sleep() {
-                                                return 5 * ControlInter.second;
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void fail(String msg) {
-                                        callback.fail(msg + " 4次");
-                                    }
-
-                                    @Override
-                                    public long sleep() {
-                                        return 5 * ControlInter.second;
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void fail(String msg) {
-                                callback.fail(msg + " 3次");
-                            }
-
-                            @Override
-                            public long sleep() {
-                                return 5 * ControlInter.second;
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void fail(String msg) {
-                        callback.fail(msg + " 2次");
-                    }
-
-                    @Override
-                    public long sleep() {
-                        return 5 * ControlInter.second;
-                    }
-                });
-            }
-
-            @Override
-            public void fail(String msg) {
-                callback.fail(msg + " 1次");
-            }
-
-            @Override
-            public long sleep() {
-                return 10 * ControlInter.second;
-            }
-        });
+        if (!isTopDouYin) {
+            controlLogger.e("抖音未开启");
+            handler.sendEmptyMessage(openDouYin);
+            return;
+        }
+        FrameLayout touchEventFrameLayout = bindView(mainFragmentView, TremoloParam.MAIN_FRAGMENT_TOUCH_EVENT_INTEGER);
+        if (touchEventFrameLayout != null) {
+            startThread(() -> {
+                List<MotionEvent> events = new ArrayList<>();
+                events.add(getObtain(0, MotionEvent.ACTION_DOWN, x - 10, y / 2));
+                events.add(getObtain(0, MotionEvent.ACTION_MOVE, x - 10, y / 2));
+                events.add(getObtain(100, MotionEvent.ACTION_MOVE, (x / 10) * 9, y / 2));
+                events.add(getObtain(200, MotionEvent.ACTION_MOVE, (x / 10) * 8, y / 2));
+                events.add(getObtain(300, MotionEvent.ACTION_MOVE, (x / 10) * 7, y / 2));
+                events.add(getObtain(400, MotionEvent.ACTION_MOVE, (x / 10) * 6, y / 2));
+                events.add(getObtain(500, MotionEvent.ACTION_MOVE, (x / 10) * 5, y / 2));
+                events.add(getObtain(600, MotionEvent.ACTION_MOVE, (x / 10) * 4, y / 2));
+                events.add(getObtain(700, MotionEvent.ACTION_MOVE, (x / 10) * 3, y / 2));
+                events.add(getObtain(800, MotionEvent.ACTION_MOVE, (x / 10) * 2, y / 2));
+                events.add(getObtain(900, MotionEvent.ACTION_MOVE, (x / 10) * 1, y / 2));
+                events.add(getObtain(1000, MotionEvent.ACTION_MOVE, 10, y / 2));
+                events.add(getObtain(1000, MotionEvent.ACTION_UP, 10, y / 2));
+                sendPointerSync(events);
+                callback.success("用户滑动成功");
+            });
+        } else {
+            callback.fail("未绑定");
+        }
     }
 
     private void moveToUserMoreVideo(final float x, final float y, final Callback callback) {
         controlLogger.d(String.format("width [%s], height [%s]", x, y));
-        handlerPost(handler, () -> {
+        if (!isTopDouYin) {
+            controlLogger.e("抖音未开启");
+            handler.sendEmptyMessage(openDouYin);
+            return;
+        }
+        startThread(() -> {
+            List<MotionEvent> events = new ArrayList<>();
+            events.add(getObtain(0, MotionEvent.ACTION_DOWN, x / 2, y - 10));
+            events.add(getObtain(0, MotionEvent.ACTION_MOVE, x / 2, y - 10));
+            events.add(getObtain(100, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 9));
+            events.add(getObtain(200, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 8));
+            events.add(getObtain(300, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 7));
+            events.add(getObtain(400, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 6));
+            events.add(getObtain(500, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 5));
+            events.add(getObtain(600, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 4));
+            events.add(getObtain(700, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 3));
+            events.add(getObtain(800, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 2));
+            events.add(getObtain(900, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 1));
+            events.add(getObtain(1000, MotionEvent.ACTION_MOVE, x / 2, 10));
+            events.add(getObtain(1000, MotionEvent.ACTION_UP, x / 2, 10));
+            sendPointerSync(events);
+            callback.success("加载更多视频滑动成功 ");
+        });
+    }
+
+    private void moveToVideo(final float x, final float y, final Callback callback) {
+        controlLogger.d(String.format("width [%s], height [%s]", x, y));
+        if (mainFragmentView == null) {
+            callback.fail("主 布局不存在");
+            return;
+        }
+        if (!isTopDouYin) {
+            controlLogger.e("抖音未开启");
+            handler.sendEmptyMessage(openDouYin);
+            return;
+        }
+        FrameLayout touchEventFrameLayout = bindView(mainFragmentView, TremoloParam.MAIN_FRAGMENT_TOUCH_EVENT_INTEGER);
+        if (touchEventFrameLayout != null) {
             startThread(() -> {
                 List<MotionEvent> events = new ArrayList<>();
-                events.add(getObtain(0, MotionEvent.ACTION_DOWN, x / 2, y - 10));
-                events.add(getObtain(0, MotionEvent.ACTION_MOVE, x / 2, y - 10));
-                events.add(getObtain(100, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 9));
-                events.add(getObtain(200, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 8));
-                events.add(getObtain(300, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 7));
-                events.add(getObtain(400, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 6));
-                events.add(getObtain(500, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 5));
-                events.add(getObtain(600, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 4));
-                events.add(getObtain(700, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 3));
-                events.add(getObtain(800, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 2));
-                events.add(getObtain(900, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 1));
-                events.add(getObtain(1000, MotionEvent.ACTION_MOVE, x / 2, 10));
-                events.add(getObtain(1000, MotionEvent.ACTION_UP, x / 2, 10));
+                events.add(getObtain(0, MotionEvent.ACTION_DOWN, 10, y / 2));
+                events.add(getObtain(0, MotionEvent.ACTION_MOVE, 10, y / 2));
+                events.add(getObtain(100, MotionEvent.ACTION_MOVE, (x / 10) * 1, y / 2));
+                events.add(getObtain(200, MotionEvent.ACTION_MOVE, (x / 10) * 2, y / 2));
+                events.add(getObtain(300, MotionEvent.ACTION_MOVE, (x / 10) * 3, y / 2));
+                events.add(getObtain(400, MotionEvent.ACTION_MOVE, (x / 10) * 4, y / 2));
+                events.add(getObtain(500, MotionEvent.ACTION_MOVE, (x / 10) * 5, y / 2));
+                events.add(getObtain(600, MotionEvent.ACTION_MOVE, (x / 10) * 6, y / 2));
+                events.add(getObtain(700, MotionEvent.ACTION_MOVE, (x / 10) * 7, y / 2));
+                events.add(getObtain(800, MotionEvent.ACTION_MOVE, (x / 10) * 8, y / 2));
+                events.add(getObtain(900, MotionEvent.ACTION_MOVE, (x / 10) * 9, y / 2));
+                events.add(getObtain(1000, MotionEvent.ACTION_MOVE, x - 10, y / 2));
+                events.add(getObtain(1000, MotionEvent.ACTION_UP, x - 10, y / 2));
                 sendPointerSync(events);
-                callback.success("加载更多视频滑动成功");
+                callback.success("视频滑动成功");
             });
-        }, callback.sleep());
+        } else {
+            callback.fail("未绑定");
+        }
     }
 
     private void moveChangeVideo(final float x, final float y, final Callback callback) {
@@ -412,25 +401,28 @@ public class ControlPresenter<Interface extends ControlInter> extends AutoContro
             callback.fail("主 布局不存在");
             return;
         }
-        handlerPost(handler, () -> {
-            startThread(() -> {
-                List<MotionEvent> events = new ArrayList<>();
-                events.add(getObtain(0, MotionEvent.ACTION_DOWN, x / 2, y / 2 - 10));
-                events.add(getObtain(0, MotionEvent.ACTION_MOVE, x / 2, y / 2 - 10));
-                events.add(getObtain(100, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 9));
-                events.add(getObtain(200, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 8));
-                events.add(getObtain(300, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 7));
-                events.add(getObtain(400, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 6));
-                events.add(getObtain(500, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 5));
-                events.add(getObtain(600, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 4));
-                events.add(getObtain(700, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 3));
-                events.add(getObtain(800, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 2));
-                events.add(getObtain(900, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 1));
-                events.add(getObtain(1000, MotionEvent.ACTION_MOVE, x / 2, 10));
-                events.add(getObtain(1000, MotionEvent.ACTION_UP, x / 2, 10));
-                sendPointerSync(events);
-                callback.success("视频滑动切换成功");
-            });
-        }, callback.sleep());
+        if (!isTopDouYin) {
+            controlLogger.e("抖音未开启");
+            handler.sendEmptyMessage(openDouYin);
+            return;
+        }
+        startThread(() -> {
+            List<MotionEvent> events = new ArrayList<>();
+            events.add(getObtain(0, MotionEvent.ACTION_DOWN, x / 2, y / 2 - 10));
+            events.add(getObtain(0, MotionEvent.ACTION_MOVE, x / 2, y / 2 - 10));
+            events.add(getObtain(100, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 9));
+            events.add(getObtain(200, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 8));
+            events.add(getObtain(300, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 7));
+            events.add(getObtain(400, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 6));
+            events.add(getObtain(500, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 5));
+            events.add(getObtain(600, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 4));
+            events.add(getObtain(700, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 3));
+            events.add(getObtain(800, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 2));
+            events.add(getObtain(900, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 1));
+            events.add(getObtain(1000, MotionEvent.ACTION_MOVE, x / 2, 10));
+            events.add(getObtain(1000, MotionEvent.ACTION_UP, x / 2, 10));
+            sendPointerSync(events);
+            callback.success("视频滑动切换成功");
+        });
     }
 }

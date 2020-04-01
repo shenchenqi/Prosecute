@@ -41,6 +41,8 @@ public abstract class TremoloParam {
     public static Integer MAIN_FRAGMENT_USER_INTEGER;
     public static String USER_BACK_STRING;
     public static Integer USER_BACK_INTEGER;
+    public static String UPDATE_VERSION_CANCEL_STRING;
+    public static Integer UPDATE_VERSION_CANCEL_INTEGER;
 
     protected abstract void mainClass();
 
@@ -78,4 +80,11 @@ public abstract class TremoloParam {
     public static String AWEME_PROFILE_VIDEO_CALL_CLASS;
     public static String AWEME_PROFILE_VIDEO_CALL_REQUEST_METHOD;
     public static String AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD;
+
+    protected abstract void dialogClass();
+
+    protected static String DIALOG;
+    public static String DIALOG_CLASS;
+    public static String DIALOG_UPDATE_CLASS;
+    public static String DIALOG_UPDATE_CREATE_METHOD;
 }

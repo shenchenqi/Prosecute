@@ -75,7 +75,7 @@ public class AutoControl implements ControlInter {
                 //presenter.setMainPageFragmentView(view);
             }
         }, View.class, Bundle.class);
-        hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook(){
+        hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
@@ -107,9 +107,22 @@ public class AutoControl implements ControlInter {
                     return;
                 }
                 controlLogger.i("Video Change");
-                presenter.autoExecuteView();
+                presenter.autoMoveUser();
             }
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
+        hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (presenter == null) {
+                    controlLogger.e("当前工厂未实例");
+                    return;
+                }
+                controlLogger.i("User Load");
+                int count = hook.getIntegerField(param.getArgs()[0], "awemeCount");
+                presenter.autoLoadMoreVideo(count);
+            }
+        }, TremoloParam.AWEME_PROFILE_USER_CLASS);
     }
 
     @Override

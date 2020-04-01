@@ -12,6 +12,7 @@ import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
@@ -26,17 +27,19 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
 
     @Override
     public void onAttached() {
-        /*setHandlerPost(0, null, new Runnable() {
+        setHandlerPost(0, null, new Runnable() {
             @Override
             public void run() {
                 monitorLogger.d("视频数：" + videos.size());
-                for (Object object : videos) {
+                /*Iterator<Object> iterator = videos.iterator();
+                while (iterator.hasNext()) {
+                    Object object = iterator.next();
                     uploadVideo(JSON.toJSONString(object));
                     videos.remove(object);
-                }
+                }*/
                 handler.postDelayed(this::run, VideoInter.second * 10);
             }
-        });*/
+        });
     }
 
     private Object itemVideoInfo;

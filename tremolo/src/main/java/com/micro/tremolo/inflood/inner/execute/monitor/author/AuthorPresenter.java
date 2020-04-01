@@ -1,5 +1,6 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.author;
 
+import com.alibaba.fastjson.JSON;
 import com.micro.hook.plugin.PluginPresenter;
 import com.micro.network.OkHttp3;
 import com.micro.root.utils.Lang;
@@ -9,6 +10,7 @@ import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,17 +26,19 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
 
     @Override
     public void onAttached() {
-        /*setHandlerPost(0, null, new Runnable() {
+        setHandlerPost(0, null, new Runnable() {
             @Override
             public void run() {
                 monitorLogger.d("视频用户数：" + authors.size());
-                for (Map<String, Object> map : authors) {
+                /*Iterator<Map<String, Object>> iterator = authors.iterator();
+                while (iterator.hasNext()) {
+                    Map<String, Object> map = iterator.next();
                     uploadTremolo(map);
                     authors.remove(map);
-                }
+                }*/
                 handler.postDelayed(this::run, AuthorInter.second * 10);
             }
-        });*/
+        });
     }
 
     private Object authorInfo;

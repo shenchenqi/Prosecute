@@ -17,17 +17,18 @@ public class GsonResponseBodyConverter<T> implements Converter<ResponseBody, T> 
     private final Gson gson;
     private final Type type;
 
-    public GsonResponseBodyConverter(Gson gson, Type type){
+    public GsonResponseBodyConverter(Gson gson, Type type) {
         this.gson = gson;
         this.type = type;
     }
+
     @Override
     public T convert(ResponseBody value) throws IOException {
 
         String response = value.string();
         BaseBean httpResult = gson.fromJson(response, BaseBean.class);
-        if (httpResult.getCode() == 200){
-            return gson.fromJson(response,type);
+        if (httpResult.getCode() == 200) {
+            return gson.fromJson(response, type);
         } else {
             throw new IOException(String.format("网络请求报错：　[%s][%s]", httpResult.getCode(), httpResult.getMessage()));
         }

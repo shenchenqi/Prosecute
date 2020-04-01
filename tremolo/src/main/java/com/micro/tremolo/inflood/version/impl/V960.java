@@ -13,6 +13,7 @@ public class V960 extends TremoloParam {
         mainClass();
         feedClass();
         profileClass();
+        dialogClass();
     }
 
     @Override
@@ -37,6 +38,8 @@ public class V960 extends TremoloParam {
         MAIN_FRAGMENT_USER_INTEGER = 2131173488;
         USER_BACK_STRING = PACKAGE_COLON + "id/ko";
         USER_BACK_INTEGER = 2131165614;
+        UPDATE_VERSION_CANCEL_STRING = PACKAGE_COLON + "id/fap";
+        UPDATE_VERSION_CANCEL_INTEGER = 2131173449;
     }
 
     @Override
@@ -74,5 +77,13 @@ public class V960 extends TremoloParam {
         AWEME_PROFILE_VIDEO_CALL_CLASS = PACKAGE_PROFILE + ".presenter.b";
         AWEME_PROFILE_VIDEO_CALL_REQUEST_METHOD = "a";
         AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD = "getItems";
+    }
+
+    @Override
+    protected void dialogClass() {
+        DIALOG = "com.bytedance.ies.dmt.ui.c.a";
+        DIALOG_CLASS = DIALOG + ".a";
+        DIALOG_UPDATE_CLASS = "com.ss.android.ugc.aweme.update.m";
+        DIALOG_UPDATE_CREATE_METHOD = "onCreate";
     }
 }
