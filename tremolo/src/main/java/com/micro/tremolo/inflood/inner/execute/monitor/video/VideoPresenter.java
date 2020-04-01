@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.PluginPresenter;
 import com.micro.network.OkHttp3;
+import com.micro.network.http3.BaseManager;
 import com.micro.tremolo.ApiService;
+import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.User;
@@ -12,7 +14,6 @@ import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
@@ -31,12 +32,13 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
             @Override
             public void run() {
                 monitorLogger.d("视频数：" + videos.size());
-                /*Iterator<Object> iterator = videos.iterator();
-                while (iterator.hasNext()) {
-                    Object object = iterator.next();
-                    uploadVideo(JSON.toJSONString(object));
-                    videos.remove(object);
-                }*/
+                if (!videos.isEmpty()) {
+                    List<Object> videoList = new ArrayList<>(videos);
+                    for (Object object : videoList) {
+                        uploadVideo(JSON.toJSONString(object));
+                        videos.remove(object);
+                    }
+                }
                 handler.postDelayed(this::run, VideoInter.second * 10);
             }
         });
@@ -122,10 +124,21 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
     }
 
     private synchronized void uploadVideo(final String data) {
-        monitorLogger.d("视频上传");
-        OkHttp3.getInstance(getContext()).create(ApiService.class)
+        monitorLogger.d("视频上传 : " + data);
+        /*OkHttp3.getInstance(getContext()).create(ApiService.class)
                 .uploadVideo(data)
                 .subscribe(objectBaseBean -> monitorLogger.i(String.format("抖音视频[%s][%s]", objectBaseBean.getCode(), objectBaseBean.getMessage())),
-                        throwable -> monitorLogger.e(throwable, "抖音视频上传报错")).dispose();
+                        throwable -> monitorLogger.e(throwable, "抖音视频上传报错")).dispose();*/
+        OkHttp3.getInstance(Const.context).post(ApiService.TREMOLO_VIDEO_URL, null, null, new BaseManager.RequestCallback() {
+            @Override
+            public void success(int code, String message) {
+                monitorLogger.i(String.format("抖音视频 [%s][%s]", code, message));
+            }
+
+            @Override
+            public void error(Exception e) {
+                monitorLogger.e(e, "抖音视频上传报错");
+            }
+        });
     }
 }

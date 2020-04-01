@@ -19,11 +19,11 @@ import java.util.Set;
  */
 public class Lang {
 
-    public boolean isNotNull(Object obj) {
+    public static boolean isNotNull(Object obj) {
         return obj != null;
     }
 
-    public boolean isNull(Object obj) {
+    public static boolean isNull(Object obj) {
         return obj == null;
     }
 

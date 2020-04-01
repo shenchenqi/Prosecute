@@ -66,7 +66,7 @@ public abstract class BaseManager {
         post(url, null, null, callback);
     }
 
-    protected void post(String url, Map<String, String> headerMap, Map<String, String> bodyMap, RequestCallback callback) {
+    protected void post(String url, Map<String, Object> headerMap, Map<String, Object> bodyMap, RequestCallback callback) {
         asyncAskPost(url, headerMap, bodyMap, callback);
     }
 
@@ -74,19 +74,19 @@ public abstract class BaseManager {
         get(url, null, null, callback);
     }
 
-    protected void get(String url, Map<String, String> headerMap, Map<String, String> bodyMap, RequestCallback callback) {
+    protected void get(String url, Map<String, Object> headerMap, Map<String, Object> bodyMap, RequestCallback callback) {
         asyncAskGet(url, headerMap, bodyMap, callback);
     }
 
-    private void asyncAskPost(String url, Map<String, String> headerMap, Map<String, String> bodyMap, RequestCallback callback) {
+    private void asyncAskPost(String url, Map<String, Object> headerMap, Map<String, Object> bodyMap, RequestCallback callback) {
         asyncAsk(url, Type.POST, headerMap, bodyMap, callback);
     }
 
-    private void asyncAskGet(String url, Map<String, String> headerMap, Map<String, String> bodyMap, RequestCallback callback) {
+    private void asyncAskGet(String url, Map<String, Object> headerMap, Map<String, Object> bodyMap, RequestCallback callback) {
         asyncAsk(url, Type.GET, headerMap, bodyMap, callback);
     }
 
-    private synchronized void asyncAsk(String url, Type type, Map<String, String> headerMap, Map<String, String> bodyMap, final RequestCallback callback) {
+    private synchronized void asyncAsk(String url, Type type, Map<String, Object> headerMap, Map<String, Object> bodyMap, final RequestCallback callback) {
         Call call = getCall(url, type, headerMap, bodyMap);
         call.enqueue(new Callback() {
             @Override
@@ -101,37 +101,35 @@ public abstract class BaseManager {
         });
     }
 
-    private Call getCall(String url, Type type, Map<String, String> headerMap, Map<String, String> bodyMap) {
+    private Call getCall(String url, Type type, Map<String, Object> headerMap, Map<String, Object> bodyMap) {
         return okHttpClient.newCall(getRequest(url, type, headerMap, bodyMap));
     }
 
-    private Request getRequest(String url, Type type, Map<String, String> headerMap, Map<String, String> bodyMap) {
+    private Request getRequest(String url, Type type, Map<String, Object> headerMap, Map<String, Object> bodyMap) {
         return getRequestBuilder(url, type, headerMap, bodyMap).build();
     }
 
-    private RequestBody getBody(Map<String, String> bodyMap) {
-        if (bodyMap == null || bodyMap.isEmpty()) {
-            return null;
-        }
+    private RequestBody getBody(Map<String, Object> bodyMap) {
         FormBody.Builder builder = new FormBody.Builder();
-        for (String key : bodyMap.keySet()) {
-            builder.add(key, bodyMap.get(key));
+        if (bodyMap != null && !bodyMap.isEmpty()) {
+            for (String key : bodyMap.keySet()) {
+                builder.add(key, bodyMap.get(key).toString());
+            }
         }
         return builder.build();
     }
 
-    private Headers getHeader(Map<String, String> headerMap) {
-        if (headerMap == null || headerMap.isEmpty()) {
-            return null;
-        }
+    private Headers getHeader(Map<String, Object> headerMap) {
         Headers.Builder builder = new Headers.Builder();
-        for (String key : headerMap.keySet()) {
-            builder.add(key, headerMap.get(key));
+        if (headerMap != null && !headerMap.isEmpty()) {
+            for (String key : headerMap.keySet()) {
+                builder.add(key, headerMap.get(key).toString());
+            }
         }
         return builder.build();
     }
 
-    private Request.Builder getRequestBuilder(String url, Type type, Map<String, String> headerMap, Map<String, String> bodyMap) {
+    private Request.Builder getRequestBuilder(String url, Type type, Map<String, Object> headerMap, Map<String, Object> bodyMap) {
         Request.Builder builder = new Request.Builder();
         builder.headers(getHeader(headerMap));
         builder.method(type.name(), getBody(bodyMap));

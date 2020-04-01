@@ -59,7 +59,7 @@ public class OkHttp3 extends BaseManager {
     }
 
     @Override
-    public void post(String url, Map<String, String> headerMap, Map<String, String> bodyMap, RequestCallback callback) {
+    public void post(String url, Map<String, Object> headerMap, Map<String, Object> bodyMap, RequestCallback callback) {
         Log.d(TAG, "post", String.format("POST请求 [链接： %s] [headerMap: %s] [bodyMap: %s]", url, JSON.toJSONString(headerMap), JSON.toJSONString(bodyMap)));
         super.post(url, headerMap, bodyMap, callback);
     }
@@ -71,7 +71,7 @@ public class OkHttp3 extends BaseManager {
     }
 
     @Override
-    public void get(String url, Map<String, String> headerMap, Map<String, String> bodyMap, RequestCallback callback) {
+    public void get(String url, Map<String, Object> headerMap, Map<String, Object> bodyMap, RequestCallback callback) {
         Log.d(TAG, "get", String.format("GET请求 [链接： %s] [headerMap: %s] [bodyMap: %s]", url, JSON.toJSONString(headerMap), JSON.toJSONString(bodyMap)));
         super.get(url, headerMap, bodyMap, callback);
     }

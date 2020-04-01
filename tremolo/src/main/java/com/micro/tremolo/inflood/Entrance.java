@@ -12,7 +12,7 @@ import com.micro.tremolo.inflood.inner.TestHook;
 import com.micro.tremolo.inflood.inner.execute.control.AutoControl;
 import com.micro.tremolo.inflood.inner.execute.monitor.account.Account;
 import com.micro.tremolo.inflood.inner.execute.monitor.author.Author;
-import com.micro.tremolo.inflood.inner.execute.monitor.dialog.HideDialog;
+import com.micro.tremolo.inflood.inner.execute.dialog.HideDialog;
 import com.micro.tremolo.inflood.inner.execute.monitor.video.Video;
 import com.micro.tremolo.inflood.inner.logcat.Logcat;
 import com.micro.tremolo.inflood.mvp.EntranceInter;

@@ -2,15 +2,17 @@ package com.micro.tremolo.inflood.inner.execute.monitor.author;
 
 import com.alibaba.fastjson.JSON;
 import com.micro.hook.plugin.PluginPresenter;
+import com.micro.network.Api;
 import com.micro.network.OkHttp3;
+import com.micro.network.http3.BaseManager;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.ApiService;
+import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +32,13 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
             @Override
             public void run() {
                 monitorLogger.d("视频用户数：" + authors.size());
-                /*Iterator<Map<String, Object>> iterator = authors.iterator();
-                while (iterator.hasNext()) {
-                    Map<String, Object> map = iterator.next();
-                    uploadTremolo(map);
-                    authors.remove(map);
-                }*/
+                if (!authors.isEmpty()) {
+                    List<Map<String, Object>> authorList = new ArrayList<>(authors);
+                    for (Map<String, Object> map : authorList) {
+                        uploadTremolo(map);
+                        authors.remove(map);
+                    }
+                }
                 handler.postDelayed(this::run, AuthorInter.second * 10);
             }
         });
@@ -56,11 +59,11 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
     }
 
     public synchronized void saveUserTableItem(User user) {
-        UserModelTable userTable = loadUserTable(user);
-        authors.add(userTable.getUserMap());
+        Map<String, Object> userTableMap = loadUserTable(user);
+        authors.add(userTableMap);
     }
 
-    private synchronized UserModelTable loadUserTable(User user) {
+    private synchronized Map<String, Object> loadUserTable(User user) {
         UserModelTable userTable = new UserModelTable();
         userTable.setUserId(user.getUid());
         userTable.setNickname(user.getNickname());
@@ -106,15 +109,26 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
                 userTable.setUri(avatarThumb.getUrlKey());
             }
         }
-        //monitorLogger.d(userTable.toString());
-        return userTable;
+        monitorLogger.d(String.format("视频用户[%s], Map[%s]", userTable.toString(), userTable.getUserMap()));
+        return userTable.getUserMap();
     }
 
     private void uploadTremolo(final Map<String, Object> data) {
-        monitorLogger.d("视频用户上传");
-        OkHttp3.getInstance(getContext()).create(ApiService.class)
+        monitorLogger.d("视频用户上传 : " + JSON.toJSONString(data));
+        /*OkHttp3.getInstance(getContext()).create(ApiService.class)
                 .uploadTremolo(data)
                 .subscribe(objectBaseBean -> monitorLogger.i(String.format("抖音用户[%s][%s]", objectBaseBean.getCode(), objectBaseBean.getMessage())),
-                        throwable -> monitorLogger.e(throwable, "抖音用户上传报错")).dispose();
+                        throwable -> monitorLogger.e(throwable, "抖音用户上传报错")).dispose();*/
+        /*OkHttp3.getInstance(Const.context).post(ApiService.TREMOLO_USER_URL, null, data, new BaseManager.RequestCallback() {
+            @Override
+            public void success(int code, String message) {
+                monitorLogger.i(String.format("抖音用户 [%s][%s]", code, message));
+            }
+
+            @Override
+            public void error(Exception e) {
+                monitorLogger.e(e, "抖音用户上传报错");
+            }
+        });*/
     }
 }

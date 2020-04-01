@@ -2,7 +2,6 @@ package com.micro.hook.plugin;
 
 import android.content.Context;
 
-import com.micro.hook.AutoControlLayout;
 import com.micro.network.http3.filter.BaseBean;
 import com.micro.network.http3.filter.MapResultFilter;
 import com.micro.root.mvp.BasePresenter;

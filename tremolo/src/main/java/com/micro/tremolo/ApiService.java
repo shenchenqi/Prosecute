@@ -1,5 +1,6 @@
 package com.micro.tremolo;
 
+import com.micro.network.Api;
 import com.micro.network.http3.filter.BaseBean;
 
 import java.util.Map;
@@ -15,6 +16,9 @@ import retrofit2.http.POST;
  * created by kilin on 20-3-19 上午9:59
  */
 public interface ApiService {
+
+    String TREMOLO_USER_URL = Api.BASE_URL + "/Media/Dy/uadd";
+    String TREMOLO_VIDEO_URL = Api.BASE_URL + "/Media/Dy/vadd";
 
     @FormUrlEncoded
     @POST("/Media/Dy/uadd")

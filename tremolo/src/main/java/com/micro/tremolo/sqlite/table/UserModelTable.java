@@ -1,5 +1,7 @@
 package com.micro.tremolo.sqlite.table;
 
+import com.micro.root.utils.Lang;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -244,29 +246,65 @@ public class UserModelTable {
 
     public Map<String, Object> getUserMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("userId", getUserId() + "");
-        map.put("nickname", getNickname() + "");
-        map.put("tremoloId", getTremoloId() + "");
-        map.put("tremoloNumberId", getTremoloNumberId() + "");
-        map.put("birthday", getBirthday() + "");
-        map.put("city", getCity() + "");
-        map.put("country", getCountry() + "");
-        map.put("district", getDistrict() + "");
-        map.put("schoolName", getSchoolName() + "");
-        map.put("signature", getSignature() + "");
-        map.put("customVerify", getCustomVerify() + "");
-        map.put("enterpriseVerify", getEnterpriseVerify() + "");
-        map.put("requestId", getRequestId() + "");
-        map.put("followingCount", getFollowingCount() + "");
-        map.put("favoritingCount", getFavoritingCount() + "");
-        map.put("awemeCount", getAwemeCount() + "");
-        map.put("fansCount", getFansCount() + "");
-        map.put("movingCount", getMovingCount() + "");
-        map.put("avatarList", getAvatarList() + "");
-        map.put("avatarMediumList", getAvatarMediumList() + "");
-        map.put("avatarThumbList", getAvatarThumbList() + "");
-        map.put("uri", getUri() + "");
-        map.put("urlKey", getUrlKey() + "");
+        if (Lang.isNotEmpty(getUserId())) {
+            map.put("userId", getUserId());
+        }
+        if (Lang.isNotEmpty(getNickname())) {
+            map.put("nickname", getNickname());
+        }
+        if (Lang.isNotEmpty(getTremoloId())) {
+            map.put("tremoloId", getTremoloId());
+        }
+        if (Lang.isNotEmpty(getTremoloNumberId())) {
+            map.put("tremoloNumberId", getTremoloNumberId());
+        }
+        if (Lang.isNotEmpty(getBirthday())) {
+            map.put("birthday", getBirthday());
+        }
+        if (Lang.isNotEmpty(getCity())) {
+            map.put("city", getCity());
+        }
+        if (Lang.isNotEmpty(getCountry())) {
+            map.put("country", getCountry());
+        }
+        if (Lang.isNotEmpty(getDistrict())) {
+            map.put("district", getDistrict());
+        }
+        if (Lang.isNotEmpty(getSchoolName())) {
+            map.put("schoolName", getSchoolName());
+        }
+        if (Lang.isNotEmpty(getSignature())) {
+            map.put("signature", getSignature());
+        }
+        if (Lang.isNotEmpty(getCustomVerify())) {
+            map.put("customVerify", getCustomVerify());
+        }
+        if (Lang.isNotEmpty(getEnterpriseVerify())) {
+            map.put("enterpriseVerify", getEnterpriseVerify());
+        }
+        if (Lang.isNotEmpty(getRequestId())) {
+            map.put("requestId", getRequestId());
+        }
+        map.put("followingCount", getFollowingCount());
+        map.put("favoritingCount", getFavoritingCount());
+        map.put("awemeCount", getAwemeCount());
+        map.put("fansCount", getFansCount());
+        map.put("movingCount", getMovingCount());
+        if (Lang.isNotEmpty(getAvatarList())) {
+            map.put("avatarList", getAvatarList());
+        }
+        if (Lang.isNotEmpty(getAvatarMediumList())) {
+            map.put("avatarMediumList", getAvatarMediumList());
+        }
+        if (Lang.isNotEmpty(getAvatarThumbList())) {
+            map.put("avatarThumbList", getAvatarThumbList());
+        }
+        if (Lang.isNotEmpty(getUri())) {
+            map.put("uri", getUri());
+        }
+        if (Lang.isNotEmpty(getUrlKey())) {
+            map.put("urlKey", getUrlKey());
+        }
         return map;
     }
 }
