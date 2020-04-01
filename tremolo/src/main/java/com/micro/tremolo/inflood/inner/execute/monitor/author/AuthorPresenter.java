@@ -32,13 +32,13 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
             @Override
             public void run() {
                 monitorLogger.d("视频用户数：" + authors.size());
-                if (!authors.isEmpty()) {
+                /*if (!authors.isEmpty()) {
                     List<Map<String, Object>> authorList = new ArrayList<>(authors);
-                    for (Map<String, Object> map : authorList) {
-                        uploadTremolo(map);
-                        authors.remove(map);
+                    for (int i = 0; i < authorList.size(); i++) {
+                        uploadTremolo(authorList.get(i));
+                        authors.remove(i);
                     }
-                }
+                }*/
                 handler.postDelayed(this::run, AuthorInter.second * 10);
             }
         });

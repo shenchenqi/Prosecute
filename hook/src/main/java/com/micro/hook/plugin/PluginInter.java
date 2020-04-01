@@ -1,6 +1,5 @@
 package com.micro.hook.plugin;
 
-import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 
 /**
@@ -8,5 +7,5 @@ import com.micro.root.mvp.BaseInterface;
  */
 public interface PluginInter extends BaseInterface {
 
-    void monitor(Hook hook);
+    void monitor();
 }

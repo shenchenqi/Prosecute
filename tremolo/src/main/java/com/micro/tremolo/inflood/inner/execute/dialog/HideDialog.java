@@ -26,7 +26,7 @@ public class HideDialog implements PluginInter {
     }
 
     @Override
-    public void monitor(final Hook hook) {
+    public void monitor() {
         /*hook.methodMonitor(TremoloParam.DIALOG_CLASS, "a", new ForeignHook(){
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {

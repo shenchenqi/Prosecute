@@ -14,7 +14,9 @@ import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
 
@@ -24,7 +26,8 @@ import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
  */
 public class VideoPresenter extends PluginPresenter<VideoInter> {
 
-    private static List<Object> videos = new ArrayList<>();
+    private static List<Map<String, VideoModelTable>> videos = new ArrayList<>();
+    private static Map<String, VideoModelTable> videoModelTableMap = new HashMap<>();
 
     @Override
     public void onAttached() {
@@ -32,13 +35,13 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
             @Override
             public void run() {
                 monitorLogger.d("视频数：" + videos.size());
-                if (!videos.isEmpty()) {
-                    List<Object> videoList = new ArrayList<>(videos);
-                    for (Object object : videoList) {
-                        uploadVideo(JSON.toJSONString(object));
-                        videos.remove(object);
+                /*if (!videos.isEmpty()) {
+                    List<Map<String, VideoModelTable>> videoList = new ArrayList<>(videos);
+                    for (int i = 0; i < videoList.size(); i++) {
+                        uploadVideo(JSON.toJSONString(videoList.get(i).values()));
+                        videos.remove(i);//java.lang.IndexOutOfBoundsException: Invalid index 2, size is 2
                     }
-                }
+                }*/
                 handler.postDelayed(this::run, VideoInter.second * 10);
             }
         });
@@ -70,17 +73,21 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
     }
 
     public synchronized void saveVideoTableList(List<Aweme> awemeList) {
-        List<VideoModelTable> videoModelTables = new ArrayList<>();
         for (Aweme aweme : awemeList) {
-            videoModelTables.add(loadVideoTable(aweme));
+            videoModelTableMap.put(aweme.getAid(), loadVideoTable(aweme));
+            if (videoModelTableMap.size() > 30) {
+                videos.add(videoModelTableMap);
+                videoModelTableMap.clear();
+            }
         }
-        videos.add(videoModelTables);
     }
 
     public synchronized void saveVideoTableItem(Aweme aweme) {
-        List<VideoModelTable> videoModelTables = new ArrayList<>();
-        videoModelTables.add(loadVideoTable(aweme));
-        videos.add(videoModelTables);
+        videoModelTableMap.put(aweme.getAid(), loadVideoTable(aweme));
+        if (videoModelTableMap.size() > 30) {
+            videos.add(videoModelTableMap);
+            videoModelTableMap.clear();
+        }
     }
 
     private synchronized VideoModelTable loadVideoTable(Aweme aweme) {
@@ -129,7 +136,7 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
                 .uploadVideo(data)
                 .subscribe(objectBaseBean -> monitorLogger.i(String.format("抖音视频[%s][%s]", objectBaseBean.getCode(), objectBaseBean.getMessage())),
                         throwable -> monitorLogger.e(throwable, "抖音视频上传报错")).dispose();*/
-        OkHttp3.getInstance(Const.context).post(ApiService.TREMOLO_VIDEO_URL, null, null, new BaseManager.RequestCallback() {
+        /*OkHttp3.getInstance(Const.context).post(ApiService.TREMOLO_VIDEO_URL, null, null, new BaseManager.RequestCallback() {
             @Override
             public void success(int code, String message) {
                 monitorLogger.i(String.format("抖音视频 [%s][%s]", code, message));
@@ -139,6 +146,6 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
             public void error(Exception e) {
                 monitorLogger.e(e, "抖音视频上传报错");
             }
-        });
+        });*/
     }
 }

@@ -6,10 +6,8 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
-import com.micro.root.utils.InspectApply;
-import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.TestHook;
-import com.micro.tremolo.inflood.inner.execute.control.AutoControl;
+import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
 import com.micro.tremolo.inflood.inner.execute.monitor.account.Account;
 import com.micro.tremolo.inflood.inner.execute.monitor.author.Author;
 import com.micro.tremolo.inflood.inner.execute.dialog.HideDialog;
@@ -79,7 +77,6 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         logger.i(TAG, "executeSQL", "数据库");
     }
 
-    private AutoControl autoControl;
     private Account account;
     private Author author;
     private Video video;
@@ -88,13 +85,12 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     @Override
     public void config() {
         logger.i(TAG, "config", "配置");
-        InspectApply.openApply(getHookParam().getApplication(), Const.PACKAGE_NAME);
         try {
-            /*LitePal.initialize(getHookParam().getApplication());*/
-            autoControl = new AutoControl(getHookParam().getHook(), getHookParam().getApplication());
+            AutoUiControl autoUiControl = new AutoUiControl(getHookParam().getHook(), getHookParam().getApplication());
+            AutoUiControl.openApply(getHookParam().getApplication());
             account = new Account(getHookParam().getHook(), getHookParam().getApplication());
-            author = new Author(getHookParam().getHook(), getHookParam().getApplication());
-            video = new Video(getHookParam().getHook(), getHookParam().getApplication());
+            author = new Author(getHookParam().getHook(), getHookParam().getApplication(), autoUiControl);
+            video = new Video(getHookParam().getHook(), getHookParam().getApplication(), autoUiControl);
             dialog = new HideDialog(getHookParam().getHook(), getHookParam().getApplication());
         } catch (Throwable throwable) {
             logger.e(throwable, "配置报错");
@@ -110,20 +106,17 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     public void execute() {
-        if (autoControl != null) {
-            autoControl.autoControl(getHookParam().getHook());
-        }
         if (account != null) {
-            account.monitor(getHookParam().getHook());
+            account.monitor();
         }
         if (author != null) {
-            author.monitor(getHookParam().getHook());
+            author.monitor();
         }
         if (video != null) {
-            video.monitor(getHookParam().getHook());
+            video.monitor();
         }
         if (dialog != null) {
-            dialog.monitor(getHookParam().getHook());
+            dialog.monitor();
         }
     }
 

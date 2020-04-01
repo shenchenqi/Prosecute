@@ -21,7 +21,7 @@ public class Account extends Plugin<AccountPresenter, AccountInter> implements A
     }
 
     @Override
-    public void monitor(Hook hook) {
+    public void monitor() {
 
     }
 

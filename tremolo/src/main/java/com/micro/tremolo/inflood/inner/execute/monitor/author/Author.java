@@ -1,16 +1,20 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.author;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
+import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
+import static com.micro.tremolo.inflood.inner.execute.Deploy.controlLogger;
 import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
 
 /**
@@ -46,9 +50,12 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
         }
     }
 
-    public Author(Hook hook, Context context) throws Throwable {
+    private final AutoUiControl autoUiControl;
+
+    public Author(Hook hook, Context context, AutoUiControl autoUiControl) throws Throwable {
         super(hook, context);
         //logger.i("作者初始化");
+        this.autoUiControl = autoUiControl;
     }
 
     @Override
@@ -57,7 +64,20 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
     }
 
     @Override
-    public void monitor(final Hook hook) {
+    public void monitor() {
+        hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (autoUiControl == null) {
+                    monitorLogger.e("自动控制为空");
+                    return;
+                }
+                controlLogger.i("Load User Fragment View");
+                View view = (View) param.getArgs()[0];
+                autoUiControl.setProfileFragmentView(view);
+            }
+        }, View.class, Bundle.class);
         hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
@@ -66,8 +86,11 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
                     monitorLogger.e("当前工厂未实例");
                     return;
                 }
+                User user;
                 presenter.setAuthorInfo(param.getArgs()[0]);
-                presenter.obtainAuthor(new User(hook, presenter.getAuthorInfo()));
+                presenter.obtainAuthor(user = new User(hook, presenter.getAuthorInfo()));
+                controlLogger.i("User Load");
+                autoUiControl.autoLoadMoreVideo(user.getAwemeCount());
             }
         }, TremoloParam.AWEME_PROFILE_USER_CLASS);
     }
