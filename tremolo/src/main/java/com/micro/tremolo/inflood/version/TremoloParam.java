@@ -23,10 +23,16 @@ public abstract class TremoloParam {
 
     protected static String PACKAGE_COLON;
 
+    public static String MAIN_FRAGMENT_TOUCH_EVENT_STRING;
+    public static Integer MAIN_FRAGMENT_TOUCH_EVENT_INTEGER;
     public static String MAIN_FRAGMENT_ATTENTION_STRING;
     public static Integer MAIN_FRAGMENT_ATTENTION_INTEGER;
-    public static String MAIN_FRAGMENT_LIVE_STRING;
-    public static Integer MAIN_FRAGMENT_LIVE_INTEGER;
+    public static String MAIN_FRAGMENT_LIVE_LAYOUT_STRING;
+    public static Integer MAIN_FRAGMENT_LIVE_LAYOUT_INTEGER;
+    public static String MAIN_FRAGMENT_LIVE_TEXT_STRING;
+    public static Integer MAIN_FRAGMENT_LIVE_TEXT_INTEGER;
+    public static String MAIN_FRAGMENT_LIVE_BT_STRING;
+    public static Integer MAIN_FRAGMENT_LIVE_BT_INTEGER;
     public static String MAIN_FRAGMENT_SEARCH_STRING;
     public static Integer MAIN_FRAGMENT_SEARCH_INTEGER;
     public static String MAIN_FRAGMENT_RECOMMEND_STRING;
@@ -41,10 +47,13 @@ public abstract class TremoloParam {
     protected static String PACKAGE_MAIN;
 
     public static String AWEME_MAIN_ACTIVITY_CLASS;
+    public static String AWEME_MAIN_ACTIVITY_CHANGE_METHOD;
     public static String AWEME_MAIN_ACTIVITY_VIDEO_CHANGE_METHOD;
     public static String AWEME_MAIN_FRAGMENT_CLASS;
     public static String AWEME_MAIN_FRAGMENT_VIEW_CREATE_METHOD;
     public static String AWEME_MAIN_FRAGMENT_VIDEO_CHANGE_METHOD;
+    public static String AWEME_MAIN_PAGE_FRAGMENT_CLASS;
+    public static String AWEME_MAIN_PAGE_FRAGMENT_VIEW_CREATE_METHOD;
 
     protected abstract void feedClass();
 

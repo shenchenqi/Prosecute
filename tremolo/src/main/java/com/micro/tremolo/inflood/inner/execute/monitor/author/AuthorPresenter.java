@@ -1,9 +1,7 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.author;
 
-import com.alibaba.fastjson.JSON;
 import com.micro.hook.plugin.PluginPresenter;
 import com.micro.network.OkHttp3;
-import com.micro.network.http3.filter.BaseBean;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.ApiService;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
@@ -26,7 +24,7 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
 
     @Override
     public void onAttached() {
-        setHandlerPost(0, null, new Runnable() {
+        /*setHandlerPost(0, null, new Runnable() {
             @Override
             public void run() {
                 monitorLogger.d("视频用户数：" + authors.size());
@@ -36,7 +34,7 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
                 }
                 handler.postDelayed(this::run, AuthorInter.second * 10);
             }
-        });
+        });*/
     }
 
     private Object authorInfo;

@@ -22,6 +22,7 @@ public class AutoControl implements ControlInter {
         if (this.presenter != null) {
             this.presenter.setContext(context);
             this.presenter.setClass(this);
+            this.presenter.setHook(hook);
         }
     }
 
@@ -35,6 +36,19 @@ public class AutoControl implements ControlInter {
 
     @Override
     public void autoControl(final Hook hook) {
+        hook.methodMonitor(TremoloParam.AWEME_MAIN_ACTIVITY_CLASS, TremoloParam.AWEME_MAIN_ACTIVITY_CHANGE_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (presenter == null) {
+                    controlLogger.e("当前工厂未实例");
+                    return;
+                }
+                controlLogger.i("Load Main Activity");
+                View view = (View) hook.callMethod(hook.callMethod(param.getThisObject(), "getWindow"), "getDecorView");
+                presenter.setMainActivityView(view);
+            }
+        }, Bundle.class);
         hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_MAIN_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
@@ -46,6 +60,19 @@ public class AutoControl implements ControlInter {
                 controlLogger.i("Load Main Fragment View");
                 View view = (View) param.getArgs()[0];
                 presenter.setMainFragmentView(view);
+            }
+        }, View.class, Bundle.class);
+        hook.methodMonitor(TremoloParam.AWEME_MAIN_PAGE_FRAGMENT_CLASS, TremoloParam.AWEME_MAIN_PAGE_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (presenter == null) {
+                    controlLogger.e("当前工厂未实例");
+                    return;
+                }
+                controlLogger.i("Load Main Page Fragment View");
+                View view = (View) param.getArgs()[0];
+                //presenter.setMainPageFragmentView(view);
             }
         }, View.class, Bundle.class);
         hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook(){
@@ -61,6 +88,16 @@ public class AutoControl implements ControlInter {
                 presenter.setProfileFragmentView(view);
             }
         }, View.class, Bundle.class);
+        hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                if (presenter == null) {
+                    controlLogger.e("当前工厂未实例");
+                    return;
+                }
+            }
+        }, TremoloParam.AWEME_PROFILE_USER_CLASS);
         hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_MAIN_FRAGMENT_VIDEO_CHANGE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {

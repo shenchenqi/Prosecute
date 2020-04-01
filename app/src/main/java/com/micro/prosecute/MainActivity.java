@@ -30,7 +30,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView(ViewDataBinding binding) {
-
     }
 
     @Override
