@@ -2,9 +2,10 @@ package com.micro.tremolo.sqlite;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class DataTable extends DataSupport {
+public abstract class DataTable extends DataSupport implements Serializable {
 
     public static <T> boolean isExist(Class<T> modelClass, String... conditions) {
         return DataTable.isExist(modelClass, conditions);

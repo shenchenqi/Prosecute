@@ -1,31 +1,31 @@
 package com.micro.tremolo;
 
-import com.micro.network.Api;
-import com.micro.network.http3.filter.BaseBean;
+import com.micro.tremolo.rep.AppApiResponseBase;
+import com.micro.tremolo.rep.entity.EmptyEntity;
+import com.micro.tremolo.sqlite.table.UserModelTable;
+import com.micro.tremolo.sqlite.table.VideoModelTable;
 
-import java.util.Map;
-
-import io.reactivex.Observable;
-import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Multipart;
+import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 /**
  * created by kilin on 20-3-19 上午9:59
  */
 public interface ApiService {
-
-    String TREMOLO_USER_URL = Api.BASE_URL + "/Media/Dy/uadd";
-    String TREMOLO_VIDEO_URL = Api.BASE_URL + "/Media/Dy/vadd";
-
-    @FormUrlEncoded
+    /**
+     * 主播登录
+     *
+     * @return
+     */
     @POST("/Media/Dy/uadd")
-    Observable<BaseBean<Object>> uploadTremolo(@FieldMap Map<String, Object> userModelTable);
+    Call<AppApiResponseBase<EmptyEntity>> tremoloUser(@Body UserModelTable userModelTable);
 
-
-    @FormUrlEncoded
+    /**
+     * 视频上传
+     *
+     * @return
+     */
     @POST("/Media/Dy/vadd")
-    Observable<BaseBean<Object>> uploadVideo(@Field("videoModelTable") String videoModelTable);
+    Call<AppApiResponseBase<EmptyEntity>> tremoloVideo(@Body VideoModelTable videoModelTable);
 }

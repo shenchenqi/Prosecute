@@ -2,9 +2,10 @@ package com.micro.tremolo.sqlite.table;
 
 import com.alibaba.fastjson.JSON;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class VideoModelTable /*extends DataTable*/ {
+public class VideoModelTable implements Serializable/*extends DataTable*/ {
     private String id;
     private String title;
     private long createTime;
@@ -109,7 +110,7 @@ public class VideoModelTable /*extends DataTable*/ {
     /**
      * 用户为空 = -3; 视频链接为空 = -2; 统计数据为空 = -1; 已准备 = 0; 未上传 = 1; 上传 = 2;
      */
-    private int update;
+    /*private int update;
 
     public int getUpdate() {
         return update;
@@ -117,7 +118,7 @@ public class VideoModelTable /*extends DataTable*/ {
 
     public void setUpdate(int update) {
         this.update = update;
-    }
+    }*/
 
     @Override
     public String toString() {
@@ -133,7 +134,6 @@ public class VideoModelTable /*extends DataTable*/ {
                 ", \nurlList=" + JSON.toJSONString(urlList) +
                 ", \nuserId='" + userId + '\'' +
                 ", \nnickname='" + nickname + '\'' +
-                ", \nupdate=" + update +
                 "\n}";
     }
 }

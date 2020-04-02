@@ -2,11 +2,12 @@ package com.micro.tremolo.sqlite.table;
 
 import com.micro.root.utils.Lang;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UserModelTable {
+public class UserModelTable implements Serializable /*extends DataTable*/ {
     private String userId;
     private String nickname;
     private String tremoloId;
@@ -214,6 +215,19 @@ public class UserModelTable {
     public void setUrlKey(String urlKey) {
         this.urlKey = urlKey;
     }
+
+    /**
+     * 已准备 = 0; 未上传 = 1; 上传 = 2;
+     */
+    /*private int update;
+
+    public int getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(int update) {
+        this.update = update;
+    }*/
 
     @Override
     public String toString() {

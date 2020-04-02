@@ -1,22 +1,24 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.video;
 
-import com.alibaba.fastjson.JSON;
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.PluginPresenter;
-import com.micro.network.OkHttp3;
-import com.micro.network.http3.BaseManager;
 import com.micro.tremolo.ApiService;
-import com.micro.tremolo.Const;
+import com.micro.tremolo.inflood.DataBroadcast;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
+import com.micro.tremolo.rep.AppApiResponseBase;
+import com.micro.tremolo.rep.entity.EmptyEntity;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
+import com.so1spms.module.rpc.RPCApiFactory;
+import com.so1spms.module.rpc.callback.BaseCallback;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
 
@@ -26,25 +28,8 @@ import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
  */
 public class VideoPresenter extends PluginPresenter<VideoInter> {
 
-    private static List<Map<String, VideoModelTable>> videos = new ArrayList<>();
-    private static Map<String, VideoModelTable> videoModelTableMap = new HashMap<>();
-
     @Override
     public void onAttached() {
-        setHandlerPost(0, null, new Runnable() {
-            @Override
-            public void run() {
-                monitorLogger.d("视频数：" + videos.size());
-                /*if (!videos.isEmpty()) {
-                    List<Map<String, VideoModelTable>> videoList = new ArrayList<>(videos);
-                    for (int i = 0; i < videoList.size(); i++) {
-                        uploadVideo(JSON.toJSONString(videoList.get(i).values()));
-                        videos.remove(i);//java.lang.IndexOutOfBoundsException: Invalid index 2, size is 2
-                    }
-                }*/
-                handler.postDelayed(this::run, VideoInter.second * 10);
-            }
-        });
     }
 
     private Object itemVideoInfo;
@@ -74,20 +59,13 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
 
     public synchronized void saveVideoTableList(List<Aweme> awemeList) {
         for (Aweme aweme : awemeList) {
-            videoModelTableMap.put(aweme.getAid(), loadVideoTable(aweme));
-            if (videoModelTableMap.size() > 30) {
-                videos.add(videoModelTableMap);
-                videoModelTableMap.clear();
-            }
+            saveVideoTableItem(aweme);
         }
     }
 
     public synchronized void saveVideoTableItem(Aweme aweme) {
-        videoModelTableMap.put(aweme.getAid(), loadVideoTable(aweme));
-        if (videoModelTableMap.size() > 30) {
-            videos.add(videoModelTableMap);
-            videoModelTableMap.clear();
-        }
+        VideoModelTable videoTable = loadVideoTable(aweme);
+        DataBroadcast.sendVideo(getContext(), videoTable);
     }
 
     private synchronized VideoModelTable loadVideoTable(Aweme aweme) {
@@ -103,7 +81,7 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
             videoTable.setDownloadCount(statistics.getDownloadCount());
             videoTable.setShareCount(statistics.getShareCount());
         } else {
-            videoTable.setUpdate(-1);
+            /*videoTable.setUpdate(-1);*/
         }
         com.micro.tremolo.inflood.inner.replace.Video video = aweme.getVideo();
         if (video != null) {
@@ -111,41 +89,22 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
             if (videoUrlModel != null) {
                 videoTable.setUrlList(videoUrlModel.getUrlList());
             } else {
-                videoTable.setUpdate(-2);
+                /*videoTable.setUpdate(-2);*/
             }
         } else {
-            videoTable.setUpdate(-2);
+            /*videoTable.setUpdate(-2);*/
         }
         User user = aweme.getAuthor();
         if (user != null) {
             videoTable.setUserId(user.getUid());
             videoTable.setNickname(user.getNickname());
         } else {
-            videoTable.setUpdate(-3);
+            /*videoTable.setUpdate(-3);*/
         }
-        if (videoTable.getUpdate() == 0) {
+        /*if (videoTable.getUpdate() == 0) {
             videoTable.setUpdate(1);
-        }
-        //monitorLogger.d(videoTable.toString());
+            monitorLogger.d(videoTable.toString());
+        }*/
         return videoTable;
-    }
-
-    private synchronized void uploadVideo(final String data) {
-        monitorLogger.d("视频上传 : " + data);
-        /*OkHttp3.getInstance(getContext()).create(ApiService.class)
-                .uploadVideo(data)
-                .subscribe(objectBaseBean -> monitorLogger.i(String.format("抖音视频[%s][%s]", objectBaseBean.getCode(), objectBaseBean.getMessage())),
-                        throwable -> monitorLogger.e(throwable, "抖音视频上传报错")).dispose();*/
-        /*OkHttp3.getInstance(Const.context).post(ApiService.TREMOLO_VIDEO_URL, null, null, new BaseManager.RequestCallback() {
-            @Override
-            public void success(int code, String message) {
-                monitorLogger.i(String.format("抖音视频 [%s][%s]", code, message));
-            }
-
-            @Override
-            public void error(Exception e) {
-                monitorLogger.e(e, "抖音视频上传报错");
-            }
-        });*/
     }
 }

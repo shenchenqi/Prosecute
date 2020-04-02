@@ -1,2 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.micro.tremolo" />
+    package="com.micro.tremolo">
+
+    <application>
+        <receiver android:name=".inflood.DataBroadcast">
+            <intent-filter>
+                <action android:name="com.prosecute.tremolo.video" />
+                <action android:name="com.prosecute.tremolo.user" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

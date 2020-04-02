@@ -48,9 +48,11 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     private int moreCount;
     private int count;
+    private int mainControlStep;
 
     private void init() {
-        this.moreCount = 1;
+        moreCount = 0;
+        mainControlStep = 0;
         mainActivityControl = new MainActivityControl();
         mainFragmentControl = new MainFragmentControl();
         userProfileFragmentControl = new UserProfileFragmentControl();
@@ -63,10 +65,14 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                         break;
                     case moveUser:
                         if (isAppOnForeground(getIContext())) {
+                            if (mainControlStep != 0 && mainControlStep != 4) {
+                                return;
+                            }
                             mainFragmentControl.moveToUser(screenData[0], screenData[1], new AutoControlLayout.Callback() {
                                 @Override
                                 public void success(String value) {
                                     controlLogger.d(value);
+                                    mainControlStep = 1;
                                 }
 
                                 @Override
@@ -85,6 +91,9 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                         break;
                     case loadMoreVideo:
                         if (isAppOnForeground(getIContext())) {
+                            if (mainControlStep != 1) {
+                                return;
+                            }
                             userProfileFragmentControl.moveToUserMoreVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
                                 @Override
                                 public void success(String value) {
@@ -93,7 +102,8 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                                         moreCount++;
                                         handler.sendEmptyMessageDelayed(loadMoreVideo, sleep());
                                     } else {
-                                        moreCount = 1;
+                                        mainControlStep = 2;
+                                        moreCount = 0;
                                         handler.sendEmptyMessageDelayed(moveVideo, sleep());
                                     }
                                 }
@@ -109,16 +119,20 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                                 }
                             });
                         } else {
-                            moreCount = 1;
+                            moreCount = 0;
                             handler.sendEmptyMessage(openDouYin);
                         }
                         break;
                     case moveVideo:
                         if (isAppOnForeground(getIContext())) {
+                            if (mainControlStep != 2) {
+                                return;
+                            }
                             userProfileFragmentControl.moveToVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
                                 @Override
                                 public void success(String value) {
                                     controlLogger.d(value);
+                                    mainControlStep = 3;
                                     handler.sendEmptyMessageDelayed(changeVideo, sleep());
                                 }
 
@@ -138,10 +152,14 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                         break;
                     case changeVideo:
                         if (isAppOnForeground(getIContext())) {
+                            if (mainControlStep != 3) {
+                                return;
+                            }
                             mainFragmentControl.moveChangeVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
                                 @Override
                                 public void success(String value) {
                                     controlLogger.d(value);
+                                    mainControlStep = 4;
                                 }
 
                                 @Override
@@ -164,6 +182,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
     }
 
     public void autoMoveUser() {
+        mainControlStep = 0;
         handler.sendEmptyMessageDelayed(moveUser, 10 * second);
     }
 

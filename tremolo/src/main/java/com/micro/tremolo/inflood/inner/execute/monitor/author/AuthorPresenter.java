@@ -1,20 +1,19 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.author;
 
-import com.alibaba.fastjson.JSON;
 import com.micro.hook.plugin.PluginPresenter;
-import com.micro.network.Api;
-import com.micro.network.OkHttp3;
-import com.micro.network.http3.BaseManager;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.ApiService;
-import com.micro.tremolo.Const;
+import com.micro.tremolo.inflood.DataBroadcast;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
 import com.micro.tremolo.inflood.inner.replace.User;
+import com.micro.tremolo.rep.AppApiResponseBase;
+import com.micro.tremolo.rep.entity.EmptyEntity;
 import com.micro.tremolo.sqlite.table.UserModelTable;
+import com.so1spms.module.rpc.RPCApiFactory;
+import com.so1spms.module.rpc.callback.BaseCallback;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
 
@@ -24,24 +23,8 @@ import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
  */
 public class AuthorPresenter extends PluginPresenter<AuthorInter> {
 
-    private static List<Map<String, Object>> authors = new ArrayList<>();
-
     @Override
     public void onAttached() {
-        setHandlerPost(0, null, new Runnable() {
-            @Override
-            public void run() {
-                monitorLogger.d("视频用户数：" + authors.size());
-                /*if (!authors.isEmpty()) {
-                    List<Map<String, Object>> authorList = new ArrayList<>(authors);
-                    for (int i = 0; i < authorList.size(); i++) {
-                        uploadTremolo(authorList.get(i));
-                        authors.remove(i);
-                    }
-                }*/
-                handler.postDelayed(this::run, AuthorInter.second * 10);
-            }
-        });
     }
 
     private Object authorInfo;
@@ -59,11 +42,11 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
     }
 
     public synchronized void saveUserTableItem(User user) {
-        Map<String, Object> userTableMap = loadUserTable(user);
-        authors.add(userTableMap);
+        UserModelTable userTable = loadUserTable(user);
+        DataBroadcast.sendUser(getContext(), userTable);
     }
 
-    private synchronized Map<String, Object> loadUserTable(User user) {
+    private synchronized UserModelTable loadUserTable(User user) {
         UserModelTable userTable = new UserModelTable();
         userTable.setUserId(user.getUid());
         userTable.setNickname(user.getNickname());
@@ -109,26 +92,10 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
                 userTable.setUri(avatarThumb.getUrlKey());
             }
         }
-        monitorLogger.d(String.format("视频用户[%s], Map[%s]", userTable.toString(), userTable.getUserMap()));
-        return userTable.getUserMap();
-    }
-
-    private void uploadTremolo(final Map<String, Object> data) {
-        monitorLogger.d("视频用户上传 : " + JSON.toJSONString(data));
-        /*OkHttp3.getInstance(getContext()).create(ApiService.class)
-                .uploadTremolo(data)
-                .subscribe(objectBaseBean -> monitorLogger.i(String.format("抖音用户[%s][%s]", objectBaseBean.getCode(), objectBaseBean.getMessage())),
-                        throwable -> monitorLogger.e(throwable, "抖音用户上传报错")).dispose();*/
-        /*OkHttp3.getInstance(Const.context).post(ApiService.TREMOLO_USER_URL, null, data, new BaseManager.RequestCallback() {
-            @Override
-            public void success(int code, String message) {
-                monitorLogger.i(String.format("抖音用户 [%s][%s]", code, message));
-            }
-
-            @Override
-            public void error(Exception e) {
-                monitorLogger.e(e, "抖音用户上传报错");
-            }
-        });*/
+        /*if (userTable.getUpdate() == 0) {
+            userTable.setUpdate(1);
+            monitorLogger.d(String.format("视频用户[%s], Map[%s]", userTable.toString(), userTable.getUserMap()));
+        }*/
+        return userTable;
     }
 }

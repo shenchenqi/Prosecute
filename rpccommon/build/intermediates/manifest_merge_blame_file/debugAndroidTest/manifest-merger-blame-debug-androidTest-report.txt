@@ -1,0 +1,46 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.etransfar.module.rpccommon.test" >
+4
+5    <uses-sdk
+5-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:5:5-74
+6        android:minSdkVersion="14"
+6-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:5:15-41
+7        android:targetSdkVersion="26" />
+7-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:5:42-71
+8
+9    <instrumentation
+9-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:11:5-15:85
+10        android:name="android.test.InstrumentationTestRunner"
+10-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:11:22-75
+11        android:functionalTest="false"
+11-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:14:22-52
+12        android:handleProfiling="false"
+12-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:13:22-53
+13        android:label="Tests for com.etransfar.module.rpccommon.test"
+13-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:15:22-83
+14        android:targetPackage="com.etransfar.module.rpccommon.test" />
+14-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:12:22-81
+15
+16    <uses-permission android:name="android.permission.INTERNET" />
+16-->[__tested_artifact__::rpccommon] /Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-67
+16-->[__tested_artifact__::rpccommon] /Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/library_manifest/debug/AndroidManifest.xml:11:22-64
+17    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+17-->[__tested_artifact__::rpccommon] /Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:5-76
+17-->[__tested_artifact__::rpccommon] /Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/library_manifest/debug/AndroidManifest.xml:12:22-73
+18    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+18-->[__tested_artifact__::rpccommon] /Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:5-79
+18-->[__tested_artifact__::rpccommon] /Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/library_manifest/debug/AndroidManifest.xml:13:22-76
+19
+20    <application
+20-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:7:5-9:19
+21        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+21-->[androidx.core:core:1.1.0] /Users/tangzhengwei/.gradle/caches/transforms-2/files-2.1/ab1ab2080c899c368946363ffb319963/core-1.1.0/AndroidManifest.xml:24:18-86
+22        android:debuggable="true" >
+22-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:7:18-43
+23        <uses-library android:name="android.test.runner" />
+23-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:8:9-60
+23-->/Users/tangzhengwei/work/GreenSource/commonMoudle/rpccommon/build/intermediates/tmp/manifest/androidTest/debug/manifestMerger8701286542926847937.xml:8:23-57
+24    </application>
+25
+26</manifest>

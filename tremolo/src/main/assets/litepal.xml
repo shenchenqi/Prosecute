@@ -2,9 +2,10 @@
 <litepal>
     <dbname value="TremoloDB" />
 
-    <version value="1" />
+    <version value="2" />
 
     <list>
         <mapping class="com.micro.tremolo.sqlite.table.VideoModelTable" />
+        <mapping class="com.micro.tremolo.sqlite.table.UserModelTable" />
     </list>
 </litepal>
