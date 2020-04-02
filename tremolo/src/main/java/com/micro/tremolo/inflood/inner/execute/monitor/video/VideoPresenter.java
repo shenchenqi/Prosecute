@@ -7,6 +7,7 @@ import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
+import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
 
 import java.util.ArrayList;
@@ -48,8 +49,14 @@ public class VideoPresenter extends PluginPresenter<VideoInter> {
     }
 
     public synchronized void saveVideoTableList(List<Aweme> awemeList) {
+        VideoListModelTable videoListModelTable = new VideoListModelTable();
+        List<VideoModelTable> videoTableList = new ArrayList<>();
         for (Aweme aweme : awemeList) {
-            saveVideoTableItem(aweme);
+            videoTableList.add(loadVideoTable(aweme));
+        }
+        if (!videoTableList.isEmpty()) {
+            videoListModelTable.setVideoModelTableList(videoTableList);
+            DataBroadcast.sendVideoList(getContext(), videoListModelTable);
         }
     }
 

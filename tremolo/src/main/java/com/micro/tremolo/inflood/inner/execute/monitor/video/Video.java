@@ -52,23 +52,9 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
 
     @Override
     public void monitor() {
-        hook.methodMonitor(TremoloParam.AWEME_MAIN_ACTIVITY_CLASS, TremoloParam.AWEME_MAIN_ACTIVITY_CHANGE_METHOD, new ForeignHook() {
-            @Override
-            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
-                if (autoUiControl == null) {
-                    monitorLogger.e("自动控制为空");
-                    return;
-                }
-                controlLogger.i("Load Main Activity");
-                View view = (View) hook.callMethod(hook.callMethod(param.getThisObject(), "getWindow"), "getDecorView");
-                autoUiControl.setMainActivityView(view);
-            }
-        }, Bundle.class);
         hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_MAIN_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 if (autoUiControl == null) {
                     monitorLogger.e("自动控制为空");
                     return;
@@ -81,7 +67,6 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
         hook.methodMonitor(TremoloParam.AWEME_PROFILE_VIDEO_CALL_CLASS, TremoloParam.AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 if (presenter == null) {
                     monitorLogger.e("当前工厂未实例");
                     return;
@@ -94,7 +79,6 @@ public class Video extends Plugin<VideoPresenter, VideoInter> implements VideoIn
         hook.methodMonitor(TremoloParam.AWEME_MAIN_FRAGMENT_CLASS, TremoloParam.AWEME_MAIN_FRAGMENT_VIDEO_CHANGE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 if (presenter == null) {
                     monitorLogger.e("当前工厂未实例");
                     return;

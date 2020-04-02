@@ -22,6 +22,7 @@ public abstract class TremoloParam {
     protected abstract void loadR();
 
     protected static String PACKAGE_COLON;
+    public static String BIND_VIEW;
 
     public static String MAIN_FRAGMENT_TOUCH_EVENT_STRING;
     public static Integer MAIN_FRAGMENT_TOUCH_EVENT_INTEGER;
@@ -43,6 +44,14 @@ public abstract class TremoloParam {
     public static Integer USER_BACK_INTEGER;
     public static String UPDATE_VERSION_CANCEL_STRING;
     public static Integer UPDATE_VERSION_CANCEL_INTEGER;
+    public static String INFO_CANCEL_STRING;
+    public static Integer INFO_CANCEL_INTEGER;
+
+    protected abstract void logClass();
+
+    public static String LOG_CLASS;
+    public static String LOG_SET_METHOD;
+    public static String LOG_MSG_CLASS;
 
     protected abstract void mainClass();
 
@@ -85,6 +94,9 @@ public abstract class TremoloParam {
 
     protected static String DIALOG;
     public static String DIALOG_CLASS;
+    public static String DIALOG_VIEW_METHOD;
     public static String DIALOG_UPDATE_CLASS;
     public static String DIALOG_UPDATE_CREATE_METHOD;
+    public static String DIALOG_INFO_CLASS;
+    public static String DIALOG_INFO_CREATE_METHOD;
 }

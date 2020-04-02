@@ -43,6 +43,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     private Entrance(HookParam hookParam) throws Throwable {
         super(hookParam);
+        //InspectApply.openApply(hookParam.getApplication(), "com.micro.prosecute");
     }
 
     @Override
@@ -52,13 +53,13 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     protected void log() {
-        getHookParam().getHook().methodMonitor("com.ss.android.agilelogger.ALog", "println", new ForeignHook() {
+        getHookParam().getHook().methodMonitor(TremoloParam.LOG_CLASS, TremoloParam.LOG_SET_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 new Logcat(getHookParam().getHook(), param.getArgs()[0]);
             }
-        }, getHookParam().getHook().findClass("com.ss.android.agilelogger.d"));
+        }, getHookParam().getHook().findClass(TremoloParam.LOG_MSG_CLASS));
     }
 
     @Override

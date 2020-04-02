@@ -32,31 +32,6 @@ public class UserModelTable implements Serializable /*extends DataTable*/ {
     private String uri;
     private String urlKey;
 
-    /*public UserModelTable() {
-        userId="99895399349";
-        nickname="369吴家辉";
-        tremoloId="369wu";
-        tremoloNumberId="0";
-        birthday="1987-05-12";
-        city="广州市";
-        country="中国";
-        district="";
-        schoolName="";
-        signature="七十二家房客";
-
-        customVerify="演员";
-        enterpriseVerify="";
-        requestId="";
-        followingCount="58";
-        favoritingCount="0";
-        awemeCount="68";
-        fansCount="539411";
-        movingCount="79";
-        avatarList.add("https://p3-dy.byteimg.com/aweme/1080x1080/tos-cn-i-0813/19c7f56ed0c049e98f2d45b1a53e019d.jpeg");
-        uri="";
-        urlKey="";
-    }*/
-
     public String getUserId() {
         return userId;
     }

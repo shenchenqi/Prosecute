@@ -3,6 +3,7 @@ package com.micro.tremolo;
 import com.micro.network.available.model.ApiResponseBase;
 import com.micro.network.available.model.EmptyEntity;
 import com.micro.tremolo.sqlite.table.UserModelTable;
+import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
 
 import retrofit2.Call;
@@ -28,4 +29,12 @@ public interface ApiService {
      */
     @POST("/Media/Dy/vadd")
     Call<ApiResponseBase<EmptyEntity>> tremoloVideo(@Body VideoModelTable videoModelTable);
+
+    /**
+     * 视频上传列表
+     *
+     * @return
+     */
+    @POST("/Media/Dy/vadds")
+    Call<ApiResponseBase<EmptyEntity>> tremoloVideoList(@Body VideoListModelTable videoListModelTable);
 }

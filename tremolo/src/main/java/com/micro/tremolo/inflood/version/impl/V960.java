@@ -10,6 +10,7 @@ public class V960 extends TremoloParam {
     public V960() {
         PACKAGE = "com.ss.android.ugc.aweme";
         loadR();
+        logClass();
         mainClass();
         feedClass();
         profileClass();
@@ -19,6 +20,7 @@ public class V960 extends TremoloParam {
     @Override
     protected void loadR() {
         PACKAGE_COLON = PACKAGE + ":";
+        BIND_VIEW = "findViewById";
         MAIN_FRAGMENT_TOUCH_EVENT_STRING = PACKAGE_COLON + "id/av5";
         MAIN_FRAGMENT_TOUCH_EVENT_INTEGER = 2131167364;
         MAIN_FRAGMENT_ATTENTION_STRING = PACKAGE_COLON + "id/ewo";
@@ -40,6 +42,15 @@ public class V960 extends TremoloParam {
         USER_BACK_INTEGER = 2131165614;
         UPDATE_VERSION_CANCEL_STRING = PACKAGE_COLON + "id/fap";
         UPDATE_VERSION_CANCEL_INTEGER = 2131173449;
+        INFO_CANCEL_STRING = PACKAGE_COLON + "id/a7h";
+        INFO_CANCEL_INTEGER = 2131166455;
+    }
+
+    @Override
+    protected void logClass() {
+        LOG_CLASS = "com.ss.android.agilelogger.ALog";
+        LOG_SET_METHOD = "println";
+        LOG_MSG_CLASS = "com.ss.android.agilelogger.d";
     }
 
     @Override
@@ -83,7 +94,10 @@ public class V960 extends TremoloParam {
     protected void dialogClass() {
         DIALOG = "com.bytedance.ies.dmt.ui.c.a";
         DIALOG_CLASS = DIALOG + ".a";
+        DIALOG_VIEW_METHOD = "a";
         DIALOG_UPDATE_CLASS = "com.ss.android.ugc.aweme.update.m";
         DIALOG_UPDATE_CREATE_METHOD = "onCreate";
+        DIALOG_INFO_CLASS = "com.ss.android.ugc.aweme.main.cq";
+        DIALOG_INFO_CREATE_METHOD = "onCreate";
     }
 }

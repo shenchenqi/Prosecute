@@ -42,7 +42,6 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
     private final static int changeVideo = 1003;
 
     private Handler handler;
-    private MainActivityControl mainActivityControl;
     private MainFragmentControl mainFragmentControl;
     private UserProfileFragmentControl userProfileFragmentControl;
 
@@ -53,7 +52,6 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
     private void init() {
         moreCount = 0;
         mainControlStep = 0;
-        mainActivityControl = new MainActivityControl();
         mainFragmentControl = new MainFragmentControl();
         userProfileFragmentControl = new UserProfileFragmentControl();
         handler = new Handler(getIContext().getMainLooper()) {
@@ -183,12 +181,16 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     public void autoMoveUser() {
         mainControlStep = 0;
-        handler.sendEmptyMessageDelayed(moveUser, 10 * second);
+        if (Const.isAuto) {
+            handler.sendEmptyMessageDelayed(moveUser, 10 * second);
+        }
     }
 
     public void autoLoadMoreVideo(int count) {
         this.count = count;
-        handler.sendEmptyMessageDelayed(loadMoreVideo, 10 * second);
+        if (Const.isAuto) {
+            handler.sendEmptyMessageDelayed(loadMoreVideo, 10 * second);
+        }
     }
 
     @Override
@@ -204,25 +206,12 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         InspectApply.openApply(context, Const.PACKAGE_NAME);
     }
 
-    public void setMainActivityView(View view) {
-        mainActivityControl.setMainActivityView(view);
-    }
-
     public void setMainFragmentView(View view) {
         mainFragmentControl.setMainFragmentView(view);
     }
 
     public void setProfileFragmentView(View view) {
         userProfileFragmentControl.setProfileFragmentView(view);
-    }
-
-    private class MainActivityControl {
-
-        private View mainActivityView;
-
-        private void setMainActivityView(View mainActivityView) {
-            this.mainActivityView = mainActivityView;
-        }
     }
 
     private class MainFragmentControl {

@@ -32,6 +32,8 @@ public class Const {
         InitNetwork.loadNetwork(context, ApiService.class);
     }
 
+    public final static boolean isAuto = true;
+
     public final static String PACKAGE_NAME = "com.ss.android.ugc.aweme";
     public final static String APPLICATION = "android.app.Application";
     //"com.ss.android.ugc.aweme.app.AwemeApplication" "com.ss.android.ugc.aweme.app.host.HostApplication" "com.ss.android.ugc.aweme.app.BaseMediaApplication";

@@ -68,7 +68,6 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
         hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 if (autoUiControl == null) {
                     monitorLogger.e("自动控制为空");
                     return;
@@ -81,7 +80,6 @@ public class Author extends Plugin<AuthorPresenter, AuthorInter> implements Auth
         hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
                 if (presenter == null) {
                     monitorLogger.e("当前工厂未实例");
                     return;
