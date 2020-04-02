@@ -27,8 +27,7 @@ dependencies {
     implementation project(path: ':root')
     implementation project(path: ':hook')
     implementation project(path: ':rom')
-    implementation project(path: ':rpccommon')
 
+    api deps.alibaba.fastjson
     api deps.support.supportv4
-    compileOnly 'com.facebook.stetho:stetho-okhttp3:1.3.1'
 }

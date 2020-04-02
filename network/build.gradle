@@ -1,5 +1,10 @@
 apply plugin: 'com.android.library'
 
+repositories {
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    mavenCentral()
+}
+
 android {
     compileSdkVersion build_versions.target_sdk
     buildToolsVersion build_versions.build_tools
@@ -16,6 +21,7 @@ android {
         }
     }
     compileOptions {
+        encoding "UTF-8"
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -25,11 +31,13 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(path: ':root')
 
-    api deps.okhttp.okhttp
-    api deps.okhttp.logging
-    api deps.alibaba.fastjson
-    api deps.retrofit.runtime
-    api deps.retrofit.gson
-    api deps.retrofit.adapter
+    api deps.net.okhttp
+    api deps.net.slf4j
+    api deps.net.retrofit
+    api(deps.net.converter) {
+        exclude module: 'gson'
+    }
+    api deps.net.gson
     api deps.reactivex.rxandroid
+    compileOnly 'com.facebook.stetho:stetho-okhttp3:1.3.1'
 }

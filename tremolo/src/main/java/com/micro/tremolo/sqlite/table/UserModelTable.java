@@ -21,16 +21,41 @@ public class UserModelTable implements Serializable /*extends DataTable*/ {
     private String customVerify;
     private String enterpriseVerify;
     private String requestId;
-    private int followingCount;
-    private int favoritingCount;
-    private int awemeCount;
-    private int fansCount;
-    private int movingCount;
+    private String followingCount;
+    private String favoritingCount;
+    private String awemeCount;
+    private String fansCount;
+    private String movingCount;
     private List<String> avatarList;
     private List<String> avatarMediumList;
     private List<String> avatarThumbList;
     private String uri;
     private String urlKey;
+
+    /*public UserModelTable() {
+        userId="99895399349";
+        nickname="369吴家辉";
+        tremoloId="369wu";
+        tremoloNumberId="0";
+        birthday="1987-05-12";
+        city="广州市";
+        country="中国";
+        district="";
+        schoolName="";
+        signature="七十二家房客";
+
+        customVerify="演员";
+        enterpriseVerify="";
+        requestId="";
+        followingCount="58";
+        favoritingCount="0";
+        awemeCount="68";
+        fansCount="539411";
+        movingCount="79";
+        avatarList.add("https://p3-dy.byteimg.com/aweme/1080x1080/tos-cn-i-0813/19c7f56ed0c049e98f2d45b1a53e019d.jpeg");
+        uri="";
+        urlKey="";
+    }*/
 
     public String getUserId() {
         return userId;
@@ -136,43 +161,43 @@ public class UserModelTable implements Serializable /*extends DataTable*/ {
         this.requestId = requestId;
     }
 
-    public int getFollowingCount() {
+    public String getFollowingCount() {
         return followingCount;
     }
 
-    public void setFollowingCount(int followingCount) {
+    public void setFollowingCount(String followingCount) {
         this.followingCount = followingCount;
     }
 
-    public int getFavoritingCount() {
+    public String getFavoritingCount() {
         return favoritingCount;
     }
 
-    public void setFavoritingCount(int favoritingCount) {
+    public void setFavoritingCount(String favoritingCount) {
         this.favoritingCount = favoritingCount;
     }
 
-    public int getAwemeCount() {
+    public String getAwemeCount() {
         return awemeCount;
     }
 
-    public void setAwemeCount(int awemeCount) {
+    public void setAwemeCount(String awemeCount) {
         this.awemeCount = awemeCount;
     }
 
-    public int getFansCount() {
+    public String getFansCount() {
         return fansCount;
     }
 
-    public void setFansCount(int fansCount) {
+    public void setFansCount(String fansCount) {
         this.fansCount = fansCount;
     }
 
-    public int getMovingCount() {
+    public String getMovingCount() {
         return movingCount;
     }
 
-    public void setMovingCount(int movingCount) {
+    public void setMovingCount(String movingCount) {
         this.movingCount = movingCount;
     }
 
@@ -258,7 +283,7 @@ public class UserModelTable implements Serializable /*extends DataTable*/ {
                 "\n}";
     }
 
-    public Map<String, Object> getUserMap() {
+    /*public Map<String, Object> getUserMap() {
         Map<String, Object> map = new HashMap<>();
         if (Lang.isNotEmpty(getUserId())) {
             map.put("userId", getUserId());
@@ -320,5 +345,5 @@ public class UserModelTable implements Serializable /*extends DataTable*/ {
             map.put("urlKey", getUrlKey());
         }
         return map;
-    }
+    }*/
 }

@@ -9,4 +9,5 @@ import com.micro.root.Logger;
 public interface Deploy {
     Logger monitorLogger = com.micro.root.Logger.getLogger("Execute-Log-Monitor");
     Logger controlLogger = com.micro.root.Logger.getLogger("Execute-Log-Control");
+    Logger netLogger = com.micro.root.Logger.getLogger("Net-Log");
 }

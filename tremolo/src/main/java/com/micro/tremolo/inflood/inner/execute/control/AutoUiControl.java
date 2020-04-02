@@ -188,7 +188,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     public void autoLoadMoreVideo(int count) {
         this.count = count;
-        handler.sendEmptyMessageDelayed(loadMoreVideo, 5 * second);
+        handler.sendEmptyMessageDelayed(loadMoreVideo, 10 * second);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.micro.tremolo;
 
-import com.micro.tremolo.rep.AppApiResponseBase;
-import com.micro.tremolo.rep.entity.EmptyEntity;
+import com.micro.network.available.model.ApiResponseBase;
+import com.micro.network.available.model.EmptyEntity;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
 
@@ -19,7 +19,7 @@ public interface ApiService {
      * @return
      */
     @POST("/Media/Dy/uadd")
-    Call<AppApiResponseBase<EmptyEntity>> tremoloUser(@Body UserModelTable userModelTable);
+    Call<ApiResponseBase<EmptyEntity>> tremoloUser(@Body UserModelTable userModelTable);
 
     /**
      * 视频上传
@@ -27,5 +27,5 @@ public interface ApiService {
      * @return
      */
     @POST("/Media/Dy/vadd")
-    Call<AppApiResponseBase<EmptyEntity>> tremoloVideo(@Body VideoModelTable videoModelTable);
+    Call<ApiResponseBase<EmptyEntity>> tremoloVideo(@Body VideoModelTable videoModelTable);
 }

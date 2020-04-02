@@ -2,20 +2,10 @@ package com.micro.tremolo.inflood.inner.execute.monitor.author;
 
 import com.micro.hook.plugin.PluginPresenter;
 import com.micro.root.utils.Lang;
-import com.micro.tremolo.ApiService;
 import com.micro.tremolo.inflood.DataBroadcast;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
 import com.micro.tremolo.inflood.inner.replace.User;
-import com.micro.tremolo.rep.AppApiResponseBase;
-import com.micro.tremolo.rep.entity.EmptyEntity;
 import com.micro.tremolo.sqlite.table.UserModelTable;
-import com.so1spms.module.rpc.RPCApiFactory;
-import com.so1spms.module.rpc.callback.BaseCallback;
-
-import retrofit2.Call;
-import retrofit2.Response;
-
-import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
 
 /**
  * @Author Kilin
@@ -61,11 +51,11 @@ public class AuthorPresenter extends PluginPresenter<AuthorInter> {
         userTable.setCustomVerify(user.getCustomVerify());
         userTable.setEnterpriseVerify(user.getEnterpriseVerifyReason());
         userTable.setRequestId(user.getRequestId());
-        userTable.setFollowingCount(user.getFollowingCount());
-        userTable.setAwemeCount(user.getAwemeCount());
-        userTable.setMovingCount(user.getDongtai_count());
-        userTable.setFansCount(user.getFansCount());
-        userTable.setFavoritingCount(user.getFavoritingCount());
+        userTable.setFollowingCount(String.valueOf(user.getFollowingCount()));
+        userTable.setAwemeCount(String.valueOf(user.getAwemeCount()));
+        userTable.setMovingCount(String.valueOf(user.getDongtai_count()));
+        userTable.setFansCount(String.valueOf(user.getFansCount()));
+        userTable.setFavoritingCount(String.valueOf(user.getFavoritingCount()));
         UrlModel avatarLarger = user.getAvatarLarger();
         if (avatarLarger != null) {
             userTable.setAvatarList(avatarLarger.getUrlList());

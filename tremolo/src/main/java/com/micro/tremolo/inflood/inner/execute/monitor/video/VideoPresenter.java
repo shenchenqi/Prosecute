@@ -2,25 +2,15 @@ package com.micro.tremolo.inflood.inner.execute.monitor.video;
 
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.PluginPresenter;
-import com.micro.tremolo.ApiService;
 import com.micro.tremolo.inflood.DataBroadcast;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
-import com.micro.tremolo.rep.AppApiResponseBase;
-import com.micro.tremolo.rep.entity.EmptyEntity;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
-import com.so1spms.module.rpc.RPCApiFactory;
-import com.so1spms.module.rpc.callback.BaseCallback;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Response;
-
-import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
 
 /**
  * @Author Kilin

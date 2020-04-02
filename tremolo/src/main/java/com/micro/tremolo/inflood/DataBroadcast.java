@@ -4,21 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.micro.tremolo.rep.AppApiResponseBase;
-import com.micro.tremolo.rep.entity.EmptyEntity;
+import com.alibaba.fastjson.JSON;
+import com.micro.network.NetworkManager;
+import com.micro.network.available.model.EmptyEntity;
 import com.micro.root.Logger;
 import com.micro.root.broadcast.BaseBroadcastReceiver;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.ApiService;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
-import com.so1spms.module.rpc.RPCApiFactory;
-import com.so1spms.module.rpc.callback.BaseCallback;
 
-import retrofit2.Call;
-import retrofit2.Response;
-
-import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
+import static com.micro.tremolo.inflood.inner.execute.Deploy.netLogger;
 
 public class DataBroadcast extends BaseBroadcastReceiver {
 
@@ -42,7 +38,7 @@ public class DataBroadcast extends BaseBroadcastReceiver {
         intent.setAction(ACTION_TREMOLO_VIDEO);
         intent.putExtra(NAME_TREMOLO_VIDEO, videoTable);
         context.sendBroadcast(intent);
-        //logger.d("视频发送成功");
+        //logger.d("视频 发送成功");
     }
 
     public static void sendUser(Context context, UserModelTable userTable) {
@@ -50,7 +46,7 @@ public class DataBroadcast extends BaseBroadcastReceiver {
         intent.setAction(ACTION_TREMOLO_USER);
         intent.putExtra(NAME_TREMOLO_USER, userTable);
         context.sendBroadcast(intent);
-        //logger.d("用户发送成功");
+        //logger.d("用户 发送成功");
     }
 
     @Override
@@ -64,62 +60,45 @@ public class DataBroadcast extends BaseBroadcastReceiver {
     }
 
     private synchronized void saveTremoloVideo(VideoModelTable videoTable) {
-        //DataTable.saveOrUpdate(videoTable, "id = ?", videoTable.getId());
-        //logger.d("视频入库成功");
-
         uploadVideo(videoTable);
     }
 
     private synchronized void saveTremoloUser(UserModelTable userTable) {
-        //DataTable.saveOrUpdate(userTable, "userId = ?", userTable.getUserId());
-        //logger.d("用户入库成功");
-
         uploadUser(userTable);
     }
 
-    private void uploadVideo(final VideoModelTable videoModelTable) {
-        new Thread(new Runnable() {
+    private synchronized void uploadVideo(final VideoModelTable videoModelTable) {
+        NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
-            public void run() {
-                ApiService api = RPCApiFactory.create(ApiService.class);
-                Call<AppApiResponseBase<EmptyEntity>> call = api.tremoloVideo(videoModelTable);
-                call.enqueue(new BaseCallback<AppApiResponseBase<EmptyEntity>>() {
-                    @Override
-                    public void onResponse(Call<AppApiResponseBase<EmptyEntity>> call, Response<AppApiResponseBase<EmptyEntity>> response) {
-                        super.onResponse(call, response);
-                        monitorLogger.d("视频上传 - 成功");
-                    }
-
-                    @Override
-                    public void onFailure(Call<AppApiResponseBase<EmptyEntity>> call, Throwable t) {
-                        super.onFailure(call, t);
-                        monitorLogger.e(t, "视频上传 - 失败");
-                    }
-                });
+            protected void success(EmptyEntity model, String message) {
+                netLogger.d("视频上传 - 成功 " + message);
             }
-        }).start();
+
+            @Override
+            protected void fail(String code, String message) {
+                netLogger.e("视频上传 - 失败 " + code + " " + message);
+            }
+        };
+        modelNet.setClazz(ApiService.class);
+        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloVideo(videoModelTable));
+        NetworkManager.setNetwork(modelNet);
     }
 
-    private void uploadUser(final UserModelTable userModelTable) {
-        new Thread(new Runnable() {
+    private synchronized void uploadUser(final UserModelTable userModelTable) {
+        netLogger.i("用户上传 - " + JSON.toJSONString(userModelTable));
+        NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
-            public void run() {
-                ApiService api = RPCApiFactory.create(ApiService.class);
-                Call<AppApiResponseBase<EmptyEntity>> call = api.tremoloUser(userModelTable);
-                call.enqueue(new BaseCallback<AppApiResponseBase<EmptyEntity>>() {
-                    @Override
-                    public void onResponse(Call<AppApiResponseBase<EmptyEntity>> call, Response<AppApiResponseBase<EmptyEntity>> response) {
-                        super.onResponse(call, response);
-                        monitorLogger.d("用户上传 - 成功");
-                    }
-
-                    @Override
-                    public void onFailure(Call<AppApiResponseBase<EmptyEntity>> call, Throwable t) {
-                        super.onFailure(call, t);
-                        monitorLogger.e(t, "用户上传 - 失败");
-                    }
-                });
+            protected void success(EmptyEntity model, String message) {
+                netLogger.d("用户上传 - 成功 " + message);
             }
-        }).start();
+
+            @Override
+            protected void fail(String code, String message) {
+                netLogger.e("用户上传 - 失败 " + code + " " + message);
+            }
+        };
+        modelNet.setClazz(ApiService.class);
+        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloUser(userModelTable));
+        NetworkManager.setNetwork(modelNet);
     }
 }
