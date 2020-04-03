@@ -1,68 +1,26 @@
-package com.micro.tremolo.inflood.inner.execute.monitor.video;
+package com.micro.tremolo.inflood.inner.execute.monitor.main_fragment;
 
-import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.PluginPresenter;
 import com.micro.tremolo.inflood.DataBroadcast;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
-import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.micro.tremolo.Const.monitorLogger;
 
 /**
- * @Author Kilin
- * @Date 2020/3/26 13:41
+ * @Author KiLin
+ * @Time 2020/4/3 12:20
  */
-public class VideoPresenter extends PluginPresenter<VideoInter> {
-
+public class MainFragmentPresenter extends PluginPresenter<MainFragmentInter> {
     @Override
     public void onAttached() {
+
     }
 
-    private Object itemVideoInfo;
-
-    public Object getItemVideoInfo() {
-        return itemVideoInfo;
-    }
-
-    public void setItemVideoInfo(Object itemVideoInfo) {
-        this.itemVideoInfo = itemVideoInfo;
-    }
-
-    public void obtainVideoItem(Aweme aweme) {
-        getClazz().loadVideoItem(aweme);
-    }
-
-    public void obtainVideoList(Hook hook, List<Object> list) {
-        if (list != null) {
-            List<Aweme> awemeList = new ArrayList<>();
-            for (Object object : list) {
-                Aweme aweme = new Aweme(hook, object);
-                awemeList.add(aweme);
-            }
-            getClazz().loadVideoList(awemeList);
-        }
-    }
-
-    public synchronized void saveVideoTableList(List<Aweme> awemeList) {
-        VideoListModelTable videoListModelTable = new VideoListModelTable();
-        List<VideoModelTable> videoTableList = new ArrayList<>();
-        for (Aweme aweme : awemeList) {
-            videoTableList.add(loadVideoTable(aweme));
-        }
-        if (!videoTableList.isEmpty()) {
-            videoListModelTable.setVideoModelTableList(videoTableList);
-            DataBroadcast.sendVideoList(getContext(), videoListModelTable);
-        }
-    }
-
-    public synchronized void saveVideoTableItem(Aweme aweme) {
+    public void obtainVideo(Aweme aweme) {
         VideoModelTable videoTable = loadVideoTable(aweme);
         DataBroadcast.sendVideo(getContext(), videoTable);
     }

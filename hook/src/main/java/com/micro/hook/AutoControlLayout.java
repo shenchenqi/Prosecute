@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +65,23 @@ public abstract class AutoControlLayout {
         for (MotionEvent event : events) {
             instrumentation.sendPointerSync(event);
         }
+    }
+
+    protected List<MotionEvent> getMotionEvents(List<Pair<Float, Float>> coordinates) {
+        List<MotionEvent> events = new ArrayList<>();
+        int size = coordinates.size() - 1;
+        for (Pair<Float, Float> coordinate : coordinates) {
+            int index = coordinates.indexOf(coordinate);
+            if (index == 0) {
+                events.add(getObtain(0, MotionEvent.ACTION_DOWN, coordinate.first, coordinate.second));
+            }
+            int time = (1000 / size) * index;
+            events.add(getObtain(time, MotionEvent.ACTION_MOVE, coordinate.first, coordinate.second));
+            if (index == size) {
+                events.add(getObtain(1000, MotionEvent.ACTION_UP, coordinate.first, coordinate.second));
+            }
+        }
+        return events;
     }
 
     private Instrumentation getInstrumentation() {

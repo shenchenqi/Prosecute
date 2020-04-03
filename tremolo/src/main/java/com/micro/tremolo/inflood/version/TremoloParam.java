@@ -46,6 +46,8 @@ public abstract class TremoloParam {
     public static Integer UPDATE_VERSION_CANCEL_INTEGER;
     public static String INFO_CANCEL_STRING;
     public static Integer INFO_CANCEL_INTEGER;
+    public static String UNDERAGE_CANCEL_STRING;
+    public static Integer UNDERAGE_CANCEL_INTEGER;
 
     protected abstract void logClass();
 
@@ -59,6 +61,7 @@ public abstract class TremoloParam {
 
     public static String AWEME_MAIN_ACTIVITY_CLASS;
     public static String AWEME_MAIN_ACTIVITY_CHANGE_METHOD;
+    public static String AWEME_MAIN_ACTIVITY_TOUCH_EVENT_METHOD;
     public static String AWEME_MAIN_ACTIVITY_VIDEO_CHANGE_METHOD;
     public static String AWEME_MAIN_FRAGMENT_CLASS;
     public static String AWEME_MAIN_FRAGMENT_VIEW_CREATE_METHOD;

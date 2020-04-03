@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class TremoloModule extends ExecuteMonitor {
 
-    public static final Logger logger = Logger.getLogger("Tremolo-Log");
+    public static final Logger logger = Logger.getLogger("DY", "TremoloLog");
     private static final String TAG = "Tremolo-Module";
 
     public static void init(HookParam hookParam) {

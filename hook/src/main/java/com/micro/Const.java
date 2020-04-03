@@ -7,5 +7,5 @@ import com.micro.root.Logger;
  */
 public interface Const {
 
-    Logger hookLog = Logger.getLogger("HookPluginLog");
+    Logger hookLog = Logger.getLogger("hook","HookPluginLog");
 }

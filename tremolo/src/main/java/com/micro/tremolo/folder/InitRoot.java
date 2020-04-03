@@ -13,7 +13,7 @@ import com.micro.rom.RootRom;
  */
 public class InitRoot extends RootRom<InitPresenter, InitInter> {
 
-    public static final Logger logger = Logger.getLogger("RootLog");
+    public static final Logger logger = Logger.getLogger("DY", "RootLog");
 
     private static final String TAG = "InitRoot";
     private static InitRoot INSTANCE;

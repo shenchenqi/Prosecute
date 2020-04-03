@@ -15,11 +15,11 @@ import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
 
-import static com.micro.tremolo.inflood.inner.execute.Deploy.netLogger;
+import static com.micro.tremolo.Const.netLogger;
 
 public class DataBroadcast extends BaseBroadcastReceiver {
 
-    private static final Logger logger = Logger.getLogger("Execute-Log-Broadcast");
+    private static final Logger logger = Logger.getLogger("DY", "Execute-Log-Broadcast");
 
     private static final String ACTION_TREMOLO_VIDEO = "com.prosecute.tremolo.video";
     private static final String NAME_TREMOLO_VIDEO = "prosecute.tremolo.video";

@@ -16,7 +16,7 @@ public abstract class BaseAsync<Params, Progress, Result> extends AsyncTask<Para
 
     protected BaseAsync(Context context) {
         super();
-        Logger.getLogger("Base-Async").i("BaseAsync", "AsyncTask初始化");
+        Logger.getLogger("root", "Base-Async").i("BaseAsync", "AsyncTask初始化");
         this.context = context;
     }
 

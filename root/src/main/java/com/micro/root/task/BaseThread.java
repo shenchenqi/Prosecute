@@ -61,7 +61,7 @@ public abstract class BaseThread implements Runnable {
                 process();
             }
         } catch (Throwable e) {
-            Logger.getLogger("Base-Thread").e(e, TAG, "run", "报错");
+            Logger.getLogger("root", "Base-Thread").e(e, TAG, "run", "报错");
         } finally {
             finish();
         }
@@ -89,7 +89,7 @@ public abstract class BaseThread implements Runnable {
     }
 
     protected void mainHandleMessage(int what) {
-        Logger.getLogger("Main-Thread").i("获取到主线程状态：　" + what);
+        Logger.getLogger("root", "Main-Thread").i("获取到主线程状态：　" + what);
     }
 
     private Looper getSubLooper(String name) {
@@ -112,7 +112,7 @@ public abstract class BaseThread implements Runnable {
     }
 
     private void subHandleMessage(int what) {
-        Logger.getLogger("Sub-Thread").i("获取到子线程状态：　" + what);
+        Logger.getLogger("root", "Sub-Thread").i("获取到子线程状态：　" + what);
     }
 
     protected ExecutorService getFixedThreadPool(int nThreads) {

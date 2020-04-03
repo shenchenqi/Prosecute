@@ -11,12 +11,12 @@ public abstract class Logger implements ILog {
     private static int logLevel = Log.VERBOSE;
     protected final String tag;
 
-    public static synchronized Report getLogger(String tag) {
-        return new Report(tag);
+    public static synchronized Report getLogger(String tab, String tag) {
+        return new Report(tab, tag);
     }
 
-    private Logger(String tag) {
-        this.tag = "HookLogger - " + tag;
+    private Logger(String tab, String tag) {
+        this.tag = String.format("{%s [%s]}", tab, tag);
     }
 
     private synchronized static String getMsg(String methodName, String msg) {
@@ -33,8 +33,8 @@ public abstract class Logger implements ILog {
 
     public static class Report extends Logger {
 
-        private Report(String tag) {
-            super(tag);
+        private Report(String tab, String tag) {
+            super(tab, tag);
         }
 
         @Override

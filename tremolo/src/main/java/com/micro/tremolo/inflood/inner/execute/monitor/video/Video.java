@@ -17,8 +17,8 @@ import com.micro.tremolo.inflood.version.TremoloParam;
 
 import java.util.List;
 
-import static com.micro.tremolo.inflood.inner.execute.Deploy.controlLogger;
-import static com.micro.tremolo.inflood.inner.execute.Deploy.monitorLogger;
+import static com.micro.tremolo.Const.controlLogger;
+import static com.micro.tremolo.Const.monitorLogger;
 
 /**
  * @Author Kilin

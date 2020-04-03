@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.util.Pair;
+
 import com.micro.hook.AutoControlLayout;
 import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
@@ -20,7 +22,7 @@ import com.micro.tremolo.inflood.version.TremoloParam;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.micro.tremolo.inflood.inner.execute.Deploy.controlLogger;
+import static com.micro.tremolo.Const.controlLogger;
 
 public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
@@ -42,6 +44,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
     private final static int changeVideo = 1003;
 
     private Handler handler;
+    private MainActivityControl mainActivityControl;
     private MainFragmentControl mainFragmentControl;
     private UserProfileFragmentControl userProfileFragmentControl;
 
@@ -52,6 +55,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
     private void init() {
         moreCount = 0;
         mainControlStep = 0;
+        mainActivityControl = new MainActivityControl();
         mainFragmentControl = new MainFragmentControl();
         userProfileFragmentControl = new UserProfileFragmentControl();
         handler = new Handler(getIContext().getMainLooper()) {
@@ -206,12 +210,38 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         InspectApply.openApply(context, Const.PACKAGE_NAME);
     }
 
+    private void setCoordinateList(List<Pair<Float, Float>> coordinates) {
+        for (MotionEvent event : getMotionEvents(coordinates)) {
+            mainActivityControl.callDispatchTouchEvent(event);
+        }
+    }
+
+    public void setMainActivity(Object mainActivity) {
+        mainActivityControl.setMainActivity(mainActivity);
+    }
+
     public void setMainFragmentView(View view) {
         mainFragmentControl.setMainFragmentView(view);
     }
 
     public void setProfileFragmentView(View view) {
         userProfileFragmentControl.setProfileFragmentView(view);
+    }
+
+    private class MainActivityControl {
+        private Object mainActivity;
+
+        private void setMainActivity(Object mainActivity) {
+            this.mainActivity = mainActivity;
+        }
+
+        private void callDispatchTouchEvent(MotionEvent event) {
+            if (mainActivity == null) {
+                controlLogger.e("Main Activity is null");
+                return;
+            }
+            hook.callMethod(mainActivity, TremoloParam.AWEME_MAIN_ACTIVITY_TOUCH_EVENT_METHOD, event);
+        }
     }
 
     private class MainFragmentControl {

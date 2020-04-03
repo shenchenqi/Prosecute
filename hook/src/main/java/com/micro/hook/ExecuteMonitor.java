@@ -24,7 +24,7 @@ import java.util.Map;
 public abstract class ExecuteMonitor implements EventCallback {
 
     private static final String TAG = "ExecuteMonitor";
-    private static final Logger logger = Logger.getLogger("MonitorLog");
+    private static final Logger logger = Logger.getLogger("hook", "InitLog");
 
     private final static Map<String, Class> mHookRegisterMap = new HashMap<>();
 
