@@ -37,6 +37,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         init();
     }
 
+    private final static int topDouYin = 998;
     private final static int openDouYin = 999;
     private final static int moveUser = 1000;
     private final static int loadMoreVideo = 1001;
@@ -48,12 +49,10 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
     private MainFragmentControl mainFragmentControl;
     private UserProfileFragmentControl userProfileFragmentControl;
 
-    private int moreCount;
     private int count;
     private int mainControlStep;
 
     private void init() {
-        moreCount = 0;
         mainControlStep = 0;
         mainActivityControl = new MainActivityControl();
         mainFragmentControl = new MainFragmentControl();
@@ -62,50 +61,58 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
+                    case topDouYin:
+                        setTopApply(getIContext());
+                        break;
                     case openDouYin:
                         openApply(getIContext());
                         break;
                     case moveUser:
-                        if (isAppOnForeground(getIContext())) {
+                        if (isAppOnForeground(getIContext()) == 100) {
                             if (mainControlStep != 0 && mainControlStep != 4) {
                                 return;
                             }
-                            mainFragmentControl.moveToUser(screenData[0], screenData[1], new AutoControlLayout.Callback() {
-                                @Override
-                                public void success(String value) {
-                                    controlLogger.d(value);
-                                    mainControlStep = 1;
-                                }
+                            if (userProfileFragmentControl.isUserProfile()) {
+                                mainFragmentControl.moveToUser(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                                    @Override
+                                    public void success(String value) {
+                                        controlLogger.d(value);
+                                        mainControlStep = 1;
+                                    }
 
-                                @Override
-                                public void fail(String msg) {
-                                    controlLogger.e(msg);
-                                }
+                                    @Override
+                                    public void fail(String msg) {
+                                        controlLogger.e(msg);
+                                    }
 
-                                @Override
-                                public long sleep() {
-                                    return 0;
-                                }
-                            });
-                        } else {
+                                    @Override
+                                    public long sleep() {
+                                        return 0;
+                                    }
+                                });
+                            } else {
+                                mainControlStep = 3;
+                                handler.sendEmptyMessageDelayed(changeVideo, 10 * second);
+                            }
+                        } else if (isAppOnForeground(getIContext()) == 500) {
                             handler.sendEmptyMessage(openDouYin);
+                        } else {
+                            handler.sendEmptyMessage(topDouYin);
                         }
                         break;
                     case loadMoreVideo:
-                        if (isAppOnForeground(getIContext())) {
+                        if (isAppOnForeground(getIContext()) == 100) {
                             if (mainControlStep != 1) {
                                 return;
                             }
                             userProfileFragmentControl.moveToUserMoreVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
                                 @Override
                                 public void success(String value) {
-                                    controlLogger.d(value + String.format("滑动[%s][%s]", (count / 10), moreCount));
-                                    if (moreCount < (count / 10)) {
-                                        moreCount++;
+                                    controlLogger.d(value + String.format("滑动[%s][%s]", count, videoCount));
+                                    if (videoCount < count) {
                                         handler.sendEmptyMessageDelayed(loadMoreVideo, sleep());
                                     } else {
                                         mainControlStep = 2;
-                                        moreCount = 0;
                                         handler.sendEmptyMessageDelayed(moveVideo, sleep());
                                     }
                                 }
@@ -120,13 +127,14 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                                     return 2 * second;
                                 }
                             });
-                        } else {
-                            moreCount = 0;
+                        } else if (isAppOnForeground(getIContext()) == 500) {
                             handler.sendEmptyMessage(openDouYin);
+                        } else {
+                            handler.sendEmptyMessage(topDouYin);
                         }
                         break;
                     case moveVideo:
-                        if (isAppOnForeground(getIContext())) {
+                        if (isAppOnForeground(getIContext()) == 100) {
                             if (mainControlStep != 2) {
                                 return;
                             }
@@ -148,12 +156,14 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                                     return 5 * second;
                                 }
                             });
-                        } else {
+                        } else if (isAppOnForeground(getIContext()) == 500) {
                             handler.sendEmptyMessage(openDouYin);
+                        } else {
+                            handler.sendEmptyMessage(topDouYin);
                         }
                         break;
                     case changeVideo:
-                        if (isAppOnForeground(getIContext())) {
+                        if (isAppOnForeground(getIContext()) == 100) {
                             if (mainControlStep != 3) {
                                 return;
                             }
@@ -174,8 +184,10 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                                     return 0;
                                 }
                             });
-                        } else {
+                        } else if (isAppOnForeground(getIContext()) == 500) {
                             handler.sendEmptyMessage(openDouYin);
+                        } else {
+                            handler.sendEmptyMessage(topDouYin);
                         }
                         break;
                 }
@@ -184,8 +196,8 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
     }
 
     public void autoMoveUser() {
-        mainControlStep = 0;
         if (Const.isAuto) {
+            mainControlStep = 0;
             handler.sendEmptyMessageDelayed(moveUser, 10 * second);
         }
     }
@@ -197,23 +209,34 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         }
     }
 
+    private int videoCount;
+
+    public void setVideoCount(int videoCount) {
+        this.videoCount = videoCount;
+    }
+
     @Override
     public Context getIContext() {
         return context;
     }
 
-    public static boolean isAppOnForeground(Context context) {
-        return InspectApply.isAppOnForeground(context, Const.PACKAGE_NAME) == 100;
+    public static int isAppOnForeground(Context context) {
+        return InspectApply.isAppOnForeground(context, Const.PACKAGE_NAME);
     }
 
     public static void openApply(Context context) {
         InspectApply.openApply(context, Const.PACKAGE_NAME);
     }
 
-    private void setCoordinateList(List<Pair<Float, Float>> coordinates) {
-        for (MotionEvent event : getMotionEvents(coordinates)) {
+    public static void setTopApply(Context context) {
+        InspectApply.setBackstageToFrontDesk(context, Const.PACKAGE_NAME);
+    }
+
+    private synchronized void setCoordinateList(List<Pair<Float, Float>> coordinates) {
+        sendPointerSync(getMotionEvents(coordinates));
+        /*for (MotionEvent event : getMotionEvents(coordinates)) {
             mainActivityControl.callDispatchTouchEvent(event);
-        }
+        }*/
     }
 
     public void setMainActivity(Object mainActivity) {
@@ -222,6 +245,10 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     public void setMainFragmentView(View view) {
         mainFragmentControl.setMainFragmentView(view);
+    }
+
+    public void setUserProfile(boolean userProfile) {
+        userProfileFragmentControl.setUserProfile(userProfile);
     }
 
     public void setProfileFragmentView(View view) {
@@ -346,21 +373,19 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         private void moveToUser(final float x, final float y, final Callback callback) {
             controlLogger.d(String.format("滑动 用户界面 准备 width [%s], height [%s]", x, y));
             startThread(() -> {
-                List<MotionEvent> events = new ArrayList<>();
-                events.add(getObtain(0, MotionEvent.ACTION_DOWN, x - 10, y / 2));
-                events.add(getObtain(0, MotionEvent.ACTION_MOVE, x - 10, y / 2));
-                events.add(getObtain(100, MotionEvent.ACTION_MOVE, (x / 10) * 9, y / 2));
-                events.add(getObtain(200, MotionEvent.ACTION_MOVE, (x / 10) * 8, y / 2));
-                events.add(getObtain(300, MotionEvent.ACTION_MOVE, (x / 10) * 7, y / 2));
-                events.add(getObtain(400, MotionEvent.ACTION_MOVE, (x / 10) * 6, y / 2));
-                events.add(getObtain(500, MotionEvent.ACTION_MOVE, (x / 10) * 5, y / 2));
-                events.add(getObtain(600, MotionEvent.ACTION_MOVE, (x / 10) * 4, y / 2));
-                events.add(getObtain(700, MotionEvent.ACTION_MOVE, (x / 10) * 3, y / 2));
-                events.add(getObtain(800, MotionEvent.ACTION_MOVE, (x / 10) * 2, y / 2));
-                events.add(getObtain(900, MotionEvent.ACTION_MOVE, (x / 10) * 1, y / 2));
-                events.add(getObtain(1000, MotionEvent.ACTION_MOVE, 10, y / 2));
-                events.add(getObtain(1000, MotionEvent.ACTION_UP, 10, y / 2));
-                sendPointerSync(events);
+                List<Pair<Float, Float>> pairList = new ArrayList<>();
+                pairList.add(new Pair<>(x - 10, y / 2));
+                pairList.add(new Pair<>((x / 10) * 9, y / 2));
+                pairList.add(new Pair<>((x / 10) * 8, y / 2));
+                pairList.add(new Pair<>((x / 10) * 7, y / 2));
+                pairList.add(new Pair<>((x / 10) * 6, y / 2));
+                pairList.add(new Pair<>((x / 10) * 5, y / 2));
+                pairList.add(new Pair<>((x / 10) * 4, y / 2));
+                pairList.add(new Pair<>((x / 10) * 3, y / 2));
+                pairList.add(new Pair<>((x / 10) * 2, y / 2));
+                pairList.add(new Pair<>((x / 10) * 1, y / 2));
+                pairList.add(new Pair<>(10f, y / 2));
+                setCoordinateList(pairList);
                 callback.success("用户界面 滑动 成功 ");
             });
         }
@@ -368,27 +393,35 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         private void moveChangeVideo(final float x, final float y, final Callback callback) {
             controlLogger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
             startThread(() -> {
-                List<MotionEvent> events = new ArrayList<>();
-                events.add(getObtain(0, MotionEvent.ACTION_DOWN, x / 2, y / 2 - 10));
-                events.add(getObtain(0, MotionEvent.ACTION_MOVE, x / 2, y / 2 - 10));
-                events.add(getObtain(100, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 9));
-                events.add(getObtain(200, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 8));
-                events.add(getObtain(300, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 7));
-                events.add(getObtain(400, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 6));
-                events.add(getObtain(500, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 5));
-                events.add(getObtain(600, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 4));
-                events.add(getObtain(700, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 3));
-                events.add(getObtain(800, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 2));
-                events.add(getObtain(900, MotionEvent.ACTION_MOVE, x / 2, (y / 20) * 1));
-                events.add(getObtain(1000, MotionEvent.ACTION_MOVE, x / 2, 10));
-                events.add(getObtain(1000, MotionEvent.ACTION_UP, x / 2, 10));
-                sendPointerSync(events);
+                List<Pair<Float, Float>> pairList = new ArrayList<>();
+                pairList.add(new Pair<>(x / 2, y / 2 - 10));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 9));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 8));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 7));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 6));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 5));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 4));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 3));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 2));
+                pairList.add(new Pair<>(x / 2, (y / 20) * 1));
+                pairList.add(new Pair<>(x / 2, 10f));
+                setCoordinateList(pairList);
                 callback.success("视频切换 滑动 成功 ");
             });
         }
     }
 
     private class UserProfileFragmentControl {
+
+        private boolean isUserProfile;
+
+        private boolean isUserProfile() {
+            return isUserProfile;
+        }
+
+        private void setUserProfile(boolean userProfile) {
+            isUserProfile = userProfile;
+        }
 
         private View profileFragmentView;
 
@@ -415,21 +448,19 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         private void moveToUserMoreVideo(final float x, final float y, final Callback callback) {
             controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s]", x, y));
             startThread(() -> {
-                List<MotionEvent> events = new ArrayList<>();
-                events.add(getObtain(0, MotionEvent.ACTION_DOWN, x / 2, y - 10));
-                events.add(getObtain(0, MotionEvent.ACTION_MOVE, x / 2, y - 10));
-                events.add(getObtain(100, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 9));
-                events.add(getObtain(200, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 8));
-                events.add(getObtain(300, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 7));
-                events.add(getObtain(400, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 6));
-                events.add(getObtain(500, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 5));
-                events.add(getObtain(600, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 4));
-                events.add(getObtain(700, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 3));
-                events.add(getObtain(800, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 2));
-                events.add(getObtain(900, MotionEvent.ACTION_MOVE, x / 2, (y / 10) * 1));
-                events.add(getObtain(1000, MotionEvent.ACTION_MOVE, x / 2, 10));
-                events.add(getObtain(1000, MotionEvent.ACTION_UP, x / 2, 10));
-                sendPointerSync(events);
+                List<Pair<Float, Float>> pairList = new ArrayList<>();
+                pairList.add(new Pair<>(x / 2, y - 10));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 9));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 8));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 7));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 6));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 5));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 4));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 3));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 2));
+                pairList.add(new Pair<>(x / 2, (y / 10) * 1));
+                pairList.add(new Pair<>(x / 2, 10f));
+                setCoordinateList(pairList);
                 callback.success("加载更多视频 滑动 成功 ");
             });
         }
@@ -437,21 +468,19 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         private void moveToVideo(final float x, final float y, final Callback callback) {
             controlLogger.d(String.format("滑动 视频界面 准备 width [%s], height [%s]", x, y));
             startThread(() -> {
-                List<MotionEvent> events = new ArrayList<>();
-                events.add(getObtain(0, MotionEvent.ACTION_DOWN, 10, y / 2));
-                events.add(getObtain(0, MotionEvent.ACTION_MOVE, 10, y / 2));
-                events.add(getObtain(100, MotionEvent.ACTION_MOVE, (x / 10) * 1, y / 2));
-                events.add(getObtain(200, MotionEvent.ACTION_MOVE, (x / 10) * 2, y / 2));
-                events.add(getObtain(300, MotionEvent.ACTION_MOVE, (x / 10) * 3, y / 2));
-                events.add(getObtain(400, MotionEvent.ACTION_MOVE, (x / 10) * 4, y / 2));
-                events.add(getObtain(500, MotionEvent.ACTION_MOVE, (x / 10) * 5, y / 2));
-                events.add(getObtain(600, MotionEvent.ACTION_MOVE, (x / 10) * 6, y / 2));
-                events.add(getObtain(700, MotionEvent.ACTION_MOVE, (x / 10) * 7, y / 2));
-                events.add(getObtain(800, MotionEvent.ACTION_MOVE, (x / 10) * 8, y / 2));
-                events.add(getObtain(900, MotionEvent.ACTION_MOVE, (x / 10) * 9, y / 2));
-                events.add(getObtain(1000, MotionEvent.ACTION_MOVE, x - 10, y / 2));
-                events.add(getObtain(1000, MotionEvent.ACTION_UP, x - 10, y / 2));
-                sendPointerSync(events);
+                List<Pair<Float, Float>> pairList = new ArrayList<>();
+                pairList.add(new Pair<>(10f, y / 2));
+                pairList.add(new Pair<>((x / 10) * 1, y / 2));
+                pairList.add(new Pair<>((x / 10) * 2, y / 2));
+                pairList.add(new Pair<>((x / 10) * 3, y / 2));
+                pairList.add(new Pair<>((x / 10) * 4, y / 2));
+                pairList.add(new Pair<>((x / 10) * 5, y / 2));
+                pairList.add(new Pair<>((x / 10) * 6, y / 2));
+                pairList.add(new Pair<>((x / 10) * 7, y / 2));
+                pairList.add(new Pair<>((x / 10) * 8, y / 2));
+                pairList.add(new Pair<>((x / 10) * 9, y / 2));
+                pairList.add(new Pair<>(x - 10f, y / 2));
+                setCoordinateList(pairList);
                 callback.success("视频界面 滑动 成功 ");
             });
         }

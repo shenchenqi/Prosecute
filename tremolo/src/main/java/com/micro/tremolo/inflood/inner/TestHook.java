@@ -14,7 +14,6 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.root.Logger;
-import com.micro.tremolo.inflood.inner.execute.monitor.author.Author;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
@@ -30,7 +29,7 @@ import java.util.Map;
  */
 public class TestHook {
 
-    private static final Logger logger = Logger.getLogger("test", "TestLog");
+    private static final Logger logger = Logger.getLogger("tremoloLog", "TestLog");
 
     public static void test(Hook hook) {
         mainActivity(hook);

@@ -65,6 +65,7 @@ public class MainFragmentOversee extends Plugin<MainFragmentPresenter, MainFragm
                     controlLogger.e("自动控制 未实例");
                     return;
                 }
+                autoUiControl.setUserProfile(false);
                 autoUiControl.autoMoveUser();
             }
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));

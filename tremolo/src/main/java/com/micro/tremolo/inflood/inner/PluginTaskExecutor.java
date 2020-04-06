@@ -42,7 +42,7 @@ public class PluginTaskExecutor {
         }
     }
 
-    private static final Logger logger = Logger.getLogger("DY", "PluginTaskLog");
+    private static final Logger logger = Logger.getLogger("tremoloLog", "PluginTaskLog");
     private static Semaphore single = new Semaphore(1);
     private static Semaphore parallel = new Semaphore((int) (Runtime.getRuntime().availableProcessors() * 1.5));
 

@@ -84,7 +84,8 @@ public class V960 extends TremoloParam {
     protected void profileClass() {
         PACKAGE_PROFILE = PACKAGE + ".profile";
         AWEME_PROFILE_USER_FRAGMENT_CLASS = PACKAGE_PROFILE + ".ui.UserProfileFragment";
-        AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD = "a";
+        AWEME_PROFILE_USER_FRAGMENT_SHOW_USER_METHOD = "h";
+        AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD = "a_";
         AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD = "onViewCreated";
         AWEME_PROFILE_USER_CLASS = PACKAGE_PROFILE + ".model.User";
         AWEME_PROFILE_VIDEO_CALL_CLASS = PACKAGE_PROFILE + ".presenter.b";

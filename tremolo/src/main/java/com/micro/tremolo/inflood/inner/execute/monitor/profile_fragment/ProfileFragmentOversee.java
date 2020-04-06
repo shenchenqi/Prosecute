@@ -44,8 +44,6 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("User Profile Fragment onViewCreated");
-
-                controlLogger.i("Load User Fragment View");
                 if (autoUiControl == null) {
                     controlLogger.e("自动控制 未实例");
                     return;
@@ -57,15 +55,25 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
         hook.methodMonitor(profileFragment, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                monitorLogger.i("User Profile Fragment a(User)");
+                monitorLogger.i("User Profile Fragment a_(User)");
+                if (autoUiControl == null) {
+                    controlLogger.e("自动控制 未实例");
+                    return;
+                }
+                autoUiControl.setUserProfile(true);
+            }
+        }, TremoloParam.AWEME_PROFILE_USER_CLASS);
+        hook.methodMonitor(profileFragment, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_SHOW_USER_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                monitorLogger.i("User Profile Fragment h(User)");
+                User user = new User(hook, param.getArgs()[0]);
                 if (presenter == null) {
                     monitorLogger.e("当前工厂 未实例");
                     return;
                 }
-                User user = new User(hook, param.getArgs()[0]);
                 presenter.obtainUser(user);
 
-                controlLogger.i("User Load");
                 if (autoUiControl == null) {
                     controlLogger.e("自动控制 未实例");
                     return;
@@ -87,6 +95,11 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
                 }
                 monitorLogger.i("Video List " + awemeList.size());
                 presenter.obtainVideoList(awemeList);
+                if (autoUiControl == null) {
+                    controlLogger.e("自动控制 未实例");
+                    return;
+                }
+                autoUiControl.setVideoCount(awemeList.size());
             }
         });
     }

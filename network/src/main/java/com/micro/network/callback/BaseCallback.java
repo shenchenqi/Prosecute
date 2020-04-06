@@ -99,13 +99,13 @@ public class BaseCallback<T> implements Callback<T> {
     protected String getErrorMsg(Context context, int type) {
         String errorMsg;
         if (!RPCUtil.isNetWorkAvailable(context)) {
-            errorMsg = context.getString(R.string.rpc_error_no_network);
+            errorMsg = "网络不可用,请检查网络"/*context.getString(R.string.rpc_error_no_network)*/;
         } else if (type == 1001) {
-            errorMsg = context.getString(R.string.rpc_error_server);
+            errorMsg = "服务器繁忙,请稍后再试"/*context.getString(R.string.rpc_error_server)*/;
         } else if (type == 1002) {
-            errorMsg = context.getString(R.string.rpc_error_jsonparse);
+            errorMsg = "服务器出错啦,请稍后再试"/*context.getString(R.string.rpc_error_jsonparse)*/;
         } else {
-            errorMsg = context.getString(R.string.rpc_error_network);
+            errorMsg = "网络出错,请检查网络"/*context.getString(R.string.rpc_error_network)*/;
         }
         return errorMsg;
     }

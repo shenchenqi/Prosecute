@@ -86,6 +86,7 @@ public abstract class TremoloParam {
     protected static String PACKAGE_PROFILE;
 
     public static String AWEME_PROFILE_USER_FRAGMENT_CLASS;
+    public static String AWEME_PROFILE_USER_FRAGMENT_SHOW_USER_METHOD;
     public static String AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD;
     public static String AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD;
     public static String AWEME_PROFILE_USER_CLASS;

@@ -16,7 +16,7 @@ public class InspectApply {
      * @param packagename 包名
      * @return true : 开启  false : 未开启
      */
-    public static boolean openApply(Context context, String packagename){
+    public static boolean openApply(Context context, String packagename) {
         int iImportance = isAppOnForeground(context, packagename);
         if (iImportance == IMPORTANCE_EMPTY || iImportance == IMPORTANCE_BACKGROUND) {
             PackageManager packageManager = context.getPackageManager();
@@ -35,7 +35,7 @@ public class InspectApply {
      * @param context     上下文
      * @param packagename 包名
      */
-    public static void shutDownApply(Context context, String packagename){
+    public static void shutDownApply(Context context, String packagename) {
         if (isAppOnForeground(context, packagename) == IMPORTANCE_FOREGROUND) {
             shellCommand(Instruction.ShellCommands.SHELL_SCREEHOME);
             shellCommand(Instruction.ShellCommands.SHELL_STOP_WHATSAPP);
@@ -46,15 +46,15 @@ public class InspectApply {
     /**
      * 方法描述：shell命令执行
      *
-     * @param command     执行命令
+     * @param command 执行命令
      */
-    public static void shellCommand(String command){
+    public static void shellCommand(String command) {
         ShellUtil.execCommand(command, true);
     }
 
     public static final int IMPORTANCE_FOREGROUND = ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;//100
     public static final int IMPORTANCE_BACKGROUND = ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND;//400;
-    public static final int IMPORTANCE_EMPTY  = ActivityManager.RunningAppProcessInfo.IMPORTANCE_EMPTY;//500;
+    public static final int IMPORTANCE_EMPTY = ActivityManager.RunningAppProcessInfo.IMPORTANCE_EMPTY;//500;
 
     /**
      * 方法描述：判断某一app运行状态
@@ -64,13 +64,13 @@ public class InspectApply {
      * @return 100 表示正在前台运行，400 表示正在后台运行， 500 表示没运行
      */
     public static int isAppOnForeground(Context context, String packagename) {
-        ActivityManager activityManager =(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo>appProcesses = activityManager.getRunningAppProcesses();
-        if (appProcesses != null){
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses != null) {
             for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
                 if (appProcess.processName.equals(packagename) && appProcess.importance == IMPORTANCE_FOREGROUND) {
                     return IMPORTANCE_FOREGROUND;
-                }else if (appProcess.processName.equals(packagename) && appProcess.importance == IMPORTANCE_BACKGROUND) {
+                } else if (appProcess.processName.equals(packagename) && appProcess.importance == IMPORTANCE_BACKGROUND) {
                     return IMPORTANCE_BACKGROUND;
                 }
             }
@@ -84,7 +84,7 @@ public class InspectApply {
      * @param context     上下文
      * @param packagename 包名
      */
-    public static void setBackstageToFrontDesk(Context context, String packagename){
+    public static void setBackstageToFrontDesk(Context context, String packagename) {
         ActivityManager mAm = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         //获得当前后台运行的task
         @SuppressWarnings("deprecation")

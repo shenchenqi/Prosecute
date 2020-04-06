@@ -1,7 +1,7 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.main_fragment;
 
 import com.micro.hook.plugin.PluginPresenter;
-import com.micro.tremolo.inflood.DataBroadcast;
+import com.micro.tremolo.UploadNet;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.User;
@@ -22,7 +22,7 @@ public class MainFragmentPresenter extends PluginPresenter<MainFragmentInter> {
 
     public void obtainVideo(Aweme aweme) {
         VideoModelTable videoTable = loadVideoTable(aweme);
-        DataBroadcast.sendVideo(getContext(), videoTable);
+        UploadNet.uploadVideo(videoTable);
     }
 
     private synchronized VideoModelTable loadVideoTable(Aweme aweme) {

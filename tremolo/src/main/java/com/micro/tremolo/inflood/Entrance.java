@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
+import com.micro.tremolo.UploadNet;
 import com.micro.tremolo.inflood.inner.TestHook;
 import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
 import com.micro.tremolo.inflood.inner.execute.logcat.LogContent;
@@ -41,6 +42,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     private Entrance(HookParam hookParam) throws Throwable {
         super(hookParam);
+        UploadNet.initNet(hookParam.getApplication());
     }
 
     @Override
@@ -79,7 +81,11 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         logger.i(TAG, "config", "配置");
         try {
             AutoUiControl autoUiControl = new AutoUiControl(getHookParam().getHook(), getIContext());
-            AutoUiControl.openApply(getIContext());
+            if (AutoUiControl.isAppOnForeground(getIContext()) == 500) {
+                AutoUiControl.openApply(getIContext());
+            } else if (AutoUiControl.isAppOnForeground(getIContext()) == 400) {
+                AutoUiControl.setTopApply(getIContext());
+            }
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
             mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext(), autoUiControl);
             mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl);

@@ -2,7 +2,7 @@ package com.micro.tremolo.inflood.inner.execute.monitor.profile_fragment;
 
 import com.micro.hook.plugin.PluginPresenter;
 import com.micro.root.utils.Lang;
-import com.micro.tremolo.inflood.DataBroadcast;
+import com.micro.tremolo.UploadNet;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.UrlModel;
@@ -29,7 +29,7 @@ public class ProfileFragmentPresenter extends PluginPresenter<ProfileFragmentInt
 
     public void obtainUser(User user) {
         UserModelTable userTable = loadUserTable(user);
-        DataBroadcast.sendUser(getContext(), userTable);
+        UploadNet.uploadUser(userTable);
     }
 
     private synchronized UserModelTable loadUserTable(User user) {
@@ -87,14 +87,14 @@ public class ProfileFragmentPresenter extends PluginPresenter<ProfileFragmentInt
     }
 
     public void obtainVideoList(List<Aweme> awemeList) {
-        VideoListModelTable videoListModelTable = new VideoListModelTable();
         List<VideoModelTable> videoTableList = new ArrayList<>();
         for (Aweme aweme : awemeList) {
             videoTableList.add(loadVideoTable(aweme));
         }
         if (!videoTableList.isEmpty()) {
+            VideoListModelTable videoListModelTable = new VideoListModelTable();
             videoListModelTable.setVideoModelTableList(videoTableList);
-            DataBroadcast.sendVideoList(getContext(), videoListModelTable);
+            UploadNet.uploadVideoList(videoListModelTable);
         }
     }
 

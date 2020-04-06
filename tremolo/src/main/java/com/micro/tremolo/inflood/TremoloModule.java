@@ -1,7 +1,5 @@
 package com.micro.tremolo.inflood;
 
-import android.os.Handler;
-
 import com.micro.hook.ExecuteMonitor;
 import com.micro.hook.config.HookParam;
 import com.micro.root.Logger;
@@ -15,7 +13,7 @@ import java.util.List;
  */
 public class TremoloModule extends ExecuteMonitor {
 
-    public static final Logger logger = Logger.getLogger("DY", "TremoloLog");
+    public static final Logger logger = Logger.getLogger("DYLog", "TremoloLog");
     private static final String TAG = "Tremolo-Module";
 
     public static void init(HookParam hookParam) {
