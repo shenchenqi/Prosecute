@@ -1,5 +1,24 @@
 apply plugin: 'com.android.application'
 
+def getVersionName = { ->
+    try {
+        //打包时间
+        def createTime = new Date().format("YYYYMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
+        def buildType
+        for (String s : gradle.startParameter.taskNames) {
+            if (s.contains("Release") | s.contains("release")) {
+                buildType = "release"
+            } else if (s.contains("Debug") | s.contains("debug")) {
+                buildType = "debug"
+            }
+        }
+        def stdout = build_versions.version_name + "-" + buildType + "-" + createTime
+        return stdout.toString().trim()
+    } catch (ignored) {
+        return null
+    }
+}
+
 android {
     compileSdkVersion build_versions.target_sdk
     buildToolsVersion build_versions.build_tools
@@ -8,7 +27,7 @@ android {
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
         versionCode build_versions.version_code
-        versionName build_versions.version_name
+        versionName getVersionName()
     }
     //添加签名文件
     signingConfigs {
@@ -25,9 +44,6 @@ android {
             keyAlias = 'prosecute'
         }
     }
-    dataBinding {
-        enabled true
-    }
     buildTypes {
         release {
             minifyEnabled false
@@ -37,9 +53,28 @@ android {
     dataBinding {
         enabled true
     }
+    sourceSets {
+        main {
+            if (isDebug.toBoolean()) {
+                manifest.srcFile 'src/main/module/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            }
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            output ->
+                def outputFile = outputFileName
+                if (outputFile != null && outputFile.endsWith('.apk')) {
+                    // app包名称
+                    outputFileName = "prosecute-v" + defaultConfig.versionName + ".apk"
+                }
+        }
     }
 }
 

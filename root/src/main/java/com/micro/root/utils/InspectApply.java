@@ -4,10 +4,27 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
+import android.text.TextUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public class InspectApply {
+
+    public static boolean checkApkExist(Context context, String packageName) {
+        try {
+            context.getPackageManager().getApplicationInfo(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
 
     /**
      * 方法描述：指定某个app开启
@@ -20,8 +37,7 @@ public class InspectApply {
         int iImportance = isAppOnForeground(context, packagename);
         if (iImportance == IMPORTANCE_EMPTY || iImportance == IMPORTANCE_BACKGROUND) {
             PackageManager packageManager = context.getPackageManager();
-            Intent intent = new Intent();
-            intent = packageManager.getLaunchIntentForPackage(packagename);
+            Intent intent = packageManager.getLaunchIntentForPackage(packagename);
             context.startActivity(intent);
             return true;
         }
@@ -95,6 +111,39 @@ public class InspectApply {
                 mAm.moveTaskToFront(rti.id, 0);//报错，manifast文件定义中没有加入action
                 return;
             }
+        }
+    }
+
+    public static void installAPK(Context context, String path, String version) {
+        if (Lang.isEmpty(path)) {
+            return;
+        }
+        File apkFile = new File(path, version);
+        if (!apkFile.exists()) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri uri = Uri.parse("file://" + apkFile.toString());
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        context.startActivity(intent);
+    }
+
+    public static String apkPath(Context context, String name) {
+        try {
+            File file = new File(Environment.getExternalStorageDirectory(), name);
+            InputStream inputStream = context.getAssets().open(name);
+            OutputStream outputStream = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, bytesRead);
+            }
+            inputStream.close();
+            outputStream.close();
+            return file.getAbsolutePath();
+        } catch (IOException e) {
+            return "";
         }
     }
 }
