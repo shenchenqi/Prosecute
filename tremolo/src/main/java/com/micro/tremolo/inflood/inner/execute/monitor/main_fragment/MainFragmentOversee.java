@@ -8,7 +8,7 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
-import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
+import com.micro.tremolo.inflood.inner.execute.AutoUiControl;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
