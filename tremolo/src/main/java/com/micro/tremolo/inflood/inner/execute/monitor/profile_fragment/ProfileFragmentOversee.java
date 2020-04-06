@@ -68,11 +68,6 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("User Profile Fragment h(User)");
                 User user = new User(hook, param.getArgs()[0]);
-                if (presenter == null) {
-                    monitorLogger.e("当前工厂 未实例");
-                    return;
-                }
-                presenter.obtainUser(user);
 
                 if (autoUiControl == null) {
                     controlLogger.e("自动控制 未实例");
@@ -80,6 +75,14 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
                 }
                 autoUiControl.setRead(user.getFansCount());
                 autoUiControl.autoLoadMoreVideo(user.getAwemeCount());
+
+                if (autoUiControl.isRead()) {
+                    if (presenter == null) {
+                        monitorLogger.e("当前工厂 未实例");
+                        return;
+                    }
+                    presenter.obtainUser(user);
+                }
             }
         }, TremoloParam.AWEME_PROFILE_USER_CLASS);
         hook.methodMonitor(TremoloParam.AWEME_PROFILE_VIDEO_CALL_CLASS, TremoloParam.AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD, new ForeignHook() {

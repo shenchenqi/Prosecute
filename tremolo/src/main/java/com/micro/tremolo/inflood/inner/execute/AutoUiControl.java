@@ -228,7 +228,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     private boolean isRead;
 
-    private boolean isRead() {
+    public boolean isRead() {
         return isRead;
     }
 
