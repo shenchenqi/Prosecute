@@ -15,6 +15,7 @@ public interface Const {
     Logger netLogger = com.micro.root.Logger.getLogger("tremoloLog", "NetLog");
 
     boolean isAuto = true;
+    int fansCount = 3000;
 
     String PACKAGE_NAME = "com.ss.android.ugc.aweme";
     String APPLICATION = "android.app.Application";

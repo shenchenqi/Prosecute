@@ -8,12 +8,12 @@ import java.util.List;
 public class VideoModelTable implements Serializable/*extends DataTable*/ {
     private String id;
     private String title;
-    private long createTime;
+    private String createTime;
     private String shareUrl;
-    private long commentCount;//评论数
-    private long diggCount;//爱心数
-    private long downloadCount;//下载数
-    private long shareCount;//分享数
+    private String commentCount;//评论数
+    private String diggCount;//爱心数
+    private String downloadCount;//下载数
+    private String shareCount;//分享数
     private List<String> urlList;
 
     public String getId() {
@@ -32,11 +32,11 @@ public class VideoModelTable implements Serializable/*extends DataTable*/ {
         this.title = title;
     }
 
-    public long getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -48,35 +48,35 @@ public class VideoModelTable implements Serializable/*extends DataTable*/ {
         this.shareUrl = shareUrl;
     }
 
-    public long getCommentCount() {
+    public String getCommentCount() {
         return commentCount;
     }
 
-    public void setCommentCount(long commentCount) {
+    public void setCommentCount(String commentCount) {
         this.commentCount = commentCount;
     }
 
-    public long getDiggCount() {
+    public String getDiggCount() {
         return diggCount;
     }
 
-    public void setDiggCount(long diggCount) {
+    public void setDiggCount(String diggCount) {
         this.diggCount = diggCount;
     }
 
-    public long getDownloadCount() {
+    public String getDownloadCount() {
         return downloadCount;
     }
 
-    public void setDownloadCount(long downloadCount) {
+    public void setDownloadCount(String downloadCount) {
         this.downloadCount = downloadCount;
     }
 
-    public long getShareCount() {
+    public String getShareCount() {
         return shareCount;
     }
 
-    public void setShareCount(long shareCount) {
+    public void setShareCount(String shareCount) {
         this.shareCount = shareCount;
     }
 

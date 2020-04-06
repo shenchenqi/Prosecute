@@ -78,6 +78,7 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
                     controlLogger.e("自动控制 未实例");
                     return;
                 }
+                autoUiControl.setRead(user.getFansCount());
                 autoUiControl.autoLoadMoreVideo(user.getAwemeCount());
             }
         }, TremoloParam.AWEME_PROFILE_USER_CLASS);

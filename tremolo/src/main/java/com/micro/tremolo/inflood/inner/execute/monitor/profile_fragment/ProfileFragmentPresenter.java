@@ -102,14 +102,14 @@ public class ProfileFragmentPresenter extends PluginPresenter<ProfileFragmentInt
         VideoModelTable videoTable = new VideoModelTable();
         videoTable.setId(aweme.getAid());
         videoTable.setTitle(aweme.getDesc());
-        videoTable.setCreateTime(aweme.getCreateTime());
+        videoTable.setCreateTime(String.valueOf(aweme.getCreateTime()));
         videoTable.setShareUrl(aweme.getShareUrl());
         AwemeStatistics statistics = aweme.getStatistics();
         if (statistics != null) {
-            videoTable.setCommentCount(statistics.getCommentCount());
-            videoTable.setDiggCount(statistics.getDiggCount());
-            videoTable.setDownloadCount(statistics.getDownloadCount());
-            videoTable.setShareCount(statistics.getShareCount());
+            videoTable.setCommentCount(String.valueOf(statistics.getCommentCount()));
+            videoTable.setDiggCount(String.valueOf(statistics.getDiggCount()));
+            videoTable.setDownloadCount(String.valueOf(statistics.getDownloadCount()));
+            videoTable.setShareCount(String.valueOf(statistics.getShareCount()));
         } else {
             /*videoTable.setUpdate(-1);*/
         }

@@ -50,10 +50,12 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
     private UserProfileFragmentControl userProfileFragmentControl;
 
     private int count;
+    private int setCount;
     private int mainControlStep;
 
     private void init() {
         mainControlStep = 0;
+        setCount = 0;
         mainActivityControl = new MainActivityControl();
         mainFragmentControl = new MainFragmentControl();
         userProfileFragmentControl = new UserProfileFragmentControl();
@@ -105,29 +107,38 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                             if (mainControlStep != 1) {
                                 return;
                             }
-                            userProfileFragmentControl.moveToUserMoreVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
-                                @Override
-                                public void success(String value) {
-                                    controlLogger.d(value + String.format("滑动[%s][%s]", count, videoCount));
-                                    if (videoCount < count) {
+                            if (!isRead()) {
+                                mainControlStep = 2;
+                                handler.sendEmptyMessageDelayed(moveVideo, 3 * second);
+                                return;
+                            }
+                            controlLogger.d(String.format("作品数[%s]， 实际数[%s]", count, videoCount));
+                            if (videoCount < count && setCount < (count / 10)) {
+                                userProfileFragmentControl.moveToUserMoreVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                                    @Override
+                                    public void success(String value) {
+                                        controlLogger.d(value + String.format("作品数[%s]， 实际数[%s], 轮询数[%s]", count, videoCount, setCount));
+                                        setCount++;
                                         handler.sendEmptyMessageDelayed(loadMoreVideo, sleep());
-                                    } else {
-                                        mainControlStep = 2;
-                                        handler.sendEmptyMessageDelayed(moveVideo, sleep());
                                     }
-                                }
 
-                                @Override
-                                public void fail(String msg) {
-                                    controlLogger.e(msg);
-                                }
+                                    @Override
+                                    public void fail(String msg) {
+                                        controlLogger.e(msg);
+                                    }
 
-                                @Override
-                                public long sleep() {
-                                    return 2 * second;
-                                }
-                            });
+                                    @Override
+                                    public long sleep() {
+                                        return 3 * second;
+                                    }
+                                });
+                            } else {
+                                mainControlStep = 2;
+                                setCount = 0;
+                                handler.sendEmptyMessageDelayed(moveVideo, 3 * second);
+                            }
                         } else if (isAppOnForeground(getIContext()) == 500) {
+                            setCount = 0;
                             handler.sendEmptyMessage(openDouYin);
                         } else {
                             handler.sendEmptyMessage(topDouYin);
@@ -213,6 +224,16 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     public void setVideoCount(int videoCount) {
         this.videoCount = videoCount;
+    }
+
+    private boolean isRead;
+
+    private boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(int fansCount) {
+        isRead = fansCount > Const.fansCount;
     }
 
     @Override
