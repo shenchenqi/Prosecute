@@ -1,4 +1,4 @@
-package com.micro.tremolo.inflood.mvp;
+package com.micro.tremolo.inflood.initial;
 
 import com.micro.hook.setup.SetupPresenter;
 

@@ -1,4 +1,4 @@
-package com.micro.tremolo.inflood;
+package com.micro.tremolo.inflood.initial;
 
 import android.content.Context;
 
@@ -12,8 +12,6 @@ import com.micro.tremolo.inflood.inner.execute.dialog.HideDialog;
 import com.micro.tremolo.inflood.inner.execute.monitor.main_activity.MainActivityOversee;
 import com.micro.tremolo.inflood.inner.execute.monitor.main_fragment.MainFragmentOversee;
 import com.micro.tremolo.inflood.inner.execute.monitor.profile_fragment.ProfileFragmentOversee;
-import com.micro.tremolo.inflood.mvp.EntranceInter;
-import com.micro.tremolo.inflood.mvp.EntrancePresenter;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import static com.micro.tremolo.inflood.TremoloModule.logger;
