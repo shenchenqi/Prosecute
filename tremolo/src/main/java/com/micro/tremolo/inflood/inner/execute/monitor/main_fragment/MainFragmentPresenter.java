@@ -1,7 +1,7 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.main_fragment;
 
 import com.micro.hook.plugin.PluginPresenter;
-import com.micro.tremolo.UploadNet;
+import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
 import com.micro.tremolo.inflood.inner.replace.User;

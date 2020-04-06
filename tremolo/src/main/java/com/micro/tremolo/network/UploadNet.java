@@ -1,4 +1,4 @@
-package com.micro.tremolo;
+package com.micro.tremolo.network;
 
 import android.content.Context;
 

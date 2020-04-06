@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
-import com.micro.tremolo.UploadNet;
+import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.TestHook;
 import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
 import com.micro.tremolo.inflood.inner.execute.logcat.LogContent;
