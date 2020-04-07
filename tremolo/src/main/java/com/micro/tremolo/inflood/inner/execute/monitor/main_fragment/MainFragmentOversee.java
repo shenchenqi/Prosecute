@@ -9,10 +9,19 @@ import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
 import com.micro.tremolo.inflood.inner.execute.AutoUiControl;
+import com.micro.tremolo.inflood.inner.execute.RequestApi;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.version.TremoloParam;
+import com.micro.tremolo.network.UploadNet;
+import com.micro.tremolo.sqlite.from.Author;
+import com.micro.tremolo.sqlite.from.Video;
+import com.micro.tremolo.sqlite.table.UserModelTable;
+import com.micro.tremolo.sqlite.table.VideoListModelTable;
+import com.micro.tremolo.sqlite.table.VideoModelTable;
 
-import static com.micro.tremolo.Const.controlLogger;
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.micro.tremolo.Const.monitorLogger;
 
 /**
@@ -22,10 +31,12 @@ import static com.micro.tremolo.Const.monitorLogger;
 public class MainFragmentOversee extends Plugin<MainFragmentPresenter, MainFragmentInter> implements MainFragmentInter {
 
     private final AutoUiControl autoUiControl;
+    private final RequestApi requestApi;
 
-    public MainFragmentOversee(Hook hook, Context context, AutoUiControl autoUiControl) throws Throwable {
+    public MainFragmentOversee(Hook hook, Context context, AutoUiControl autoUiControl, RequestApi requestApi) throws Throwable {
         super(hook, context);
         this.autoUiControl = autoUiControl;
+        this.requestApi = requestApi;
     }
 
     @Override
@@ -41,10 +52,10 @@ public class MainFragmentOversee extends Plugin<MainFragmentPresenter, MainFragm
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("Main Fragment onViewCreated");
                 if (autoUiControl == null) {
-                    controlLogger.e("自动控制 未实例");
+                    monitorLogger.e("自动控制 未实例");
                     return;
                 }
-                controlLogger.i("Load Main Fragment View");
+                monitorLogger.i("Load Main Fragment View");
                 View view = (View) param.getArgs()[0];
                 autoUiControl.setMainFragmentView(view);
             }
@@ -53,26 +64,73 @@ public class MainFragmentOversee extends Plugin<MainFragmentPresenter, MainFragm
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("Main Fragment onVideoPageChangeEvent");
-                if (presenter == null) {
-                    monitorLogger.e("当前工厂 未实例");
-                    return;
-                }
                 Object videoInfo = hook.getField(param.getArgs()[0], TremoloParam.AWEME_FEED_MODEL_AWEME_FIELD);
-                presenter.obtainVideo(new Aweme(hook, videoInfo));
-
-                controlLogger.i("Video Change");
-                if (autoUiControl == null) {
-                    controlLogger.e("自动控制 未实例");
-                    return;
-                }
+                Aweme aweme = new Aweme(hook, videoInfo);
+                presenter.getClazz().videoInfo(aweme);
                 autoUiControl.setUserProfile(false);
-                autoUiControl.autoMoveUser();
+                setHandlerPost(second * 3, () -> {
+                    monitorLogger.i("是否是广告： " + !autoUiControl.isUserProfile());
+                    if (autoUiControl.isUserProfile()) {
+                        requestApi.requestProfileApi(aweme.getAuthor().getSecUid(), presenter.getClazz());
+                    } else {
+                        autoUiControl.autoChangeVideo();
+                    }
+                });
             }
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
+    }
+
+    private void setHandlerPost(long time, Runnable runnable) {
+        presenter.setHandlerPost(time, getIContext().getMainLooper(), runnable);
     }
 
     @Override
     public Context getIContext() {
         return presenter.getContext();
+    }
+
+    @Override
+    public void profileInfo(Author author) {
+        UserModelTable userTable = presenter.loadUserTable(author);
+        if (presenter.isRead(Integer.parseInt(userTable.getFansCount()))) {
+            monitorLogger.i("视频主 粉丝大于1万 上传信息");
+            UploadNet.uploadUser(userTable);
+            requestApi.requestFeedVideoApi(true, author.getUserId(), author.getSceUserId(), 0, presenter.getClazz());
+        } else {
+            monitorLogger.i("视频主 粉丝小于1万 刷新视频");
+            autoUiControl.autoChangeVideo();
+        }
+    }
+
+    @Override
+    public void videoListInfo(List<Video> videos) {
+        monitorLogger.i("视频列表： " + videos.size());
+        if (videos.isEmpty()) {
+            autoUiControl.autoChangeVideo();
+        } else {
+            List<VideoModelTable> videoTableList = new ArrayList<>();
+            for (Video video : videos) {
+                videoTableList.add(presenter.loadVideoTable(video));
+            }
+            if (!videoTableList.isEmpty()) {
+                VideoListModelTable videoListModelTable = new VideoListModelTable();
+                videoListModelTable.setVideoModelTableList(videoTableList);
+                UploadNet.uploadVideoList(videoListModelTable);
+                Video video = videos.get(videos.size() - 1);
+                long time = video.getCreateTime().length() == 10 ? Long.parseLong(video.getCreateTime() + "000") : Long.parseLong(video.getCreateTime());
+                requestApi.requestFeedVideoApi(false, video.getUserId(), video.getSceUserId(), time, presenter.getClazz());
+            }
+        }
+    }
+
+    @Override
+    public void error() {
+        autoUiControl.autoChangeVideo();
+    }
+
+    @Override
+    public void videoInfo(Aweme aweme) {
+        VideoModelTable videoTable = presenter.loadVideoTable(aweme);
+        UploadNet.uploadVideo(videoTable);
     }
 }

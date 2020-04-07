@@ -88,11 +88,18 @@ public abstract class TremoloParam {
     public static String AWEME_PROFILE_USER_FRAGMENT_CLASS;
     public static String AWEME_PROFILE_USER_FRAGMENT_SHOW_USER_METHOD;
     public static String AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD;
+    public static String AWEME_PROFILE_USER_FRAGMENT_TO_USER_METHOD;
     public static String AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD;
     public static String AWEME_PROFILE_USER_CLASS;
     public static String AWEME_PROFILE_VIDEO_CALL_CLASS;
     public static String AWEME_PROFILE_VIDEO_CALL_REQUEST_METHOD;
     public static String AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD;
+
+    protected abstract void utilsClass();
+
+    public static String SEC_UID_MANAGER_CLASS;
+    public static String SEC_UID_MANAGER_GET_INSTANCE_METHOD;
+    public static String SEC_UID_MANAGER_GET_SEC_USER_ID_METHOD;
 
     protected abstract void dialogClass();
 

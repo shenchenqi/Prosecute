@@ -14,6 +14,7 @@ import androidx.core.util.Pair;
 
 import com.micro.hook.AutoControlLayout;
 import com.micro.hook.config.Hook;
+import com.micro.root.Logger;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.InspectApply;
 import com.micro.tremolo.Const;
@@ -22,9 +23,9 @@ import com.micro.tremolo.inflood.version.TremoloParam;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.micro.tremolo.Const.controlLogger;
-
 public class AutoUiControl extends AutoControlLayout implements BaseInterface {
+
+    private Logger logger = com.micro.root.Logger.getLogger("tremoloLog", "ControlLog");
 
     private final Hook hook;
     private final Context context;
@@ -39,10 +40,11 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     private final static int topDouYin = 998;
     private final static int openDouYin = 999;
-    private final static int moveUser = 1000;
-    private final static int loadMoreVideo = 1001;
-    private final static int moveVideo = 1002;
-    private final static int changeVideo = 1003;
+    private final static int uiMoveUser = 1000;
+    private final static int uiLoadMoreVideo = 1001;
+    private final static int uiMoveVideo = 1002;
+    private final static int uiChangeVideoTop = 1003;
+    private final static int uiChangeVideoBottom = 1004;
 
     private Handler handler;
     private MainActivityControl mainActivityControl;
@@ -69,155 +71,113 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                     case openDouYin:
                         openApply(getIContext());
                         break;
-                    case moveUser:
-                        if (isAppOnForeground(getIContext()) == 100) {
-                            if (mainControlStep != 0 && mainControlStep != 4) {
-                                return;
+                    case uiMoveUser:
+                        mainFragmentControl.moveToUser(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                            @Override
+                            public void success(String value) {
+                                logger.d(value);
+                                mainControlStep = 1;
                             }
-                            if (userProfileFragmentControl.isUserProfile()) {
-                                mainFragmentControl.moveToUser(screenData[0], screenData[1], new AutoControlLayout.Callback() {
-                                    @Override
-                                    public void success(String value) {
-                                        controlLogger.d(value);
-                                        mainControlStep = 1;
-                                    }
 
-                                    @Override
-                                    public void fail(String msg) {
-                                        controlLogger.e(msg);
-                                    }
-
-                                    @Override
-                                    public long sleep() {
-                                        return 0;
-                                    }
-                                });
-                            } else {
-                                mainControlStep = 3;
-                                handler.sendEmptyMessageDelayed(changeVideo, 10 * second);
+                            @Override
+                            public void fail(String msg) {
+                                logger.e(msg);
                             }
-                        } else if (isAppOnForeground(getIContext()) == 500) {
-                            handler.sendEmptyMessage(openDouYin);
-                        } else {
-                            handler.sendEmptyMessage(topDouYin);
-                        }
+
+                            @Override
+                            public long sleep() {
+                                return 0;
+                            }
+                        });
                         break;
-                    case loadMoreVideo:
-                        if (isAppOnForeground(getIContext()) == 100) {
-                            if (mainControlStep != 1) {
-                                return;
-                            }
-                            if (!isRead()) {
-                                mainControlStep = 2;
-                                handler.sendEmptyMessageDelayed(moveVideo, 3 * second);
-                                return;
-                            }
-                            controlLogger.d(String.format("作品数[%s]， 实际数[%s]", count, videoCount));
-                            if (videoCount < count && setCount < (count / 10)) {
-                                userProfileFragmentControl.moveToUserMoreVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
-                                    @Override
-                                    public void success(String value) {
-                                        controlLogger.d(value + String.format("作品数[%s]， 实际数[%s], 轮询数[%s]", count, videoCount, setCount));
-                                        setCount++;
-                                        handler.sendEmptyMessageDelayed(loadMoreVideo, sleep());
-                                    }
+                    case uiLoadMoreVideo:
+                        logger.d(String.format("作品数[%s]， 实际数[%s]", count, videoCount));
+                        if (videoCount < count && setCount < (count / 10) && isRead()) {
+                            userProfileFragmentControl.moveToUserMoreVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                                @Override
+                                public void success(String value) {
+                                    logger.d(value + String.format("作品数[%s]， 实际数[%s], 轮询数[%s]", count, videoCount, setCount));
+                                    setCount++;
+                                    handler.sendEmptyMessageDelayed(uiLoadMoreVideo, sleep());
+                                }
 
-                                    @Override
-                                    public void fail(String msg) {
-                                        controlLogger.e(msg);
-                                    }
+                                @Override
+                                public void fail(String msg) {
+                                    logger.e(msg);
+                                }
 
-                                    @Override
-                                    public long sleep() {
-                                        return 3 * second;
-                                    }
-                                });
-                            } else {
-                                mainControlStep = 2;
-                                setCount = 0;
-                                handler.sendEmptyMessageDelayed(moveVideo, 3 * second);
-                            }
-                        } else if (isAppOnForeground(getIContext()) == 500) {
+                                @Override
+                                public long sleep() {
+                                    return 3 * second;
+                                }
+                            });
+                        } else {
+                            mainControlStep = 2;
                             setCount = 0;
-                            handler.sendEmptyMessage(openDouYin);
-                        } else {
-                            handler.sendEmptyMessage(topDouYin);
+                            handler.sendEmptyMessageDelayed(uiMoveVideo, 3 * second);
                         }
                         break;
-                    case moveVideo:
-                        if (isAppOnForeground(getIContext()) == 100) {
-                            if (mainControlStep != 2) {
-                                return;
+                    case uiMoveVideo:
+                        userProfileFragmentControl.moveToVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                            @Override
+                            public void success(String value) {
+                                logger.d(value);
+                                mainControlStep = 3;
+                                handler.sendEmptyMessageDelayed(uiChangeVideoTop, sleep());
                             }
-                            userProfileFragmentControl.moveToVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
-                                @Override
-                                public void success(String value) {
-                                    controlLogger.d(value);
-                                    mainControlStep = 3;
-                                    handler.sendEmptyMessageDelayed(changeVideo, sleep());
-                                }
 
-                                @Override
-                                public void fail(String msg) {
-                                    controlLogger.e(msg);
-                                }
+                            @Override
+                            public void fail(String msg) {
+                                logger.e(msg);
+                            }
 
-                                @Override
-                                public long sleep() {
-                                    return 5 * second;
-                                }
-                            });
-                        } else if (isAppOnForeground(getIContext()) == 500) {
-                            handler.sendEmptyMessage(openDouYin);
-                        } else {
-                            handler.sendEmptyMessage(topDouYin);
-                        }
+                            @Override
+                            public long sleep() {
+                                return 5 * second;
+                            }
+                        });
                         break;
-                    case changeVideo:
-                        if (isAppOnForeground(getIContext()) == 100) {
-                            if (mainControlStep != 3) {
-                                return;
+                    case uiChangeVideoTop:
+                        mainFragmentControl.moveChangeVideoToTop(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                            @Override
+                            public void success(String value) {
+                                logger.d(value);
+                                mainControlStep = 4;
                             }
-                            mainFragmentControl.moveChangeVideo(screenData[0], screenData[1], new AutoControlLayout.Callback() {
-                                @Override
-                                public void success(String value) {
-                                    controlLogger.d(value);
-                                    mainControlStep = 4;
-                                }
 
-                                @Override
-                                public void fail(String msg) {
-                                    controlLogger.e(msg);
-                                }
+                            @Override
+                            public void fail(String msg) {
+                                logger.e(msg);
+                            }
 
-                                @Override
-                                public long sleep() {
-                                    return 0;
-                                }
-                            });
-                        } else if (isAppOnForeground(getIContext()) == 500) {
-                            handler.sendEmptyMessage(openDouYin);
-                        } else {
-                            handler.sendEmptyMessage(topDouYin);
-                        }
+                            @Override
+                            public long sleep() {
+                                return 0;
+                            }
+                        });
+                        break;
+                    case uiChangeVideoBottom:
+                        mainFragmentControl.moveChangeVideoToBottom(screenData[0], screenData[1], new AutoControlLayout.Callback() {
+                            @Override
+                            public void success(String value) {
+                                logger.d(value);
+                                mainControlStep = 5;
+                            }
+
+                            @Override
+                            public void fail(String msg) {
+                                logger.e(msg);
+                            }
+
+                            @Override
+                            public long sleep() {
+                                return 0;
+                            }
+                        });
                         break;
                 }
             }
         };
-    }
-
-    public void autoMoveUser() {
-        if (Const.isAuto) {
-            mainControlStep = 0;
-            handler.sendEmptyMessageDelayed(moveUser, 10 * second);
-        }
-    }
-
-    public void autoLoadMoreVideo(int count) {
-        this.count = count;
-        if (Const.isAuto) {
-            handler.sendEmptyMessageDelayed(loadMoreVideo, 10 * second);
-        }
     }
 
     private int videoCount;
@@ -234,6 +194,45 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     public void setRead(int fansCount) {
         isRead = fansCount > Const.fansCount;
+    }
+
+    public void setMainActivity(Object mainActivity) {
+        mainActivityControl.setMainActivity(mainActivity);
+    }
+
+    public void setMainFragmentView(View view) {
+        mainFragmentControl.setMainFragmentView(view);
+    }
+
+    public void setUserProfile(boolean userProfile) {
+        userProfileFragmentControl.setUserProfile(userProfile);
+    }
+
+    public void setProfileFragmentView(View view) {
+        userProfileFragmentControl.setProfileFragmentView(view);
+    }
+
+    public boolean isUserProfile() {
+        return userProfileFragmentControl.isUserProfile();
+    }
+
+    public void autoMoveUser() {
+        if (Const.isAuto) {
+            handler.sendEmptyMessageDelayed(uiMoveUser, 10 * second);
+        }
+    }
+
+    public void autoChangeVideo() {
+        if (Const.isAuto) {
+            handler.sendEmptyMessageDelayed(uiChangeVideoTop, 3 * second);
+        }
+    }
+
+    public void autoLoadMoreVideo(int count) {
+        this.count = count;
+        if (Const.isAuto) {
+            handler.sendEmptyMessageDelayed(uiLoadMoreVideo, 10 * second);
+        }
     }
 
     @Override
@@ -255,25 +254,12 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
     private synchronized void setCoordinateList(List<Pair<Float, Float>> coordinates) {
         sendPointerSync(getMotionEvents(coordinates));
-        /*for (MotionEvent event : getMotionEvents(coordinates)) {
+    }
+
+    private synchronized void setMainCoordinateList(List<Pair<Float, Float>> coordinates) {
+        for (MotionEvent event : getMotionEvents(coordinates)) {
             mainActivityControl.callDispatchTouchEvent(event);
-        }*/
-    }
-
-    public void setMainActivity(Object mainActivity) {
-        mainActivityControl.setMainActivity(mainActivity);
-    }
-
-    public void setMainFragmentView(View view) {
-        mainFragmentControl.setMainFragmentView(view);
-    }
-
-    public void setUserProfile(boolean userProfile) {
-        userProfileFragmentControl.setUserProfile(userProfile);
-    }
-
-    public void setProfileFragmentView(View view) {
-        userProfileFragmentControl.setProfileFragmentView(view);
+        }
     }
 
     private class MainActivityControl {
@@ -285,7 +271,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
 
         private void callDispatchTouchEvent(MotionEvent event) {
             if (mainActivity == null) {
-                controlLogger.e("Main Activity is null");
+                logger.e("Main Activity is null");
                 return;
             }
             hook.callMethod(mainActivity, TremoloParam.AWEME_MAIN_ACTIVITY_TOUCH_EVENT_METHOD, event);
@@ -392,7 +378,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         }
 
         private void moveToUser(final float x, final float y, final Callback callback) {
-            controlLogger.d(String.format("滑动 用户界面 准备 width [%s], height [%s]", x, y));
+            logger.d(String.format("滑动 用户界面 准备 width [%s], height [%s]", x, y));
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();
                 pairList.add(new Pair<>(x - 10, y / 2));
@@ -411,8 +397,8 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
             });
         }
 
-        private void moveChangeVideo(final float x, final float y, final Callback callback) {
-            controlLogger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
+        private void moveChangeVideoToTop(final float x, final float y, final Callback callback) {
+            logger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();
                 pairList.add(new Pair<>(x / 2, y / 2 - 10));
@@ -426,6 +412,26 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
                 pairList.add(new Pair<>(x / 2, (y / 20) * 2));
                 pairList.add(new Pair<>(x / 2, (y / 20) * 1));
                 pairList.add(new Pair<>(x / 2, 10f));
+                setCoordinateList(pairList);
+                callback.success("视频切换 滑动 成功 ");
+            });
+        }
+
+        private void moveChangeVideoToBottom(final float x, final float y, final Callback callback) {
+            logger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
+            startThread(() -> {
+                List<Pair<Float, Float>> pairList = new ArrayList<>();
+                pairList.add(new Pair<>(x / 2, y / 2));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 1));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 2));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 3));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 4));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 5));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 6));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 7));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 8));
+                pairList.add(new Pair<>(x / 2, y / 2 + (y / 20) * 9));
+                pairList.add(new Pair<>(x / 2, y - 10));
                 setCoordinateList(pairList);
                 callback.success("视频切换 滑动 成功 ");
             });
@@ -467,7 +473,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         }
 
         private void moveToUserMoreVideo(final float x, final float y, final Callback callback) {
-            controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s]", x, y));
+            logger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s]", x, y));
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();
                 pairList.add(new Pair<>(x / 2, y - 10));
@@ -487,7 +493,7 @@ public class AutoUiControl extends AutoControlLayout implements BaseInterface {
         }
 
         private void moveToVideo(final float x, final float y, final Callback callback) {
-            controlLogger.d(String.format("滑动 视频界面 准备 width [%s], height [%s]", x, y));
+            logger.d(String.format("滑动 视频界面 准备 width [%s], height [%s]", x, y));
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();
                 pairList.add(new Pair<>(10f, y / 2));

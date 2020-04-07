@@ -4,14 +4,14 @@ import android.content.Context;
 
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
+import com.micro.tremolo.inflood.inner.execute.RequestApi;
+import com.micro.tremolo.inflood.inner.execute.monitor.profile_fragment.ProfileFragmentOversee;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.TestHook;
 import com.micro.tremolo.inflood.inner.execute.AutoUiControl;
 import com.micro.tremolo.inflood.inner.execute.LogContent;
 import com.micro.tremolo.inflood.inner.execute.HideDialog;
-import com.micro.tremolo.inflood.inner.execute.monitor.main_activity.MainActivityOversee;
 import com.micro.tremolo.inflood.inner.execute.monitor.main_fragment.MainFragmentOversee;
-import com.micro.tremolo.inflood.inner.execute.monitor.profile_fragment.ProfileFragmentOversee;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import static com.micro.tremolo.inflood.TremoloModule.logger;
@@ -70,7 +70,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     }
     
     private HideDialog dialog;
-    private MainActivityOversee mainActivityOversee;
+    //private MainActivityOversee mainActivityOversee;
     private MainFragmentOversee mainFragmentOversee;
     private ProfileFragmentOversee profileFragmentOversee;
 
@@ -85,8 +85,8 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
                 AutoUiControl.setTopApply(getIContext());
             }
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
-            mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext(), autoUiControl);
-            mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl);
+            //mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext(), autoUiControl);
+            mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl, new RequestApi(getHookParam().getHook(), getIContext()));
             profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl);
         } catch (Throwable throwable) {
             logger.e(throwable, "配置报错");
@@ -103,9 +103,9 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         if (dialog != null) {
             dialog.monitor();
         }
-        if (mainActivityOversee != null) {
+        /*if (mainActivityOversee != null) {
             mainActivityOversee.monitor();
-        }
+        }*/
         if (mainFragmentOversee != null) {
             mainFragmentOversee.monitor();
         }

@@ -14,6 +14,7 @@ public class V960 extends TremoloParam {
         mainClass();
         feedClass();
         profileClass();
+        utilsClass();
         dialogClass();
     }
 
@@ -86,6 +87,7 @@ public class V960 extends TremoloParam {
         AWEME_PROFILE_USER_FRAGMENT_CLASS = PACKAGE_PROFILE + ".ui.UserProfileFragment";
         AWEME_PROFILE_USER_FRAGMENT_SHOW_USER_METHOD = "h";
         AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD = "a_";
+        AWEME_PROFILE_USER_FRAGMENT_TO_USER_METHOD = "g";
         AWEME_PROFILE_USER_FRAGMENT_VIEW_CREATE_METHOD = "onViewCreated";
         AWEME_PROFILE_USER_CLASS = PACKAGE_PROFILE + ".model.User";
         AWEME_PROFILE_VIDEO_CALL_CLASS = PACKAGE_PROFILE + ".presenter.b";
@@ -94,13 +96,20 @@ public class V960 extends TremoloParam {
     }
 
     @Override
+    protected void utilsClass() {
+        SEC_UID_MANAGER_CLASS = PACKAGE + ".utils.ej";
+        SEC_UID_MANAGER_GET_INSTANCE_METHOD = "a";
+        SEC_UID_MANAGER_GET_SEC_USER_ID_METHOD = "b";
+    }
+
+    @Override
     protected void dialogClass() {
         DIALOG = "com.bytedance.ies.dmt.ui.c.a";
         DIALOG_CLASS = DIALOG + ".a";
         DIALOG_VIEW_METHOD = "a";
-        DIALOG_UPDATE_CLASS = "com.ss.android.ugc.aweme.update.m";
+        DIALOG_UPDATE_CLASS = PACKAGE + ".update.m";
         DIALOG_UPDATE_CREATE_METHOD = "onCreate";
-        DIALOG_INFO_CLASS = "com.ss.android.ugc.aweme.main.cq";
+        DIALOG_INFO_CLASS = PACKAGE + ".main.cq";
         DIALOG_INFO_CREATE_METHOD = "onCreate";
     }
 }

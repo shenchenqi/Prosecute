@@ -35,7 +35,7 @@ public abstract class BasePresenter<Interface extends BaseInterface> {
 
     private HandlerThread handlerThread;
 
-    protected void setHandlerPost(long time, Looper looper, Runnable runnable) {
+    public void setHandlerPost(long time, Looper looper, Runnable runnable) {
         if (looper != null) {
             handler = new Handler(looper);
         } else {

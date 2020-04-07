@@ -9,8 +9,11 @@ import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
 import com.micro.tremolo.inflood.inner.execute.AutoUiControl;
 import com.micro.tremolo.inflood.version.TremoloParam;
+import com.micro.tremolo.sqlite.from.Author;
+import com.micro.tremolo.sqlite.from.Video;
 
-import static com.micro.tremolo.Const.controlLogger;
+import java.util.List;
+
 import static com.micro.tremolo.Const.monitorLogger;
 
 /**
@@ -39,7 +42,7 @@ public class MainActivityOversee extends Plugin<MainActivityPresenter, MainActiv
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.d("Main Activity onCreate ");
                 if (autoUiControl == null) {
-                    controlLogger.e("自动控制 未实例");
+                    monitorLogger.e("自动控制 未实例");
                     return;
                 }
                 autoUiControl.setMainActivity(param.getThisObject());
@@ -50,5 +53,20 @@ public class MainActivityOversee extends Plugin<MainActivityPresenter, MainActiv
     @Override
     public Context getIContext() {
         return presenter.getContext();
+    }
+
+    @Override
+    public void profileInfo(Author author) {
+
+    }
+
+    @Override
+    public void videoListInfo(List<Video> videos) {
+
+    }
+
+    @Override
+    public void error() {
+
     }
 }

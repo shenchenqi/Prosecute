@@ -6,6 +6,7 @@ import com.micro.network.InitNetwork;
 import com.micro.network.NetworkManager;
 import com.micro.network.available.model.ApiResponseBase;
 import com.micro.network.available.model.EmptyEntity;
+import com.micro.root.Logger;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
@@ -14,13 +15,12 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-import static com.micro.tremolo.Const.netLogger;
-
 /**
  * @Author KiLin
  * @Time 2020/4/6 9:53
  */
 public class UploadNet {
+    private static Logger netLogger = com.micro.root.Logger.getLogger("tremoloLog", "NetLog");
 
     private static Context context;
 

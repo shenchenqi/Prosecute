@@ -14,7 +14,6 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.root.Logger;
-import com.micro.tremolo.inflood.version.TremoloParam;
 
 import java.util.Map;
 
@@ -1346,7 +1345,7 @@ public class TestHook {
         hook.methodMonitor(profileFragment, "g", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Profile Fragment g(boolean) ");
+                logger.d("Profile Fragment g(boolean) >>> " + param.getArgs()[0]);
             }
         }, boolean.class);
         hook.methodMonitor(profileFragment, "onFakeCoverAction", new ForeignHook() {
@@ -1436,11 +1435,11 @@ public class TestHook {
     }
 
     private static void api(final Hook hook)  {
-        String profileVideoCall = TremoloParam.AWEME_PROFILE_VIDEO_CALL_CLASS;
+        String profileVideoCall = "com.ss.android.ugc.aweme.profile.presenter.b";
         hook.methodMonitor(profileVideoCall, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d(String.format("参数[%s, %s, %s, %s, %s, %s]",
+                logger.d(String.format("presenter.b a(boolean, String, int, long, int, String) 参数[%s, %s, %s, %s, %s, %s]",
                         param.getArgs()[0], param.getArgs()[1], param.getArgs()[2], param.getArgs()[3], param.getArgs()[4], param.getArgs()[5]));
             }
         }, boolean.class, String.class, int.class, long.class, int.class, String.class);
@@ -1449,7 +1448,7 @@ public class TestHook {
         hook.methodMonitor(profileVideoApi, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d(String.format("参数[%s, %s]， 返回数据[%s]",
+                logger.d(String.format("AwemeApi a(String, int) 参数[%s, %s], 返回数据[%s]",
                         param.getArgs()[0], param.getArgs()[1],
                         JSON.toJSONString(param.getResult())));
             }
@@ -1457,7 +1456,7 @@ public class TestHook {
         hook.methodMonitor(profileVideoApi, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d(String.format("参数[%s, %s, %s, %s, %s, %s, %s]， 返回数据[%s]",
+                logger.d(String.format("AwemeApi a(boolean, String, String, int, long, int, String) 参数[%s, %s, %s, %s, %s, %s, %s], 返回数据[%s]",
                         param.getArgs()[0], param.getArgs()[1], param.getArgs()[2], param.getArgs()[3], param.getArgs()[4], param.getArgs()[5], param.getArgs()[6],
                         JSON.toJSONString(param.getResult())));
             }
@@ -1465,7 +1464,7 @@ public class TestHook {
         hook.methodMonitor(profileVideoApi, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d(String.format("参数[%s, %s, %s, %s, %s, %s, %s, %s, %s]， 返回数据[%s]",
+                logger.d(String.format("AwemeApi a(boolean, String, String, int, long, int, String, int, int) 参数[%s, %s, %s, %s, %s, %s, %s, %s, %s]， 返回数据[%s]",
                         param.getArgs()[0], param.getArgs()[1], param.getArgs()[2], param.getArgs()[3], param.getArgs()[4], param.getArgs()[5], param.getArgs()[6], param.getArgs()[7], param.getArgs()[8],
                         JSON.toJSONString(param.getResult())));
             }
@@ -1475,16 +1474,16 @@ public class TestHook {
         hook.methodMonitor(profileCall, "b", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                super.afterHookedMethod(param);
+                logger.d("presenter.ai b()");
                 Object b = hook.getField(param.getThisObject(), "b");
                 Object d = hook.getField(param.getThisObject(), "d");
                 Object e = hook.getField(param.getThisObject(), "e");
                 int f = hook.getIntegerField(param.getThisObject(), "f");
-                logger.d(String.format("准备的数据： %s, %s, %s, %s", b, d, e, f));
+                logger.d(String.format("presenter.ai b() 准备的数据： %s, %s, %s, %s", b, d, e, f));
                 Object h = hook.getField(param.getThisObject(), "h");
                 Object data = hook.callMethod(h, "getData");
                 Object getUser = JSON.toJSONString(hook.callMethod(data, "getUser"));
-                logger.d(JSON.toJSONString(getUser));
+                logger.d("presenter.ai b() " + JSON.toJSONString(getUser));
             }
         });
 
@@ -1492,10 +1491,19 @@ public class TestHook {
         hook.methodMonitor(profileApi, "b", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d(String.format("参数[%s, %s, %s]， 返回数据[%s]",
+                logger.d(String.format("ProfileApi b(String, boolean, String) 参数[%s, %s, %s], 返回数据[%s]",
                         param.getArgs()[0], param.getArgs()[1], param.getArgs()[2],
                         JSON.toJSONString(param.getResult())));
             }
         }, String.class, boolean.class, String.class);
+
+        String secUidManager = "com.ss.android.ugc.aweme.utils.ej";
+        hook.methodMonitor(secUidManager, "a", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("ProfileApi a(String, String) 参数[%s, %s]",
+                        param.getArgs()[0], param.getArgs()[1]));
+            }
+        }, String.class, String.class);
     }
 }

@@ -14,8 +14,6 @@ import java.util.List;
 public interface Const {
 
     Logger monitorLogger = com.micro.root.Logger.getLogger("tremoloLog", "MonitorLog");
-    Logger controlLogger = com.micro.root.Logger.getLogger("tremoloLog", "ControlLog");
-    Logger netLogger = com.micro.root.Logger.getLogger("tremoloLog", "NetLog");
 
     boolean isAuto = true;
     int fansCount = 10000;

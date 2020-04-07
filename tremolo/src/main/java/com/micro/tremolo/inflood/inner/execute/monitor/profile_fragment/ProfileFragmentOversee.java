@@ -12,11 +12,12 @@ import com.micro.tremolo.inflood.inner.execute.AutoUiControl;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.version.TremoloParam;
+import com.micro.tremolo.sqlite.from.Author;
+import com.micro.tremolo.sqlite.from.Video;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.micro.tremolo.Const.controlLogger;
 import static com.micro.tremolo.Const.monitorLogger;
 
 /**
@@ -45,7 +46,7 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("User Profile Fragment onViewCreated");
                 if (autoUiControl == null) {
-                    controlLogger.e("自动控制 未实例");
+                    monitorLogger.e("自动控制 未实例");
                     return;
                 }
                 View view = (View) param.getArgs()[0];
@@ -57,12 +58,18 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("User Profile Fragment a_(User)");
                 if (autoUiControl == null) {
-                    controlLogger.e("自动控制 未实例");
+                    monitorLogger.e("自动控制 未实例");
                     return;
                 }
                 autoUiControl.setUserProfile(true);
             }
         }, TremoloParam.AWEME_PROFILE_USER_CLASS);
+        hook.methodMonitor(profileFragment, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_TO_USER_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                monitorLogger.i("User Profile Fragment g(boolean) 返回的值： " + param.getArgs()[0]);
+            }
+        }, boolean.class);
         hook.methodMonitor(profileFragment, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_SHOW_USER_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
@@ -70,7 +77,7 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
                 User user = new User(hook, param.getArgs()[0]);
 
                 if (autoUiControl == null) {
-                    controlLogger.e("自动控制 未实例");
+                    monitorLogger.e("自动控制 未实例");
                     return;
                 }
                 autoUiControl.setRead(user.getFansCount());
@@ -89,18 +96,20 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("作者视频接口");
-                if (presenter == null) {
-                    monitorLogger.e("当前工厂 未实例");
-                    return;
-                }
                 List<Aweme> awemeList = new ArrayList<>();
                 for (Object object : (List<Object>) param.getResult()) {
                     awemeList.add(new Aweme(hook, object));
                 }
                 monitorLogger.i("Video List " + awemeList.size());
+
+                if (presenter == null) {
+                    monitorLogger.e("当前工厂 未实例");
+                    return;
+                }
                 presenter.obtainVideoList(awemeList);
+
                 if (autoUiControl == null) {
-                    controlLogger.e("自动控制 未实例");
+                    monitorLogger.e("自动控制 未实例");
                     return;
                 }
                 autoUiControl.setVideoCount(awemeList.size());
@@ -111,5 +120,20 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
     @Override
     public Context getIContext() {
         return presenter.getContext();
+    }
+
+    @Override
+    public void profileInfo(Author author) {
+
+    }
+
+    @Override
+    public void videoListInfo(List<Video> videos) {
+
+    }
+
+    @Override
+    public void error() {
+
     }
 }

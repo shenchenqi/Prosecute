@@ -1,11 +1,8 @@
 package com.micro.tremolo.sqlite.table;
 
-import com.micro.root.utils.Lang;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class UserModelTable implements Serializable /*extends DataTable*/ {
     private String userId;

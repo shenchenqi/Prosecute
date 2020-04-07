@@ -1,7 +1,7 @@
 package com.micro.tremolo.inflood.inner.execute.monitor.profile_fragment;
 
-import com.micro.hook.plugin.PluginPresenter;
 import com.micro.root.utils.Lang;
+import com.micro.tremolo.inflood.inner.execute.mvp.ExecutePresenter;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
@@ -21,7 +21,7 @@ import static com.micro.tremolo.Const.monitorLogger;
  * @Author KiLin
  * @Time 2020/4/3 13:41
  */
-public class ProfileFragmentPresenter extends PluginPresenter<ProfileFragmentInter> {
+public class ProfileFragmentPresenter extends ExecutePresenter<ProfileFragmentInter> {
     @Override
     public void onAttached() {
 
