@@ -64,9 +64,4 @@ public class MainActivityOversee extends Plugin<MainActivityPresenter, MainActiv
     public void videoListInfo(List<Video> videos) {
 
     }
-
-    @Override
-    public void error() {
-
-    }
 }

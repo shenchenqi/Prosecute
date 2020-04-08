@@ -131,9 +131,4 @@ public class ProfileFragmentOversee extends Plugin<ProfileFragmentPresenter, Pro
     public void videoListInfo(List<Video> videos) {
 
     }
-
-    @Override
-    public void error() {
-
-    }
 }

@@ -94,6 +94,10 @@ public abstract class TremoloParam {
     public static String AWEME_PROFILE_VIDEO_CALL_CLASS;
     public static String AWEME_PROFILE_VIDEO_CALL_REQUEST_METHOD;
     public static String AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD;
+    public static String AWEME_PROFILE_VIDEO_PROFILE_API_CLASS;
+    public static String AWEME_PROFILE_VIDEO_PROFILE_API_USER_METHOD;
+    public static String AWEME_PROFILE_VIDEO_AWEME_API_CLASS;
+    public static String AWEME_PROFILE_VIDEO_AWEME_API_LIST_METHOD;
 
     protected abstract void utilsClass();
 

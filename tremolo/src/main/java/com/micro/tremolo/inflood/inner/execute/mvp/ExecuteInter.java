@@ -15,6 +15,4 @@ public interface ExecuteInter extends PluginInter {
     void profileInfo(Author author);
 
     void videoListInfo(List<Video> videos);
-
-    void error();
 }

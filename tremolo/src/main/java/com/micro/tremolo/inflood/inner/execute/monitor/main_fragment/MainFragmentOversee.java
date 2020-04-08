@@ -65,11 +65,12 @@ public class MainFragmentOversee extends Plugin<MainFragmentPresenter, MainFragm
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("Main Fragment onVideoPageChangeEvent");
                 Object videoInfo = hook.getField(param.getArgs()[0], TremoloParam.AWEME_FEED_MODEL_AWEME_FIELD);
-                Aweme aweme = new Aweme(hook, videoInfo);
+                final Aweme aweme = new Aweme(hook, videoInfo);
                 presenter.getClazz().videoInfo(aweme);
+                monitorLogger.i("视频类型: " + aweme.getAwemeType() + " , " + aweme.getAdAwemeSource() + " , " + aweme.getFeedCount() + " , " + aweme.getAdLinkType());
                 autoUiControl.setUserProfile(false);
-                setHandlerPost(second * 3, () -> {
-                    monitorLogger.i("是否是广告： " + !autoUiControl.isUserProfile());
+                setHandlerPost(second * 5, () -> {
+                    monitorLogger.i("是否是视频主： " + autoUiControl.isUserProfile());
                     if (autoUiControl.isUserProfile()) {
                         requestApi.requestProfileApi(aweme.getAuthor().getSecUid(), presenter.getClazz());
                     } else {
@@ -78,6 +79,13 @@ public class MainFragmentOversee extends Plugin<MainFragmentPresenter, MainFragm
                 });
             }
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
+        hook.methodMonitor(TremoloParam.AWEME_PROFILE_USER_FRAGMENT_CLASS, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                monitorLogger.i("User Profile Fragment a_(User)");
+                autoUiControl.setUserProfile(true);
+            }
+        }, TremoloParam.AWEME_PROFILE_USER_CLASS);
     }
 
     private void setHandlerPost(long time, Runnable runnable) {
@@ -121,11 +129,6 @@ public class MainFragmentOversee extends Plugin<MainFragmentPresenter, MainFragm
                 requestApi.requestFeedVideoApi(false, video.getUserId(), video.getSceUserId(), time, presenter.getClazz());
             }
         }
-    }
-
-    @Override
-    public void error() {
-        autoUiControl.autoChangeVideo();
     }
 
     @Override

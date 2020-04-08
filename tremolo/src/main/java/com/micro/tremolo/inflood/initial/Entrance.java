@@ -5,7 +5,6 @@ import android.content.Context;
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
 import com.micro.tremolo.inflood.inner.execute.RequestApi;
-import com.micro.tremolo.inflood.inner.execute.monitor.profile_fragment.ProfileFragmentOversee;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.TestHook;
 import com.micro.tremolo.inflood.inner.execute.AutoUiControl;
@@ -72,7 +71,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     private HideDialog dialog;
     //private MainActivityOversee mainActivityOversee;
     private MainFragmentOversee mainFragmentOversee;
-    private ProfileFragmentOversee profileFragmentOversee;
+    //private ProfileFragmentOversee profileFragmentOversee;
 
     @Override
     public void config() {
@@ -87,7 +86,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
             //mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext(), autoUiControl);
             mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl, new RequestApi(getHookParam().getHook(), getIContext()));
-            profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl);
+            //profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl);
         } catch (Throwable throwable) {
             logger.e(throwable, "配置报错");
         }
@@ -109,9 +108,9 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         if (mainFragmentOversee != null) {
             mainFragmentOversee.monitor();
         }
-        if (profileFragmentOversee != null) {
+        /*if (profileFragmentOversee != null) {
             profileFragmentOversee.monitor();
-        }
+        }*/
     }
 
     @Override

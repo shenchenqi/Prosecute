@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.micro.hook.config.Hook;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.inflood.inner.execute.mvp.ExecuteInter;
+import com.micro.tremolo.inflood.version.TremoloParam;
 import com.micro.tremolo.sqlite.from.Author;
 import com.micro.tremolo.sqlite.from.Video;
 
@@ -37,7 +37,7 @@ public class RequestApi {
             return "";
         }
         String url = "https://aweme.snssdk.com/aweme/v1/user/profile/other/?sec_user_id=" + secUserId + "&address_book_access=1&from=0";
-        return hook.callStaticMethod("com.ss.android.ugc.aweme.profile.api.ProfileApi", "b", url, false, null);
+        return hook.callStaticMethod(TremoloParam.AWEME_PROFILE_VIDEO_PROFILE_API_CLASS, TremoloParam.AWEME_PROFILE_VIDEO_PROFILE_API_USER_METHOD, url, false, null);
     }
 
     public void requestProfileApi(final String secUserId, final ExecuteInter executeInter) {
@@ -60,7 +60,7 @@ public class RequestApi {
         if (Lang.isEmpty(userId) || Lang.isEmpty(secUserId)) {
             return "";
         }
-        return hook.callStaticMethod("com.ss.android.ugc.aweme.profile.api.AwemeApi", "a", isFirst, userId, secUserId, 0, time, limit, null);
+        return hook.callStaticMethod(TremoloParam.AWEME_PROFILE_VIDEO_AWEME_API_CLASS, TremoloParam.AWEME_PROFILE_VIDEO_AWEME_API_LIST_METHOD, isFirst, userId, secUserId, 0, time, limit, null);
     }
 
     public void requestFeedVideoApi(final boolean isFirst, final String userId, final String secUserId, final long time, final ExecuteInter executeInter) {
