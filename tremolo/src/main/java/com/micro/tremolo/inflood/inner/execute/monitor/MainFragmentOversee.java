@@ -37,13 +37,7 @@ public class MainFragmentOversee extends Oversee {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("Main Fragment onVideoPageChangeEvent");
-                Object videoInfo = hook.getField(param.getArgs()[0], TremoloParam.AWEME_FEED_MODEL_AWEME_FIELD);
-                final Aweme aweme = new Aweme(hook, videoInfo);
-                presenter.getClazz().videoInfo(aweme);
-                presenter.setProfile(false);
-                presenter.setData(aweme.getAid(), aweme.getAuthor().getUid(), aweme.getAuthor().getSecUid());
-                presenter.apiLoadProfile();
-                presenter.autoMoveUser();
+                presenter.clickSearch();
             }
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
     }

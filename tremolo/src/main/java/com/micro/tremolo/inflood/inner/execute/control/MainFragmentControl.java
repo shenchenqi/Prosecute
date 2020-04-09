@@ -116,7 +116,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public long sleep() {
-                                return BaseInterface.second * 10;
+                                return BaseInterface.second * 5;
                             }
                         });
                         break;

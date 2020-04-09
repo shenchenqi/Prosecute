@@ -108,9 +108,12 @@ public class V960 extends TremoloParam {
 
     @Override
     protected void dialogClass() {
-        DIALOG = "com.bytedance.ies.dmt.ui.c.a";
-        DIALOG_CLASS = DIALOG + ".a";
+        DIALOG_CLASS = "com.bytedance.ies.dmt.ui.c.a";
+        DIALOG_HIDE_METHOD = "hide";
+        DIALOG_CREATE_CLASS = DIALOG_CLASS + ".a";
         DIALOG_VIEW_METHOD = "a";
+        DIALOG_ONE_METHOD = "a";
+        DIALOG_TWO_METHOD = "b";
         DIALOG_UPDATE_CLASS = PACKAGE + ".update.m";
         DIALOG_UPDATE_CREATE_METHOD = "onCreate";
         DIALOG_INFO_CLASS = PACKAGE + ".main.cq";

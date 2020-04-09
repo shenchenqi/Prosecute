@@ -97,6 +97,20 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
                     }
                 });
             }
+        } else if (Const.isNarrowArea) {
+            if (mainFragmentControl == null) {
+                mainFragmentControl = MainFragmentControl.getInstance(getContext(), new MainFragmentControl.MainCallback() {
+                    @Override
+                    public void success(String value, int type) {
+                        monitorLogger.d(String.format("MainFragment[%s][%s]", type, value));
+                    }
+
+                    @Override
+                    public void fail(String value, int type) {
+                        monitorLogger.e(String.format("MainFragment[%s][%s]", type, value));
+                    }
+                });
+            }
         } else {
             monitorLogger.d("不控制任何");
         }
@@ -105,7 +119,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
     public void setMainActivity(Object mainActivity) {
         if (Const.isAutoUI) {
             autoUiControl.setMainActivity(mainActivity);
-        } else if (Const.isWideArea) {
+        } else if (mainActivityControl != null) {
             mainActivityControl.setMainActivity(mainActivity);
         }
     }
@@ -113,7 +127,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
     public void setMainFragmentView(View mainFragmentView) {
         if (Const.isAutoUI) {
             autoUiControl.setMainFragmentView(mainFragmentView);
-        } else if (Const.isWideArea) {
+        } else if (mainFragmentControl != null) {
             mainFragmentControl.setMainFragmentView(mainFragmentView);
         }
     }
@@ -121,7 +135,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
     public void setProfileFragmentView(View profileFragmentView) {
         if (Const.isAutoUI) {
             autoUiControl.setProfileFragmentView(profileFragmentView);
-        } else if (Const.isWideArea) {
+        } else if (profileFragmentControl != null) {
             profileFragmentControl.setProfileFragmentView(profileFragmentView);
         }
     }
@@ -143,7 +157,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
             return;
         }
         if (!Const.isWideArea) {
-            monitorLogger.e("当前不是自动Api控制");
+            monitorLogger.e("当前不是广域采集数据");
             return;
         }
         if (Lang.isEmpty(secAuthorId)) {
@@ -165,7 +179,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
             return;
         }
         if (!Const.isWideArea) {
-            monitorLogger.e("当前不是自动Api控制");
+            monitorLogger.e("当前不是广域采集数据");
             return;
         }
         if (Lang.isEmpty(authorId)) {
@@ -182,6 +196,12 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
             autoUiControl.autoChangeVideo();
         } else if (Const.isWideArea) {
             mainFragmentControl.clickRecommend();
+        }
+    }
+
+    public void clickSearch() {
+        if (Const.isNarrowArea) {
+            mainFragmentControl.clickSearch();
         }
     }
 
@@ -224,7 +244,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         }
     }
 
-    public void setVideosSize(int size){
+    public void setVideosSize(int size) {
         if (Const.isAutoUI) {
             autoUiControl.setVideosSize(size);
         }

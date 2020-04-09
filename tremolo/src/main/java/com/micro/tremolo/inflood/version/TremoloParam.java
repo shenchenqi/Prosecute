@@ -107,9 +107,12 @@ public abstract class TremoloParam {
 
     protected abstract void dialogClass();
 
-    protected static String DIALOG;
     public static String DIALOG_CLASS;
+    public static String DIALOG_HIDE_METHOD;
+    public static String DIALOG_CREATE_CLASS;
     public static String DIALOG_VIEW_METHOD;
+    public static String DIALOG_ONE_METHOD;
+    public static String DIALOG_TWO_METHOD;
     public static String DIALOG_UPDATE_CLASS;
     public static String DIALOG_UPDATE_CREATE_METHOD;
     public static String DIALOG_INFO_CLASS;
