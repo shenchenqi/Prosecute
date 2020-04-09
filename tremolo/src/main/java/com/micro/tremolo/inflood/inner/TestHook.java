@@ -1434,7 +1434,7 @@ public class TestHook {
         }, int.class, int.class);
     }
 
-    private static void api(final Hook hook)  {
+    private static void api(final Hook hook) {
         String profileVideoCall = "com.ss.android.ugc.aweme.profile.presenter.b";
         hook.methodMonitor(profileVideoCall, "a", new ForeignHook() {
             @Override
@@ -1501,9 +1501,19 @@ public class TestHook {
         hook.methodMonitor(secUidManager, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d(String.format("ProfileApi a(String, String) 参数[%s, %s]",
-                        param.getArgs()[0], param.getArgs()[1]));
+               /* logger.d(String.format("utils.ej a(String, String) 参数[%s, %s]",
+                        param.getArgs()[0], param.getArgs()[1]));*/
             }
         }, String.class, String.class);
+
+        String searchApi = "com.ss.android.ugc.aweme.discover.api.SearchApi";
+        hook.methodMonitor(searchApi, "a", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("SearchApi a(String, long, int, int, int, String, String, int) 参数[%s, %s, %s, %s, %s, %s, %s, %s], 返回数据[%s]",
+                        param.getArgs()[0], param.getArgs()[1], param.getArgs()[2], param.getArgs()[3], param.getArgs()[4], param.getArgs()[5], param.getArgs()[6], param.getArgs()[7],
+                        JSON.toJSONString(param.getResult())));
+            }
+        }, String.class, long.class, int.class, int.class, int.class, String.class, String.class, int.class);
     }
 }

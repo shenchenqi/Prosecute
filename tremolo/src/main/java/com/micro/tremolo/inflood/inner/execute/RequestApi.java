@@ -31,6 +31,31 @@ public class RequestApi {
         this.handler = new Handler(context.getMainLooper());
     }
 
+    private Object searchUserApi(String search, long size, int limit, int count, String requestId) {
+        monitorLogger.d("search >>> " + search);
+        if (Lang.isEmpty(search)) {
+            return "";
+        }
+        return hook.callStaticMethod("com.ss.android.ugc.aweme.discover.api.SearchApi", "a", search, size, limit, count, 0, "", requestId, 1);
+    }
+
+    public void requestSearchUserApi(final String search, final long size, final String requestId, final OverseeInter overseeInter) {
+        handler.postDelayed(() -> {
+            if (Lang.isEmpty(requestId)) {
+                requestSearchUserApi(search, 0, 10, 0, "", overseeInter);
+            } else {
+                requestSearchUserApi(search, size, 10, 1, requestId, overseeInter);
+            }
+        }, overseeInter.second * 5);
+    }
+
+    private void requestSearchUserApi(final String search, final long size, final int limit, final int count, final String requestId, final OverseeInter overseeInter) {
+        new Thread(() -> {
+            Object object = searchUserApi(search, size, limit, count, requestId);
+            monitorLogger.d(JSON.toJSONString(object));
+        }).start();
+    }
+
     private Object profileApi(String secUserId) {
         monitorLogger.d("secUserId >>> " + secUserId);
         if (Lang.isEmpty(secUserId)) {

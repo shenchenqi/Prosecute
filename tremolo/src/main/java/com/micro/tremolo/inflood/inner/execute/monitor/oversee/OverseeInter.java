@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface OverseeInter extends PluginInter {
 
+    void profileExist(boolean isExist);
+
     void videoInfo(Aweme aweme);
 
     void profileInfo(Author author);

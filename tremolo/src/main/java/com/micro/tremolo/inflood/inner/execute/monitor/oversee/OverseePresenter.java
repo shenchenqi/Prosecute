@@ -141,7 +141,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
     }
 
     private String videoId;
-    private String authorId;
+    public String authorId;
     private String secAuthorId;
 
     public void setData(String videoId, String authorId, String secAuthorId) {
@@ -163,8 +163,8 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         if (Lang.isEmpty(secAuthorId)) {
             monitorLogger.e("当前用户请求ID为空");
         }
+        monitorLogger.d("是否是视频主： " + isProfile());
         setHandlerPost(OverseeInter.second * 10, () -> {
-            monitorLogger.d("是否是视频主： " + isProfile());
             if (isProfile()) {
                 requestApi.requestProfileApi(secAuthorId, getClazz());
             } else {
@@ -191,17 +191,20 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         requestApi.requestFeedVideoApi(isFirst, authorId, secAuthorId, time, getClazz());
     }
 
+    public void apiSearchUser(String search, long size, String requestId) {
+        if (!Const.isNarrowArea) {
+            return;
+        }
+        setHandlerPost(OverseeInter.second * 10, () -> {
+            requestApi.requestSearchUserApi(search, size, requestId, getClazz());
+        });
+    }
+
     public void nextVideo() {
         if (Const.isAutoUI) {
             autoUiControl.autoChangeVideo();
         } else if (Const.isWideArea) {
             mainFragmentControl.clickRecommend();
-        }
-    }
-
-    public void clickSearch() {
-        if (Const.isNarrowArea) {
-            mainFragmentControl.clickSearch();
         }
     }
 
@@ -323,6 +326,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
     private synchronized UserModelTable loadUserTable(User user) {
         UserModelTable userTable = new UserModelTable();
         userTable.setUserId(user.getUid());
+        userTable.setSceUserId(user.getSecUid());
         userTable.setNickname(user.getNickname());
         userTable.setTremoloId(user.getUniqueId());
         userTable.setTremoloNumberId(user.getShortId());
@@ -373,6 +377,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
     public synchronized UserModelTable loadUserTable(Author author) {
         UserModelTable userTable = new UserModelTable();
         userTable.setUserId(author.getUserId());
+        userTable.setSceUserId(author.getSceUserId());
         userTable.setNickname(author.getNickname());
         userTable.setTremoloId(author.getTremoloId());
         userTable.setTremoloNumberId(author.getTremoloNumberId());

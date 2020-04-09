@@ -8,7 +8,6 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.tremolo.inflood.inner.execute.monitor.oversee.Oversee;
-import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import static com.micro.tremolo.Const.monitorLogger;
@@ -37,7 +36,6 @@ public class MainFragmentOversee extends Oversee {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("Main Fragment onVideoPageChangeEvent");
-                presenter.clickSearch();
             }
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
     }

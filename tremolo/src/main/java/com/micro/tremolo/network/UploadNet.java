@@ -7,6 +7,8 @@ import com.micro.network.NetworkManager;
 import com.micro.network.available.model.ApiResponseBase;
 import com.micro.network.available.model.EmptyEntity;
 import com.micro.root.Logger;
+import com.micro.tremolo.inflood.inner.execute.monitor.oversee.OverseeInter;
+import com.micro.tremolo.sqlite.table.UserIdModelTable;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
@@ -63,6 +65,25 @@ public class UploadNet {
         NetworkManager.setNetwork(modelNet);
     }
 
+    public static synchronized void isUserExist(UserIdModelTable userId, final OverseeInter inter) {
+        NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
+            @Override
+            protected void success(EmptyEntity model, String message) {
+                netLogger.d("用户检测 - 已存在 " + message);
+                inter.profileExist(true);
+            }
+
+            @Override
+            protected void fail(String code, String message) {
+                netLogger.e("用户检测 - 不存在 " + code + " " + message);
+                inter.profileExist(false);
+            }
+        };
+        modelNet.setClazz(ApiService.class);
+        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloUserExist(userId));
+        NetworkManager.setNetwork(modelNet);
+    }
+
     public static synchronized void uploadVideoList(final VideoListModelTable videoListTable) {
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
@@ -91,6 +112,14 @@ public class UploadNet {
          */
         @POST("/Media/Dy/uadd")
         Call<ApiResponseBase<EmptyEntity>> tremoloUser(@Body UserModelTable userModelTable);
+
+        /**
+         * 检测是否已入库
+         *
+         * @return
+         */
+        @POST("/Media/Dy/uexists")
+        Call<ApiResponseBase<EmptyEntity>> tremoloUserExist(@Body UserIdModelTable user);
 
         /**
          * 视频上传

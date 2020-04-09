@@ -1,11 +1,11 @@
 package com.micro.tremolo.sqlite.table;
 
-
 import java.io.Serializable;
 import java.util.List;
 
 public class UserModelTable implements Serializable /*extends DataTable*/ {
     private String userId;
+    private String sceUserId;
     private String nickname;
     private String tremoloId;
     private String tremoloNumberId;
@@ -35,6 +35,14 @@ public class UserModelTable implements Serializable /*extends DataTable*/ {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getSceUserId() {
+        return sceUserId;
+    }
+
+    public void setSceUserId(String sceUserId) {
+        this.sceUserId = sceUserId;
     }
 
     public String getNickname() {
@@ -230,6 +238,7 @@ public class UserModelTable implements Serializable /*extends DataTable*/ {
     public String toString() {
         return "UserModelTable{" +
                 "\nuserId='" + userId + '\'' +
+                "\nsceUserId='" + sceUserId + '\'' +
                 ", \nnickname='" + nickname + '\'' +
                 ", \ntremoloId='" + tremoloId + '\'' +
                 ", \ntremoloNumberId='" + tremoloNumberId + '\'' +

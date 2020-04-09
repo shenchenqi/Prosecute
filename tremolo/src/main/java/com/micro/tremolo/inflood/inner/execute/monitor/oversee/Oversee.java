@@ -4,10 +4,12 @@ import android.content.Context;
 
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
+import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.sqlite.from.Author;
 import com.micro.tremolo.sqlite.from.Video;
+import com.micro.tremolo.sqlite.table.UserIdModelTable;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
@@ -37,6 +39,19 @@ public abstract class Oversee extends Plugin<OverseePresenter, OverseeInter> imp
     @Override
     public Context getIContext() {
         return presenter.getContext();
+    }
+
+    protected void existUser() {
+        if (Const.isWideArea) {
+            UserIdModelTable userIdModelTable = new UserIdModelTable();
+            userIdModelTable.setUserId(presenter.authorId);
+            UploadNet.isUserExist(userIdModelTable, presenter.getClazz());
+        }
+    }
+
+    @Override
+    public void profileExist(boolean isExist) {
+        presenter.apiLoadProfile();
     }
 
     @Override

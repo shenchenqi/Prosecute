@@ -41,7 +41,8 @@ public class MainActivityOversee extends Oversee {
                 presenter.getClazz().videoInfo(aweme);
                 presenter.setProfile(false);
                 presenter.setData(aweme.getAid(), aweme.getAuthor().getUid(), aweme.getAuthor().getSecUid());
-                presenter.apiLoadProfile();
+                existUser();
+                presenter.apiSearchUser("777", 0, "");
                 presenter.autoMoveUser();
             }
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
