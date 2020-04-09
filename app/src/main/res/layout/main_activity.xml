@@ -4,8 +4,9 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -18,9 +19,9 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="实行助手只用于个人所需，如要用于商业，请禁止使用。" />
+            android:text="实行助手只用于个人演示，如要商业使用，请禁停止你的行为。" />
     </LinearLayout>
 
 </FrameLayout>

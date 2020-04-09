@@ -20,7 +20,7 @@ import androidx.core.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AutoControlLayout {
+public abstract class ControlLayout {
 
     private HandlerThread handlerThread;
 

@@ -4,13 +4,15 @@ import android.content.Context;
 
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
-import com.micro.tremolo.inflood.inner.execute.RequestApi;
+import com.micro.tremolo.Const;
+import com.micro.tremolo.inflood.inner.execute.monitor.MainActivityOversee;
+import com.micro.tremolo.inflood.inner.execute.monitor.ProfileFragmentOversee;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.TestHook;
-import com.micro.tremolo.inflood.inner.execute.AutoUiControl;
+import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
 import com.micro.tremolo.inflood.inner.execute.LogContent;
 import com.micro.tremolo.inflood.inner.execute.HideDialog;
-import com.micro.tremolo.inflood.inner.execute.monitor.main_fragment.MainFragmentOversee;
+import com.micro.tremolo.inflood.inner.execute.monitor.MainFragmentOversee;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import static com.micro.tremolo.inflood.TremoloModule.logger;
@@ -67,26 +69,27 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     public void executeSQL() {
         logger.i(TAG, "executeSQL", "数据库");
     }
-    
+
     private HideDialog dialog;
-    //private MainActivityOversee mainActivityOversee;
+    private MainActivityOversee mainActivityOversee;
     private MainFragmentOversee mainFragmentOversee;
-    //private ProfileFragmentOversee profileFragmentOversee;
+    private ProfileFragmentOversee profileFragmentOversee;
 
     @Override
     public void config() {
         logger.i(TAG, "config", "配置");
         try {
-            AutoUiControl autoUiControl = new AutoUiControl(getHookParam().getHook(), getIContext());
-            if (AutoUiControl.isAppOnForeground(getIContext()) == 500) {
-                AutoUiControl.openApply(getIContext());
-            } else if (AutoUiControl.isAppOnForeground(getIContext()) == 400) {
-                AutoUiControl.setTopApply(getIContext());
+            if (Const.collectType != 0) {
+                if (AutoUiControl.isAppOnForeground(getIContext()) == 500) {
+                    AutoUiControl.openApply(getIContext());
+                } else if (AutoUiControl.isAppOnForeground(getIContext()) == 400) {
+                    AutoUiControl.setTopApply(getIContext());
+                }
             }
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
-            //mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext(), autoUiControl);
-            mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl, new RequestApi(getHookParam().getHook(), getIContext()));
-            //profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext(), autoUiControl);
+            mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext());
+            mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext());
+            profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext());
         } catch (Throwable throwable) {
             logger.e(throwable, "配置报错");
         }
@@ -98,19 +101,24 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     }
 
     @Override
-    public void execute() {
+    protected void monitor() {
         if (dialog != null) {
             dialog.monitor();
         }
-        /*if (mainActivityOversee != null) {
+        if (mainActivityOversee != null) {
             mainActivityOversee.monitor();
-        }*/
+        }
         if (mainFragmentOversee != null) {
             mainFragmentOversee.monitor();
         }
-        /*if (profileFragmentOversee != null) {
+        if (profileFragmentOversee != null) {
             profileFragmentOversee.monitor();
-        }*/
+        }
+    }
+
+    @Override
+    public void execute() {
+
     }
 
     @Override

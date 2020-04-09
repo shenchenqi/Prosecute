@@ -35,6 +35,7 @@ public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> e
         if (BuildConfig.DEBUG) {
             test();
         }
+        monitor();
         execute();
     }
 
@@ -45,6 +46,8 @@ public abstract class Setup<P extends SetupPresenter<I>, I extends SetupInter> e
     protected abstract void config();
 
     protected abstract void test();
+
+    protected abstract void monitor();
 
     protected abstract void execute();
 }

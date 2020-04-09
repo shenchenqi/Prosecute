@@ -15,7 +15,10 @@ public interface Const {
 
     Logger monitorLogger = com.micro.root.Logger.getLogger("tremoloLog", "MonitorLog");
 
-    boolean isAuto = true;
+    int collectType = 2;//采集类型 0-未知;1-控制布局UI;2-广域获取数据;
+
+    boolean isAutoUI = collectType == 1;
+    boolean isWideArea = collectType == 2;
     int fansCount = 10000;
 
     String PACKAGE_NAME = "com.ss.android.ugc.aweme";

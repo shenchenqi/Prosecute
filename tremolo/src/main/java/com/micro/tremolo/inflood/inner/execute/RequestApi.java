@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.micro.hook.config.Hook;
 import com.micro.root.utils.Lang;
-import com.micro.tremolo.inflood.inner.execute.mvp.ExecuteInter;
+import com.micro.tremolo.inflood.inner.execute.monitor.oversee.OverseeInter;
 import com.micro.tremolo.inflood.version.TremoloParam;
 import com.micro.tremolo.sqlite.from.Author;
 import com.micro.tremolo.sqlite.from.Video;
@@ -40,18 +40,18 @@ public class RequestApi {
         return hook.callStaticMethod(TremoloParam.AWEME_PROFILE_VIDEO_PROFILE_API_CLASS, TremoloParam.AWEME_PROFILE_VIDEO_PROFILE_API_USER_METHOD, url, false, null);
     }
 
-    public void requestProfileApi(final String secUserId, final ExecuteInter executeInter) {
+    public void requestProfileApi(final String secUserId, final OverseeInter overseeInter) {
         handler.postDelayed(() -> {
-            requestProfileApi(null, secUserId, executeInter);
-        }, executeInter.second * 5);
+            requestProfileApi(null, secUserId, overseeInter);
+        }, overseeInter.second * 5);
     }
 
     //调用该接口,视频不能往上切换,只能进行随机刷新
-    private void requestProfileApi(String userId, final String secUserId, final ExecuteInter executeInter) {
+    private void requestProfileApi(String userId, final String secUserId, final OverseeInter overseeInter) {
         new Thread(() -> {
             Object object = profileApi(secUserId);
             JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(object));
-            executeInter.profileInfo(new Author(jsonObject.getString("user")));
+            overseeInter.profileInfo(new Author(jsonObject.getString("user")));
         }).start();
     }
 
@@ -63,17 +63,17 @@ public class RequestApi {
         return hook.callStaticMethod(TremoloParam.AWEME_PROFILE_VIDEO_AWEME_API_CLASS, TremoloParam.AWEME_PROFILE_VIDEO_AWEME_API_LIST_METHOD, isFirst, userId, secUserId, 0, time, limit, null);
     }
 
-    public void requestFeedVideoApi(final boolean isFirst, final String userId, final String secUserId, final long time, final ExecuteInter executeInter) {
+    public void requestFeedVideoApi(final boolean isFirst, final String userId, final String secUserId, final long time, final OverseeInter overseeInter) {
         handler.postDelayed(() -> {
             if (isFirst) {
-                requestFeedVideoApi(isFirst, userId, secUserId, 0, 20, executeInter);
+                requestFeedVideoApi(isFirst, userId, secUserId, 0, 20, overseeInter);
             } else {
-                requestFeedVideoApi(isFirst, userId, secUserId, time, 30, executeInter);
+                requestFeedVideoApi(isFirst, userId, secUserId, time, 30, overseeInter);
             }
-        }, executeInter.second * 5);
+        }, overseeInter.second * 5);
     }
 
-    private void requestFeedVideoApi(final boolean isFirst, final String userId, final String secUserId, final long time, final int limit, final ExecuteInter executeInter) {
+    private void requestFeedVideoApi(final boolean isFirst, final String userId, final String secUserId, final long time, final int limit, final OverseeInter overseeInter) {
         new Thread(() -> {
             Object object = feedVideoApi(isFirst, userId, secUserId, time, limit);
             JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(object));
@@ -84,7 +84,7 @@ public class RequestApi {
                     videos.add(new Video(JSON.toJSONString(video)));
                 }
             }
-            executeInter.videoListInfo(videos);
+            overseeInter.videoListInfo(videos);
         }).start();
     }
 }

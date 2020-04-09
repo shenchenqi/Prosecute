@@ -30,7 +30,6 @@ public class UploadNet {
     }
 
     public static synchronized void uploadVideo(final VideoModelTable videoModelTable) {
-        netLogger.d("视频上传 数据 " + videoModelTable.toString());
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {
@@ -48,7 +47,6 @@ public class UploadNet {
     }
 
     public static synchronized void uploadUser(final UserModelTable userModelTable) {
-        netLogger.d("用户上传 数据 " + userModelTable.toString());
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {
@@ -66,7 +64,6 @@ public class UploadNet {
     }
 
     public static synchronized void uploadVideoList(final VideoListModelTable videoListTable) {
-        netLogger.d("视频列表上传 数据 " + videoListTable.getVideoModelTableList().size());
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {
