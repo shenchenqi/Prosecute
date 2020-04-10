@@ -11,101 +11,58 @@ import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.execute.TremoloApi;
-import com.micro.tremolo.inflood.inner.execute.monitor.oversee.Oversee;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.sqlite.from.Author;
 import com.micro.tremolo.sqlite.from.Video;
-import com.micro.tremolo.sqlite.table.UserIdModelTable;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author KiLin
- * @Time 2020/4/10 13:10
- * 根据视频作者的ID，secID进行接口访问拿取数据
+ * @Time 2020/4/10 17:34
  */
-public class WideAreaAuthorApi {
+public class NarrowAreaTask {
 
-    private final static Logger logger = Logger.getLogger("tremoloLog", "WideAreaLog");
+    private final static Logger logger = Logger.getLogger("tremoloLog", "NarrowAreaLog");
 
-    public final static Map<String, String> userMap = new HashMap<>();
+    private static NarrowAreaTask mNarrowAreaTask;
 
-    private static WideAreaAuthorApi mWideAreaAuthorApi;
-
-    public static WideAreaAuthorApi getInstance(Hook hook, Context context) {
-        if (mWideAreaAuthorApi == null) {
-            mWideAreaAuthorApi = new WideAreaAuthorApi(hook, context);
+    public static NarrowAreaTask getInstance(Hook hook, Context context) {
+        if (mNarrowAreaTask == null) {
+            mNarrowAreaTask = new NarrowAreaTask(hook, context);
         }
-        return mWideAreaAuthorApi;
+        return mNarrowAreaTask;
     }
 
-    private static Oversee mOversee;
-
-    public static void setOversee(Oversee mOversee) {
-        WideAreaAuthorApi.mOversee = mOversee;
-    }
-
-    public static void canTremoloData(Context context) {
-        if (!Const.isWideArea) {
-            logger.i("当前不是广域采集模式");
+    public static void requestData(String search) {
+        if (!Const.isNarrowArea) {
+            logger.d("当前不是狭域指定模式");
             return;
         }
-        Handler handler = new Handler(context.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                logger.i("检测扫描");
-                WideAreaAuthorApi.requestData();
-                handler.postDelayed(this::run, BaseInterface.second * 20);
-            }
-        }, BaseInterface.second * 20);
-    }
-
-    private static void requestData() {
-        requestData(new Callback() {
+        requestData(search, new Callback() {
             @Override
             public void over(String authorID) {
-                userMap.remove(authorID);
                 logger.d("请求完成");
                 isRun = false;
-                if (mOversee != null) {
-                    logger.d("请求完成, 视频切换");
-                    mOversee.nextVideo();
-                }
             }
 
             @Override
             public void fail(String authorID, int type, String msg) {
-                userMap.remove(authorID);
                 logger.e(String.format("出错[%s][%s][%s]", authorID, type, msg));
                 isRun = false;
-                if (mOversee != null) {
-                    logger.d("请求出错, 视频切换");
-                    mOversee.nextVideo();
-                }
             }
         });
     }
 
     private static boolean isRun = false;
-    private static int number;
 
-    private static void requestData(Callback callback) {
+    private static void requestData(final String search, Callback callback) {
         if (isRun) {
             logger.i("正在运行");
-            number++;
-            if (number == 6) {
-                if (mOversee != null) {
-                    logger.d("运行太久, 先来个视频切换");
-                    mOversee.nextVideo();
-                }
-            }
             return;
         }
         final WideCallback wideCallback = new WideCallback() {
@@ -139,38 +96,84 @@ public class WideAreaAuthorApi {
                 callback.fail(userId, 2, msg);
             }
         };
-        Map<String, String> map = new HashMap<>(userMap);
-        if (map.isEmpty()) {
-            logger.i(" 无用户数据 ");
-            callback.fail("userId", 4, "无数据");
-            return;
-        }
         isRun = true;
-        number = 0;
-        logger.i("开始进行数据采集");
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            String authorID = entry.getKey();
-            String secAuthorID = entry.getValue();
-            if (Lang.isNotEmpty(authorID) && Lang.isNotEmpty(secAuthorID)) {
-                logger.i(String.format("作者[%s]开始请求", authorID));
-                UserIdModelTable userIdModelTable = new UserIdModelTable();
-                userIdModelTable.setUserId(authorID);
-                userIdModelTable.setSceUserId(secAuthorID);
-                UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
-                    logger.i(String.format("作者[%s]是否已存在服务器[%s]", authorID, isExist));
-                    if (isExist) {
-                        setVideoListApi(userId, sceUserId, true, 0, wideCallback);
-                    } else {
-                        setUserApi(userId, sceUserId, wideCallback);
+        setSearchUserApi(search, 0, "", new NarrowCallback() {
+            @Override
+            public Author getAuthor(String key, List<Author> authors) {
+                for (Author author : authors) {
+                    if (Lang.isEquals(key, author.getUserId())) {
+                        return author;
                     }
-                });
-                return;
+                    if (Lang.isEquals(key, author.getTremoloId())) {
+                        return author;
+                    }
+                    if (Lang.isEquals(key, author.getTremoloNumberId())) {
+                        return author;
+                    }
+                    if (Lang.isEquals(key, author.getNickname())) {
+                        return author;
+                    }
+                }
+                return null;
             }
-        }
+
+            @Override
+            public void againRequest(long cursor, String requestId) {
+                setSearchUserApi(search, cursor, requestId, this);
+            }
+
+            @Override
+            public void exist(String authorId, String sceAuthorId) {
+                setUserApi(authorId, sceAuthorId, wideCallback);
+            }
+
+            @Override
+            public void fail(String msg) {
+                callback.fail(search, 0, msg);
+            }
+        });
+    }
+
+    private static String requestId;
+
+    private static void setSearchUserApi(final String search, long cursor, String requestId, final NarrowCallback callback) {
+        mNarrowAreaTask.requestSearchUserApi(search, cursor, requestId, new SearchUserCallback() {
+            @Override
+            public void firstLoadUser(long cursor, String requestId, boolean hasMore, List<Author> authors) {
+                NarrowAreaTask.requestId = requestId;
+                Author author = callback.getAuthor(search, authors);
+                if (Lang.isNotNull(author)) {
+                    logger.d("first author: " + JSON.toJSONString(author));
+                    callback.exist(author.getUserId(), author.getSceUserId());
+                } else if (!hasMore) {
+                    callback.fail("搜索不出");
+                } else {
+                    callback.againRequest(cursor, requestId);
+                }
+            }
+
+            @Override
+            public void loadUser(long cursor, boolean hasMore, List<Author> authors) {
+                Author author = callback.getAuthor(search, authors);
+                if (Lang.isNotNull(author)) {
+                    logger.d("author: " + JSON.toJSONString(author));
+                    callback.exist(author.getUserId(), author.getSceUserId());
+                } else if (!hasMore) {
+                    callback.fail("搜索不出");
+                } else {
+                    callback.againRequest(cursor, NarrowAreaTask.requestId);
+                }
+            }
+
+            @Override
+            public void fail(String msg) {
+                callback.fail(msg);
+            }
+        });
     }
 
     private static void setUserApi(final String authorID, String secAuthorID, final WideCallback callback) {
-        mWideAreaAuthorApi.requestUserApi(authorID, secAuthorID, new UserCallback() {
+        mNarrowAreaTask.requestUserApi(authorID, secAuthorID, new UserCallback() {
             @Override
             public Context getIContext() {
                 return null;
@@ -190,7 +193,7 @@ public class WideAreaAuthorApi {
     }
 
     private static void setVideoListApi(final String authorID, final String secAuthorID, boolean isFirst, long time, final WideCallback callback) {
-        mWideAreaAuthorApi.requestVideoListApi(isFirst, authorID, secAuthorID, time, new VideosCallback() {
+        mNarrowAreaTask.requestVideoListApi(isFirst, authorID, secAuthorID, time, new VideosCallback() {
             @Override
             public Context getIContext() {
                 return null;
@@ -265,7 +268,7 @@ public class WideAreaAuthorApi {
     private final Hook hook;
     private final Handler handler;
 
-    private WideAreaAuthorApi(Hook hook, Context context) {
+    private NarrowAreaTask(Hook hook, Context context) {
         this.hook = hook;
         this.handler = new Handler(context.getMainLooper());
     }
@@ -280,6 +283,74 @@ public class WideAreaAuthorApi {
 
     private synchronized JSONObject getJsonObject(String text) {
         return JSON.parseObject(text);
+    }
+
+    private void requestSearchUserApi(final String search, final long cursor, final String requestId, SearchUserCallback callback) {
+        logger.i(String.format("查询用户信息请求接口, 内容[%s]", search));
+        post(BaseInterface.second * 5, () -> {
+            if (Lang.isEmpty(requestId)) {
+                TremoloApi.searchUserApi(hook, search, 0, 10, 0, "", new TremoloApi.Callback() {
+                    @Override
+                    public void success(String data) {
+                        if (Lang.isEmpty(data)) {
+                            callback.fail(" 抖音查询用户信息返回数据为空");
+                        } else {
+                            JSONObject dataObject = getJsonObject(data);
+                            if (Lang.isNull(dataObject)) {
+                                callback.fail(" 抖音查询用户信息返回数据解析出错");
+                            } else {
+                                String request = dataObject.getString("requestId");
+                                long cursor = dataObject.getLongValue("cursor");
+                                boolean hasMore = dataObject.getBooleanValue("hasMore");
+                                List<Object> userList = (List<Object>) dataObject.get("userList");
+                                List<Author> authors = new ArrayList<>();
+                                for (Object user : userList) {
+                                    JSONObject userObject = JSON.parseObject(JSON.toJSONString(user));
+                                    authors.add(new Author(userObject.getString("user")));
+                                }
+                                callback.firstLoadUser(cursor, request, hasMore, authors);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void fail(Throwable e, String msg) {
+                        logger.e(e, msg);
+                        callback.fail(msg);
+                    }
+                });
+            } else {
+                TremoloApi.searchUserApi(hook, search, cursor, 10, 1, requestId, new TremoloApi.Callback() {
+                    @Override
+                    public void success(String data) {
+                        if (Lang.isEmpty(data)) {
+                            callback.fail(" 抖音查询用户信息返回数据为空");
+                        } else {
+                            JSONObject dataObject = getJsonObject(data);
+                            if (Lang.isNull(dataObject)) {
+                                callback.fail(" 抖音查询用户信息返回数据解析出错");
+                            } else {
+                                long cursor = dataObject.getLongValue("cursor");
+                                boolean hasMore = dataObject.getBooleanValue("hasMore");
+                                List<Object> userList = (List<Object>) dataObject.get("userList");
+                                List<Author> authors = new ArrayList<>();
+                                for (Object user : userList) {
+                                    JSONObject userObject = JSON.parseObject(JSON.toJSONString(user));
+                                    authors.add(new Author(userObject.getString("user")));
+                                }
+                                callback.loadUser(cursor, hasMore, authors);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void fail(Throwable e, String msg) {
+                        logger.e(e, msg);
+                        callback.fail(msg);
+                    }
+                });
+            }
+        });
     }
 
     private void requestUserApi(final String userId, final String secUserId, final UserCallback callback) {
@@ -382,6 +453,25 @@ public class WideAreaAuthorApi {
         void fail(String authorID, int type, String msg);
     }
 
+    private interface NarrowCallback {
+        Author getAuthor(String key, List<Author> authors);
+
+        void againRequest(long cursor, String requestId);
+
+        void exist(String authorId, String sceAuthorId);
+
+        void fail(String msg);
+    }
+
+    private interface SearchUserCallback {
+
+        void firstLoadUser(long cursor, String requestId, boolean hasMore, List<Author> authors);
+
+        void loadUser(long cursor, boolean hasMore, List<Author> authors);
+
+        void fail(String msg);
+    }
+
     private interface WideCallback {
         void userSuccess(String userId, String sceUserId);
 
@@ -390,10 +480,6 @@ public class WideAreaAuthorApi {
         void videosSuccess(boolean hasMore, String userId, String secUserId, Video video);
 
         void videosFail(String userId, String msg);
-    }
-
-    public interface NetUserCallback {
-        void profileExist(String userId, String sceUserId, boolean isExist);
     }
 
     private interface UserCallback extends BaseInterface {

@@ -7,7 +7,7 @@ import com.micro.network.NetworkManager;
 import com.micro.network.available.model.ApiResponseBase;
 import com.micro.network.available.model.EmptyEntity;
 import com.micro.root.Logger;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaAuthorApi;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaAuthorTask;
 import com.micro.tremolo.sqlite.table.UserIdModelTable;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoListModelTable;
@@ -65,7 +65,7 @@ public class UploadNet {
         NetworkManager.setNetwork(modelNet);
     }
 
-    public static synchronized void isUserExist(final UserIdModelTable userId, final WideAreaAuthorApi.NetUserCallback inter) {
+    public static synchronized void isUserExist(final UserIdModelTable userId, final WideAreaAuthorTask.NetUserCallback inter) {
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {
@@ -93,9 +93,6 @@ public class UploadNet {
 
             @Override
             protected void fail(String code, String message) {
-                for (VideoModelTable videoModelTable : videoListTable.getVideoModelTableList()) {
-                    netLogger.e("视频列表上传 数据 " + videoModelTable.toString());
-                }
                 netLogger.e("视频列表上传 - 失败 " + code + " " + message);
             }
         };

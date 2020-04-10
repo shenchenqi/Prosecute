@@ -66,10 +66,10 @@ public class TremoloApi {
         new Thread(runnable).start();
     }
 
-    public static void searchUserApi(final Hook hook, final String search, final long size, final int limit, final int count, final String requestId, final Callback callback) {
+    public static void searchUserApi(final Hook hook, final String search, final long cursor, final int limit, final int count, final String requestId, final Callback callback) {
         startThread(() -> {
             try {
-                Object object = searchUserApi(hook, search, size, limit, count, requestId);
+                Object object = searchUserApi(hook, search, cursor, limit, count, requestId);
                 callback.success(JSON.toJSONString(object));
             } catch (Throwable e) {
                 callback.fail(e,"查询用户接口报错: ");

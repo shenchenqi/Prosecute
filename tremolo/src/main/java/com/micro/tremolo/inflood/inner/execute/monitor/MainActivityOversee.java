@@ -7,7 +7,8 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.tremolo.inflood.inner.execute.monitor.oversee.Oversee;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaAuthorApi;
+import com.micro.tremolo.inflood.inner.execute.task.NarrowAreaTask;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaAuthorTask;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import static com.micro.tremolo.Const.monitorLogger;
@@ -30,13 +31,14 @@ public class MainActivityOversee extends Oversee {
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.d("Main Activity onCreate ");
                 presenter.setMainActivity(param.getThisObject());
-                WideAreaAuthorApi.canTremoloData(getIContext());
+                WideAreaAuthorTask.canTremoloData(getIContext());
             }
         }, Bundle.class);
         hook.methodMonitor(MainActivity, TremoloParam.AWEME_MAIN_ACTIVITY_VIDEO_CHANGE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("Main Activity onVideoPageChangeEvent");
+                NarrowAreaTask.requestData("淘宝");
             }
         }, hook.findClass(TremoloParam.AWEME_FEED_VIDEO_CLASS));
     }
