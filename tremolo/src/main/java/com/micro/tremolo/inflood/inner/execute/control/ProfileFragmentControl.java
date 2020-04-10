@@ -27,15 +27,25 @@ public class ProfileFragmentControl extends ControlLayout {
     public final static int uiLoadMoreVideo = 1001;
     public final static int uiMoveVideo = 1002;
 
+    public static ProfileFragmentControl getInstance(Context context) {
+        return new ProfileFragmentControl(context, null);
+    }
+
     public static ProfileFragmentControl getInstance(Context context, ProfileCallback callback) {
         return new ProfileFragmentControl(context, callback);
     }
 
-    private final Handler handler;
+    private final Context context;
     private final int[] screenData;
+    private Handler handler;
 
-    private ProfileFragmentControl(Context context, final ProfileCallback callback) {
+    private ProfileFragmentControl(Context context, ProfileCallback callback) {
+        this.context = context;
         this.screenData = phoneScreen(context);
+        userControlHandler(callback);
+    }
+
+    private void userControlHandler(final ProfileCallback callback) {
         this.handler = new Handler(context.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -45,12 +55,18 @@ public class ProfileFragmentControl extends ControlLayout {
                             @Override
                             public void success(String value) {
                                 logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, clickBack);
                             }
 
                             @Override
                             public void fail(String msg) {
                                 logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, clickBack);
                             }
 
@@ -64,12 +80,18 @@ public class ProfileFragmentControl extends ControlLayout {
                             @Override
                             public void success(String value) {
                                 logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, uiLoadMoreVideo);
                             }
 
                             @Override
                             public void fail(String msg) {
                                 logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, uiLoadMoreVideo);
                             }
 
@@ -84,12 +106,18 @@ public class ProfileFragmentControl extends ControlLayout {
                             @Override
                             public void success(String value) {
                                 logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, uiMoveVideo);
                             }
 
                             @Override
                             public void fail(String msg) {
                                 logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, uiMoveVideo);
                             }
 

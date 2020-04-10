@@ -35,15 +35,28 @@ public class MainFragmentControl extends ControlLayout {
     private final static int uiChangeVideoTop = 1001;
     private final static int uiChangeVideoBottom = 1002;
 
+    public static MainFragmentControl getInstance(Context context) {
+        return new MainFragmentControl(context, null);
+    }
+
     public static MainFragmentControl getInstance(Context context, MainCallback callback) {
         return new MainFragmentControl(context, callback);
     }
 
-    private final Handler handler;
+    private final Context context;
     private final int[] screenData;
+    private Handler handler;
 
-    private MainFragmentControl(Context context, final MainCallback callback) {
+    private MainFragmentControl(Context context, MainCallback callback) {
+        this.context = context;
         this.screenData = phoneScreen(context);
+        mainControlHandler(callback);
+    }
+
+    private void mainControlHandler(final MainCallback callback) {
+        if (this.handler != null) {
+            return;
+        }
         this.handler = new Handler(context.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -52,11 +65,19 @@ public class MainFragmentControl extends ControlLayout {
                         clickAttentionView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
+                                logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, clickAttention);
                             }
 
                             @Override
                             public void fail(String msg) {
+                                logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, clickAttention);
                             }
 
@@ -70,11 +91,19 @@ public class MainFragmentControl extends ControlLayout {
                         clickLiveView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
+                                logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, clickLive);
                             }
 
                             @Override
                             public void fail(String msg) {
+                                logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, clickLive);
                             }
 
@@ -88,11 +117,19 @@ public class MainFragmentControl extends ControlLayout {
                         clickRefreshView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
+                                logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, clickRefresh);
                             }
 
                             @Override
                             public void fail(String msg) {
+                                logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, clickRefresh);
                             }
 
@@ -106,11 +143,19 @@ public class MainFragmentControl extends ControlLayout {
                         clickSearchView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
+                                logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, clickSearch);
                             }
 
                             @Override
                             public void fail(String msg) {
+                                logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, clickSearch);
                             }
 
@@ -124,11 +169,19 @@ public class MainFragmentControl extends ControlLayout {
                         clickRecommendView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
+                                logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, clickRecommend);
                             }
 
                             @Override
                             public void fail(String msg) {
+                                logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, clickRecommend);
                             }
 
@@ -142,11 +195,19 @@ public class MainFragmentControl extends ControlLayout {
                         clickUserView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
+                                logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, clickUser);
                             }
 
                             @Override
                             public void fail(String msg) {
+                                logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, clickUser);
                             }
 
@@ -161,12 +222,18 @@ public class MainFragmentControl extends ControlLayout {
                             @Override
                             public void success(String value) {
                                 logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, uiMoveUser);
                             }
 
                             @Override
                             public void fail(String msg) {
                                 logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, uiMoveUser);
                             }
 
@@ -181,12 +248,18 @@ public class MainFragmentControl extends ControlLayout {
                             @Override
                             public void success(String value) {
                                 logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, uiChangeVideoTop);
                             }
 
                             @Override
                             public void fail(String msg) {
                                 logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, uiChangeVideoTop);
                             }
 
@@ -201,12 +274,18 @@ public class MainFragmentControl extends ControlLayout {
                             @Override
                             public void success(String value) {
                                 logger.d(value);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.success(value, uiChangeVideoBottom);
                             }
 
                             @Override
                             public void fail(String msg) {
                                 logger.e(msg);
+                                if (callback == null) {
+                                    return;
+                                }
                                 callback.fail(msg, uiChangeVideoBottom);
                             }
 

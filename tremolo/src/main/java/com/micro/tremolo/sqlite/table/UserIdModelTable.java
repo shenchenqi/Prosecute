@@ -12,4 +12,14 @@ public class UserIdModelTable implements Serializable /*extends DataTable*/ {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    private String sceUserId;
+
+    public String getSceUserId() {
+        return sceUserId;
+    }
+
+    public void setSceUserId(String sceUserId) {
+        this.sceUserId = sceUserId;
+    }
 }

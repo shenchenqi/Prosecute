@@ -7,6 +7,7 @@ import com.micro.hook.config.HookParam;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.execute.monitor.MainActivityOversee;
 import com.micro.tremolo.inflood.inner.execute.monitor.ProfileFragmentOversee;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaAuthorApi;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.TestHook;
 import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
@@ -87,6 +88,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
                 }
             }
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
+            WideAreaAuthorApi.getInstance(getHookParam().getHook(), getIContext());
             mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext());
             mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext());
             profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext());

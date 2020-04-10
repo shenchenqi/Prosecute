@@ -37,11 +37,18 @@ public class ProfileFragmentOversee extends Oversee {
                 presenter.setProfileFragmentView((View) param.getArgs()[0]);
             }
         }, View.class, Bundle.class);
+        hook.methodMonitor(profileFragment, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_VIDEO_METHOD, new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                monitorLogger.i("User Profile Fragment a(Aweme)");
+                final Aweme aweme = new Aweme(hook, param.getArgs()[0]);
+                presenter.setData(aweme.getAuthor().getUid(), aweme.getAuthor().getSecUid());
+            }
+        }, TremoloParam.AWEME_FEED_MODEL_AWEME_CLASS);
         hook.methodMonitor(profileFragment, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("User Profile Fragment a_(User)");
-                presenter.setProfile(true);
             }
         }, TremoloParam.AWEME_PROFILE_USER_CLASS);
         hook.methodMonitor(profileFragment, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_TO_USER_METHOD, new ForeignHook() {
@@ -57,8 +64,6 @@ public class ProfileFragmentOversee extends Oversee {
                 User user = new User(hook, param.getArgs()[0]);
                 presenter.setRead(user.getFansCount());
                 presenter.setVideoCount(user.getAwemeCount());
-                presenter.obtainUser(user);
-                presenter.userMoreVideo();
             }
         }, TremoloParam.AWEME_PROFILE_USER_CLASS);
         hook.methodMonitor(TremoloParam.AWEME_PROFILE_VIDEO_CALL_CLASS, TremoloParam.AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD, new ForeignHook() {
@@ -68,8 +73,6 @@ public class ProfileFragmentOversee extends Oversee {
                 for (Object object : (List<Object>) param.getResult()) {
                     awemeList.add(new Aweme(hook, object));
                 }
-                monitorLogger.i("Video List " + awemeList.size());
-                presenter.obtainVideoList(awemeList);
                 presenter.setVideosSize(awemeList.size());
             }
         });

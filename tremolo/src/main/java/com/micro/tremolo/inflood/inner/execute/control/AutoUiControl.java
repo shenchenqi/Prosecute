@@ -8,7 +8,22 @@ import com.micro.hook.config.Hook;
 import com.micro.root.Logger;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.InspectApply;
+import com.micro.root.utils.Lang;
 import com.micro.tremolo.Const;
+import com.micro.tremolo.inflood.inner.replace.Aweme;
+import com.micro.tremolo.inflood.inner.replace.AwemeStatistics;
+import com.micro.tremolo.inflood.inner.replace.UrlModel;
+import com.micro.tremolo.inflood.inner.replace.User;
+import com.micro.tremolo.inflood.inner.replace.VideoUrlModel;
+import com.micro.tremolo.network.UploadNet;
+import com.micro.tremolo.sqlite.table.UserModelTable;
+import com.micro.tremolo.sqlite.table.VideoListModelTable;
+import com.micro.tremolo.sqlite.table.VideoModelTable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.micro.tremolo.Const.monitorLogger;
 
 /**
  * 自动控制布局
@@ -117,5 +132,103 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
 
     public static void setTopApply(Context context) {
         InspectApply.setBackstageToFrontDesk(context, Const.PACKAGE_NAME);
+    }
+
+    public synchronized void obtainVideoList(List<Aweme> awemeList) {
+        List<VideoModelTable> videoTableList = new ArrayList<>();
+        for (Aweme aweme : awemeList) {
+            videoTableList.add(loadVideoTable(aweme));
+        }
+        if (!videoTableList.isEmpty()) {
+            VideoListModelTable videoListModelTable = new VideoListModelTable();
+            videoListModelTable.setVideoModelTableList(videoTableList);
+            UploadNet.uploadVideoList(videoListModelTable);
+        }
+    }
+
+    private synchronized VideoModelTable loadVideoTable(Aweme aweme) {
+        VideoModelTable videoTable = new VideoModelTable();
+        videoTable.setId(aweme.getAid());
+        videoTable.setTitle(aweme.getDesc());
+        videoTable.setCreateTime(String.valueOf(aweme.getCreateTime()));
+        videoTable.setShareUrl(aweme.getShareUrl());
+        AwemeStatistics statistics = aweme.getStatistics();
+        if (statistics != null) {
+            videoTable.setCommentCount(String.valueOf(statistics.getCommentCount()));
+            videoTable.setDiggCount(String.valueOf(statistics.getDiggCount()));
+            videoTable.setDownloadCount(String.valueOf(statistics.getDownloadCount()));
+            videoTable.setShareCount(String.valueOf(statistics.getShareCount()));
+        }
+        com.micro.tremolo.inflood.inner.replace.Video video = aweme.getVideo();
+        if (video != null) {
+            VideoUrlModel videoUrlModel = video.getPlayAddr();
+            if (videoUrlModel != null) {
+                videoTable.setUrlList(videoUrlModel.getUrlList());
+            }
+        }
+        User user = aweme.getAuthor();
+        if (user != null) {
+            videoTable.setUserId(user.getUid());
+            videoTable.setNickname(user.getNickname());
+        }
+        monitorLogger.d(String.format("单个视频信息 [%s, %s]", videoTable.getId(), videoTable.getTitle()));
+        return videoTable;
+    }
+
+    public synchronized void obtainUser(User user) {
+        if (isRead) {
+            UploadNet.uploadUser(loadUserTable(user));
+        }
+    }
+
+    private synchronized UserModelTable loadUserTable(User user) {
+        UserModelTable userTable = new UserModelTable();
+        userTable.setUserId(user.getUid());
+        userTable.setSceUserId(user.getSecUid());
+        userTable.setNickname(user.getNickname());
+        userTable.setTremoloId(user.getUniqueId());
+        userTable.setTremoloNumberId(user.getShortId());
+        userTable.setBirthday(user.getBirthday());
+        userTable.setCity(user.getCity());
+        userTable.setCountry(user.getCountry());
+        userTable.setDistrict(user.getDistrict());
+        userTable.setSchoolName(user.getSchoolName());
+        userTable.setSignature(user.getSignature());
+        userTable.setCustomVerify(user.getCustomVerify());
+        userTable.setEnterpriseVerify(user.getEnterpriseVerifyReason());
+        userTable.setRequestId(user.getRequestId());
+        userTable.setFollowingCount(String.valueOf(user.getFollowingCount()));
+        userTable.setAwemeCount(String.valueOf(user.getAwemeCount()));
+        userTable.setMovingCount(String.valueOf(user.getDongtai_count()));
+        userTable.setFansCount(String.valueOf(user.getFansCount()));
+        userTable.setFavoritingCount(String.valueOf(user.getFavoritingCount()));
+        UrlModel avatarLarger = user.getAvatarLarger();
+        if (avatarLarger != null) {
+            userTable.setAvatarList(avatarLarger.getUrlList());
+            userTable.setUri(avatarLarger.getUri());
+            userTable.setUrlKey(avatarLarger.getUrlKey());
+        }
+        UrlModel avatarMedium = user.getAvatarMedium();
+        if (avatarMedium != null) {
+            userTable.setAvatarMediumList(avatarMedium.getUrlList());
+            if (Lang.isEmpty(userTable.getUri())) {
+                userTable.setUri(avatarMedium.getUri());
+            }
+            if (Lang.isEmpty(userTable.getUrlKey())) {
+                userTable.setUri(avatarMedium.getUrlKey());
+            }
+        }
+        UrlModel avatarThumb = user.getAvatarThumb();
+        if (avatarThumb != null) {
+            userTable.setAvatarThumbList(avatarThumb.getUrlList());
+            if (Lang.isEmpty(userTable.getUri())) {
+                userTable.setUri(avatarThumb.getUri());
+            }
+            if (Lang.isEmpty(userTable.getUrlKey())) {
+                userTable.setUri(avatarThumb.getUrlKey());
+            }
+        }
+        //monitorLogger.d(String.format("视频用户 [%s, %s]", userTable.getUserId(), userTable.getNickname()));
+        return userTable;
     }
 }

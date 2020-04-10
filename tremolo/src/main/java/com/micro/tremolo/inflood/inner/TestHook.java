@@ -28,6 +28,8 @@ public class TestHook {
     public static void test(Hook hook) {
         mainActivity(hook);
         mainFragment(hook);
+        mainPageFragment(hook);
+        activityReference(hook);
         profileFragment(hook);
         api(hook);
     }
@@ -281,7 +283,7 @@ public class TestHook {
         hook.methodMonitor(MainActivity, "onNextVideo", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Activity onNextVideo");
+                logger.d("Main Activity onNextVideo >>> " + JSON.toJSONString(param.getArgs()[0]));
             }
         }, hook.findClass("com.ss.android.ugc.aweme.shortvideo.f.h"));
         hook.methodMonitor(MainActivity, "onScrollToDetailEvent", new ForeignHook() {
@@ -399,13 +401,13 @@ public class TestHook {
         hook.methodMonitor(MainFragment, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment a(int) >>> " + param.getResult());
+                logger.d("Main Fragment a(int) >>> " + param.getArgs()[0] + " 返回 >>> " + param.getResult());
             }
         }, int.class);
         hook.methodMonitor(MainFragment, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment a(int, String) >>> " + param.getResult());
+                logger.d("Main Fragment a(int, String) >>> " + param.getArgs()[0] + " >>> " + param.getArgs()[1] + " 返回 >>> " + param.getResult());
             }
         }, int.class, String.class);
         hook.methodMonitor(MainFragment, "x", new ForeignHook() {
@@ -627,13 +629,13 @@ public class TestHook {
         hook.methodMonitor(MainFragment, "h", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment h(int) ");
+                logger.d("Main Fragment h(int) >>> " + param.getArgs()[0]);
             }
         }, int.class);
         hook.methodMonitor(MainFragment, "b", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment b(int) ");
+                logger.d("Main Fragment b(int) >>> " + param.getArgs()[0]);
             }
         }, int.class);
         /*hook.methodMonitor(MainFragment, "n", new ForeignHook() {
@@ -645,25 +647,25 @@ public class TestHook {
         hook.methodMonitor(MainFragment, "e", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment e(int) ");
+                logger.d("Main Fragment e(int) >>> " + param.getArgs()[0]);
             }
         }, int.class);
         hook.methodMonitor(MainFragment, "f", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment f(int) ");
+                logger.d("Main Fragment f(int) >>> " + param.getArgs()[0]);
             }
         }, int.class);
         hook.methodMonitor(MainFragment, "g", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment g(boolean) ");
+                logger.d("Main Fragment g(boolean) >>> " + param.getArgs()[0]);
             }
         }, boolean.class);
         hook.methodMonitor(MainFragment, "h_", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment h_(boolean) ");
+                logger.d("Main Fragment h_(boolean) >>> " + param.getArgs()[0]);
             }
         }, boolean.class);
         hook.methodMonitor(MainFragment, "onAfterLoginInEvent", new ForeignHook() {
@@ -801,19 +803,19 @@ public class TestHook {
         hook.methodMonitor(MainFragment, "b", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment b(int, int) ");
+                logger.d("Main Fragment b(int, int) >>> " + param.getArgs()[0] + " >>> " + param.getArgs()[1]);
             }
         }, int.class, int.class);
         hook.methodMonitor(MainFragment, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment a(int, int) ");
+                logger.d("Main Fragment a(int, int) >>> " + param.getArgs()[0] + " >>> " + param.getArgs()[1]);
             }
         }, int.class, int.class);
         hook.methodMonitor(MainFragment, "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d("Main Fragment a(boolean, int) ");
+                logger.d("Main Fragment a(boolean, int) >>> " + param.getArgs()[0] + " >>> " + param.getArgs()[1]);
             }
         }, boolean.class, int.class);
         hook.methodMonitor(MainFragment, "onCreateView", new ForeignHook() {
@@ -822,6 +824,24 @@ public class TestHook {
                 logger.d("Main Fragment onCreateView ");
             }
         }, LayoutInflater.class, ViewGroup.class, Bundle.class);
+    }
+
+    private static void mainPageFragment(final Hook hook) {
+        hook.methodMonitor("com.ss.android.ugc.aweme.main.MainPageFragment", "onVideoPageChangeEvent", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d("Main PageFragment onVideoPageChangeEvent ");
+            }
+        }, hook.findClass("com.ss.android.ugc.aweme.feed.e.ae"));
+    }
+
+    private static void activityReference(final Hook hook) {
+        hook.methodMonitor("com.ss.android.ugc.aweme.main.e.b.b", "onVideoPageChangeEvent", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d("Activity Reference onVideoPageChangeEvent ");
+            }
+        }, hook.findClass("com.ss.android.ugc.aweme.feed.e.ae"));
     }
 
     private static void profileFragment(final Hook hook) {
