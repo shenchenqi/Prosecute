@@ -6,7 +6,6 @@ import android.os.Handler;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.micro.hook.config.Hook;
-import com.micro.root.Logger;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.Const;
@@ -21,13 +20,13 @@ import com.micro.tremolo.sqlite.table.VideoModelTable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.micro.tremolo.Const.taskLogger;
+
 /**
  * @Author KiLin
  * @Time 2020/4/10 17:34
  */
 public class NarrowAreaTask {
-
-    private final static Logger logger = Logger.getLogger("tremoloLog", "NarrowAreaLog");
 
     private static NarrowAreaTask mNarrowAreaTask;
 
@@ -40,19 +39,19 @@ public class NarrowAreaTask {
 
     public static void requestData(String search) {
         if (!Const.isNarrowArea) {
-            logger.d("当前不是狭域指定模式");
+            taskLogger.d("当前不是狭域指定模式");
             return;
         }
         requestData(search, new Callback() {
             @Override
             public void over(String authorID) {
-                logger.d("请求完成");
+                taskLogger.d("请求完成");
                 isRun = false;
             }
 
             @Override
             public void fail(String authorID, int type, String msg) {
-                logger.e(String.format("出错[%s][%s][%s]", authorID, type, msg));
+                taskLogger.e(String.format("出错[%s][%s][%s]", authorID, type, msg));
                 isRun = false;
             }
         });
@@ -62,37 +61,37 @@ public class NarrowAreaTask {
 
     private static void requestData(final String search, Callback callback) {
         if (isRun) {
-            logger.i("正在运行");
+            taskLogger.i("正在运行");
             return;
         }
         final WideCallback wideCallback = new WideCallback() {
             @Override
             public void userSuccess(String userId, String sceUserId) {
-                logger.i(userId + " 用户请求 成功 ");
+                taskLogger.i(userId + " 用户请求 成功 ");
                 setVideoListApi(userId, sceUserId, true, 0, this);
             }
 
             @Override
             public void userFail(String userId, String msg) {
-                logger.i(userId + " 用户请求 报错 " + msg);
+                taskLogger.i(userId + " 用户请求 报错 " + msg);
                 callback.fail(userId, 1, msg);
             }
 
             @Override
             public void videosSuccess(boolean hasMore, String userId, String secUserId, Video video) {
-                logger.i(userId + " 用户视频列表请求 成功 " + hasMore);
+                taskLogger.i(userId + " 用户视频列表请求 成功 " + hasMore);
                 if (!hasMore) {
                     callback.over(userId);
                 } else if (Lang.isNotNull(video)) {
                     setVideoListApi(userId, secUserId, false, Long.parseLong(video.getCreateTime() + "000"), this);
                 } else {
-                    callback.fail(userId, 3, "当前拉去的视频列表未空");
+                    callback.fail(userId, 3, "当前拉取的视频列表为空");
                 }
             }
 
             @Override
             public void videosFail(String userId, String msg) {
-                logger.i(userId + " 用户视频列表请求 报错 " + msg);
+                taskLogger.i(userId + " 用户视频列表请求 报错 " + msg);
                 callback.fail(userId, 2, msg);
             }
         };
@@ -143,7 +142,7 @@ public class NarrowAreaTask {
                 NarrowAreaTask.requestId = requestId;
                 Author author = callback.getAuthor(search, authors);
                 if (Lang.isNotNull(author)) {
-                    logger.d("first author: " + JSON.toJSONString(author));
+                    taskLogger.d("first author: " + JSON.toJSONString(author));
                     callback.exist(author.getUserId(), author.getSceUserId());
                 } else if (!hasMore) {
                     callback.fail("搜索不出");
@@ -156,7 +155,7 @@ public class NarrowAreaTask {
             public void loadUser(long cursor, boolean hasMore, List<Author> authors) {
                 Author author = callback.getAuthor(search, authors);
                 if (Lang.isNotNull(author)) {
-                    logger.d("author: " + JSON.toJSONString(author));
+                    taskLogger.d("author: " + JSON.toJSONString(author));
                     callback.exist(author.getUserId(), author.getSceUserId());
                 } else if (!hasMore) {
                     callback.fail("搜索不出");
@@ -286,7 +285,7 @@ public class NarrowAreaTask {
     }
 
     private void requestSearchUserApi(final String search, final long cursor, final String requestId, SearchUserCallback callback) {
-        logger.i(String.format("查询用户信息请求接口, 内容[%s]", search));
+        taskLogger.i(String.format("查询用户信息请求接口, 内容[%s]", search));
         post(BaseInterface.second * 5, () -> {
             if (Lang.isEmpty(requestId)) {
                 TremoloApi.searchUserApi(hook, search, 0, 10, 0, "", new TremoloApi.Callback() {
@@ -315,7 +314,7 @@ public class NarrowAreaTask {
 
                     @Override
                     public void fail(Throwable e, String msg) {
-                        logger.e(e, msg);
+                        taskLogger.e(e, msg);
                         callback.fail(msg);
                     }
                 });
@@ -345,7 +344,7 @@ public class NarrowAreaTask {
 
                     @Override
                     public void fail(Throwable e, String msg) {
-                        logger.e(e, msg);
+                        taskLogger.e(e, msg);
                         callback.fail(msg);
                     }
                 });
@@ -354,7 +353,7 @@ public class NarrowAreaTask {
     }
 
     private void requestUserApi(final String userId, final String secUserId, final UserCallback callback) {
-        logger.i(String.format("作者[%s]信息请求接口", userId));
+        taskLogger.i(String.format("作者[%s]信息请求接口", userId));
         post(callback.second * 5, () -> {
             TremoloApi.profileApi(hook, secUserId, new TremoloApi.Callback() {
                 @Override
@@ -373,7 +372,7 @@ public class NarrowAreaTask {
 
                 @Override
                 public void fail(Throwable e, String msg) {
-                    logger.e(e, msg);
+                    taskLogger.e(e, msg);
                     callback.fail(msg);
                 }
             });
@@ -381,7 +380,7 @@ public class NarrowAreaTask {
     }
 
     private void requestVideoListApi(final boolean isFirst, final String userId, final String secUserId, final long time, final VideosCallback callback) {
-        logger.i(String.format("作者[%s]视频列表请求接口", userId));
+        taskLogger.i(String.format("作者[%s]视频列表请求接口", userId));
         post(callback.second * 5, () -> {
             if (isFirst) {
                 TremoloApi.feedVideoApi(hook, isFirst, userId, secUserId, 0, 20, new TremoloApi.Callback() {
@@ -409,7 +408,7 @@ public class NarrowAreaTask {
 
                     @Override
                     public void fail(Throwable e, String msg) {
-                        logger.e(e, msg);
+                        taskLogger.e(e, msg);
                         callback.fail(msg);
                     }
                 });
@@ -439,7 +438,7 @@ public class NarrowAreaTask {
 
                     @Override
                     public void fail(Throwable e, String msg) {
-                        logger.e(e, msg);
+                        taskLogger.e(e, msg);
                         callback.fail(msg);
                     }
                 });

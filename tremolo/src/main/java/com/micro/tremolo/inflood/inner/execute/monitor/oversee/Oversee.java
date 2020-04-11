@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaAuthorTask;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
 
 /**
  * @Author KiLin
@@ -16,7 +16,7 @@ public abstract class Oversee extends Plugin<OverseePresenter, OverseeInter> imp
         super(hook, context);
         presenter.setHook(hook);
         presenter.initCreate();
-        WideAreaAuthorTask.setOversee(this);
+        WideAreaTask.setOversee(this);
     }
 
     @Override
@@ -29,7 +29,7 @@ public abstract class Oversee extends Plugin<OverseePresenter, OverseeInter> imp
         return presenter.getContext();
     }
 
-    public void nextVideo(){
+    public void nextVideo() {
         presenter.nextVideo();
     }
 }

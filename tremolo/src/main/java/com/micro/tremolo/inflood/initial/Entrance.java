@@ -8,10 +8,9 @@ import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.execute.monitor.MainActivityOversee;
 import com.micro.tremolo.inflood.inner.execute.monitor.ProfileFragmentOversee;
 import com.micro.tremolo.inflood.inner.execute.task.NarrowAreaTask;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaAuthorTask;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.TestHook;
-import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
 import com.micro.tremolo.inflood.inner.execute.LogContent;
 import com.micro.tremolo.inflood.inner.execute.HideDialog;
 import com.micro.tremolo.inflood.inner.execute.monitor.MainFragmentOversee;
@@ -82,14 +81,14 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         monitorLogger.i(TAG, "config", "配置");
         try {
             if (Const.collectType != 0) {
-                if (AutoUiControl.isAppOnForeground(getIContext()) == 500) {
-                    AutoUiControl.openApply(getIContext());
-                } else if (AutoUiControl.isAppOnForeground(getIContext()) == 400) {
-                    AutoUiControl.setTopApply(getIContext());
+                if (Const.isAppOnForeground(getIContext()) == 500) {
+                    Const.openApply(getIContext());
+                } else if (Const.isAppOnForeground(getIContext()) == 400) {
+                    Const.setTopApply(getIContext());
                 }
             }
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
-            WideAreaAuthorTask.getInstance(getHookParam().getHook(), getIContext());
+            WideAreaTask.getInstance(getHookParam().getHook(), getIContext());
             NarrowAreaTask.getInstance(getHookParam().getHook(), getIContext());
             mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext());
             mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext());

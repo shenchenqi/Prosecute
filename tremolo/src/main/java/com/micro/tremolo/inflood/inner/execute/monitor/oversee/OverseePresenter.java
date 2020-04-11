@@ -4,17 +4,19 @@ import android.view.View;
 
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.PluginPresenter;
+import com.micro.root.utils.Lang;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
 import com.micro.tremolo.inflood.inner.execute.control.MainActivityControl;
 import com.micro.tremolo.inflood.inner.execute.control.MainFragmentControl;
 import com.micro.tremolo.inflood.inner.execute.control.ProfileFragmentControl;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaAuthorTask;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.User;
 
 import java.util.List;
 
+import static com.micro.tremolo.Const.controlLogger;
 import static com.micro.tremolo.Const.monitorLogger;
 
 /**
@@ -95,10 +97,12 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
     }
 
     public void setData(String authorId, String secAuthorId) {
-        if (WideAreaAuthorTask.userMap.containsKey(authorId)) {
-            monitorLogger.d(String.format("抖音用户已存在 [%s, %s]", authorId, secAuthorId));
-        } else {
-            WideAreaAuthorTask.userMap.put(authorId, secAuthorId);
+        if (Const.isWideArea) {
+            if (WideAreaTask.userMap.containsKey(authorId)) {
+                monitorLogger.d(String.format("抖音用户已存在 [%s, %s]", authorId, secAuthorId));
+            } else {
+                WideAreaTask.userMap.put(authorId, secAuthorId);
+            }
         }
     }
 
@@ -110,17 +114,10 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         }
     }
 
-    private int fansCount;
-
     public void setRead(int fansCount) {
-        this.fansCount = fansCount;
         if (autoUiControl == null) {
             autoUiControl.setRead(fansCount);
         }
-    }
-
-    public boolean isRead() {
-        return fansCount > Const.fansCount;
     }
 
     private int videoCount;
@@ -135,27 +132,61 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         }
     }
 
-    public void autoMoveUser() {
+    public void setUIStatus(int type, User user, List<Aweme> awemeList) {
+        if (!Const.isAutoUI) {
+            controlLogger.d("当前不是控制UI模式");
+            return;
+        }
+        if (Lang.isEquals(0, type)) {
+            autoMoveUser();
+            setStatus(1);
+        } else if (Lang.isEquals(1, type)) {
+            if (Lang.isNotNull(user)) {
+                obtainUser(user);
+            }
+            userMoreVideo();
+            setStatus(2);
+        } else if (Lang.isEquals(2, type)) {
+            if (Lang.isNotNull(awemeList)) {
+                obtainVideoList(awemeList);
+            }
+            setStatus(3);
+        }
+    }
+
+    private void autoMoveUser() {
         if (autoUiControl != null) {
             autoUiControl.autoMoveUser();
         }
     }
 
-    public void userMoreVideo() {
+    private void userMoreVideo() {
         if (autoUiControl != null) {
             autoUiControl.autoLoadMoreVideo(videoCount);
         }
     }
 
-    public void obtainUser(User user) {
+    private void obtainUser(User user) {
         if (autoUiControl != null) {
             autoUiControl.obtainUser(user);
         }
     }
 
-    public void obtainVideoList(List<Aweme> awemeList) {
+    private void obtainVideoList(List<Aweme> awemeList) {
         if (autoUiControl != null) {
             autoUiControl.obtainVideoList(awemeList);
+        }
+    }
+
+    private void setStatus(int status) {
+        if (autoUiControl != null) {
+            autoUiControl.setStatus(status);
+        }
+    }
+
+    public void statusMonitor() {
+        if (autoUiControl != null) {
+            autoUiControl.statusMonitor();
         }
     }
 }

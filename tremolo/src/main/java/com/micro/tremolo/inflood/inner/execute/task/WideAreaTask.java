@@ -6,7 +6,6 @@ import android.os.Handler;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.micro.hook.config.Hook;
-import com.micro.root.Logger;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.Const;
@@ -25,43 +24,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.micro.tremolo.Const.taskLogger;
+
 /**
  * @Author KiLin
  * @Time 2020/4/10 13:10
  * 根据视频作者的ID，secID进行接口访问拿取数据
  */
-public class WideAreaAuthorTask {
-
-    private final static Logger logger = Logger.getLogger("tremoloLog", "WideAreaLog");
+public class WideAreaTask {
 
     public final static Map<String, String> userMap = new HashMap<>();
 
-    private static WideAreaAuthorTask mWideAreaAuthorTask;
+    private static WideAreaTask mWideAreaTask;
 
-    public static WideAreaAuthorTask getInstance(Hook hook, Context context) {
-        if (mWideAreaAuthorTask == null) {
-            mWideAreaAuthorTask = new WideAreaAuthorTask(hook, context);
+    public static WideAreaTask getInstance(Hook hook, Context context) {
+        if (mWideAreaTask == null) {
+            mWideAreaTask = new WideAreaTask(hook, context);
         }
-        return mWideAreaAuthorTask;
+        return mWideAreaTask;
     }
 
     private static Oversee mOversee;
 
     public static void setOversee(Oversee mOversee) {
-        WideAreaAuthorTask.mOversee = mOversee;
+        WideAreaTask.mOversee = mOversee;
     }
 
     public static void canTremoloData(Context context) {
         if (!Const.isWideArea) {
-            logger.i("当前不是广域采集模式");
+            taskLogger.i("当前不是广域采集模式");
             return;
         }
         Handler handler = new Handler(context.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                logger.i("检测扫描");
-                WideAreaAuthorTask.requestData();
+                taskLogger.i("检测扫描");
+                WideAreaTask.requestData();
                 handler.postDelayed(this::run, BaseInterface.second * 20);
             }
         }, BaseInterface.second * 20);
@@ -72,10 +71,10 @@ public class WideAreaAuthorTask {
             @Override
             public void over(String authorID) {
                 userMap.remove(authorID);
-                logger.d("请求完成");
+                taskLogger.d("请求完成");
                 isRun = false;
                 if (number < 6 && mOversee != null) {
-                    logger.d("请求完成, 视频切换");
+                    taskLogger.d("请求完成, 视频切换");
                     mOversee.nextVideo();
                 }
             }
@@ -83,10 +82,10 @@ public class WideAreaAuthorTask {
             @Override
             public void fail(String authorID, int type, String msg) {
                 userMap.remove(authorID);
-                logger.e(String.format("出错[%s][%s][%s]", authorID, type, msg));
+                taskLogger.e(String.format("出错[%s][%s][%s]", authorID, type, msg));
                 isRun = false;
                 if (number < 6 && mOversee != null) {
-                    logger.d("请求出错, 视频切换");
+                    taskLogger.d("请求出错, 视频切换");
                     mOversee.nextVideo();
                 }
             }
@@ -98,10 +97,10 @@ public class WideAreaAuthorTask {
 
     private static void requestData(Callback callback) {
         if (isRun) {
-            logger.i("正在运行");
+            taskLogger.i("正在运行");
             number++;
             if (number == 6 && mOversee != null) {
-                logger.d("运行太久, 先进行视频切换");
+                taskLogger.d("运行太久, 先进行视频切换");
                 mOversee.nextVideo();
             }
             return;
@@ -109,53 +108,53 @@ public class WideAreaAuthorTask {
         final WideCallback wideCallback = new WideCallback() {
             @Override
             public void userSuccess(String userId, String sceUserId) {
-                logger.i(userId + " 用户请求 成功 ");
+                taskLogger.i(userId + " 用户请求 成功 ");
                 setVideoListApi(userId, sceUserId, true, 0, this);
             }
 
             @Override
             public void userFail(String userId, String msg) {
-                logger.i(userId + " 用户请求 报错 " + msg);
+                taskLogger.i(userId + " 用户请求 报错 " + msg);
                 callback.fail(userId, 1, msg);
             }
 
             @Override
             public void videosSuccess(boolean hasMore, String userId, String secUserId, Video video) {
-                logger.i(userId + " 用户视频列表请求 成功 " + hasMore);
+                taskLogger.i(userId + " 用户视频列表请求 成功 " + hasMore);
                 if (!hasMore) {
                     callback.over(userId);
                 } else if (Lang.isNotNull(video)) {
                     setVideoListApi(userId, secUserId, false, Long.parseLong(video.getCreateTime() + "000"), this);
                 } else {
-                    callback.fail(userId, 3, "当前拉去的视频列表未空");
+                    callback.fail(userId, 3, "当前拉取的视频列表为空");
                 }
             }
 
             @Override
             public void videosFail(String userId, String msg) {
-                logger.i(userId + " 用户视频列表请求 报错 " + msg);
+                taskLogger.i(userId + " 用户视频列表请求 报错 " + msg);
                 callback.fail(userId, 2, msg);
             }
         };
         Map<String, String> map = new HashMap<>(userMap);
         if (map.isEmpty()) {
-            logger.i(" 无用户数据 ");
+            taskLogger.i(" 无用户数据 ");
             callback.fail("userId", 4, "无数据");
             return;
         }
         isRun = true;
         number = 0;
-        logger.i("开始进行数据采集");
+        taskLogger.i("开始进行数据采集");
         for (Map.Entry<String, String> entry : map.entrySet()) {
             String authorID = entry.getKey();
             String secAuthorID = entry.getValue();
             if (Lang.isNotEmpty(authorID) && Lang.isNotEmpty(secAuthorID)) {
-                logger.i(String.format("作者[%s]开始请求", authorID));
+                taskLogger.i(String.format("作者[%s]开始请求", authorID));
                 UserIdModelTable userIdModelTable = new UserIdModelTable();
                 userIdModelTable.setUserId(authorID);
                 userIdModelTable.setSceUserId(secAuthorID);
                 UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
-                    logger.i(String.format("作者[%s]是否已存在服务器[%s]", authorID, isExist));
+                    taskLogger.i(String.format("作者[%s]是否已存在服务器[%s]", authorID, isExist));
                     if (isExist) {
                         setVideoListApi(userId, sceUserId, true, 0, wideCallback);
                     } else {
@@ -168,7 +167,7 @@ public class WideAreaAuthorTask {
     }
 
     private static void setUserApi(final String authorID, String secAuthorID, final WideCallback callback) {
-        mWideAreaAuthorTask.requestUserApi(authorID, secAuthorID, new UserCallback() {
+        mWideAreaTask.requestUserApi(authorID, secAuthorID, new UserCallback() {
             @Override
             public Context getIContext() {
                 return null;
@@ -177,7 +176,11 @@ public class WideAreaAuthorTask {
             @Override
             public void loadUserInfo(Author author) {
                 UploadNet.uploadUser(loadUserTable(author));
-                callback.userSuccess(author.getUserId(), author.getSceUserId());
+                if (Lang.toLong(author.getFansCount()) > Const.fansCount) {
+                    callback.userSuccess(author.getUserId(), author.getSceUserId());
+                } else {
+                    callback.userFail(author.getUserId(), "当前作者粉丝未超过1万 过滤");
+                }
             }
 
             @Override
@@ -188,7 +191,7 @@ public class WideAreaAuthorTask {
     }
 
     private static void setVideoListApi(final String authorID, final String secAuthorID, boolean isFirst, long time, final WideCallback callback) {
-        mWideAreaAuthorTask.requestVideoListApi(isFirst, authorID, secAuthorID, time, new VideosCallback() {
+        mWideAreaTask.requestVideoListApi(isFirst, authorID, secAuthorID, time, new VideosCallback() {
             @Override
             public Context getIContext() {
                 return null;
@@ -263,7 +266,7 @@ public class WideAreaAuthorTask {
     private final Hook hook;
     private final Handler handler;
 
-    private WideAreaAuthorTask(Hook hook, Context context) {
+    private WideAreaTask(Hook hook, Context context) {
         this.hook = hook;
         this.handler = new Handler(context.getMainLooper());
     }
@@ -281,7 +284,7 @@ public class WideAreaAuthorTask {
     }
 
     private void requestUserApi(final String userId, final String secUserId, final UserCallback callback) {
-        logger.i(String.format("作者[%s]信息请求接口", userId));
+        taskLogger.i(String.format("作者[%s]信息请求接口", userId));
         post(callback.second * 5, () -> {
             TremoloApi.profileApi(hook, secUserId, new TremoloApi.Callback() {
                 @Override
@@ -300,7 +303,7 @@ public class WideAreaAuthorTask {
 
                 @Override
                 public void fail(Throwable e, String msg) {
-                    logger.e(e, msg);
+                    taskLogger.e(e, msg);
                     callback.fail(msg);
                 }
             });
@@ -308,7 +311,7 @@ public class WideAreaAuthorTask {
     }
 
     private void requestVideoListApi(final boolean isFirst, final String userId, final String secUserId, final long time, final VideosCallback callback) {
-        logger.i(String.format("作者[%s]视频列表请求接口", userId));
+        taskLogger.i(String.format("作者[%s]视频列表请求接口", userId));
         post(callback.second * 5, () -> {
             if (isFirst) {
                 TremoloApi.feedVideoApi(hook, isFirst, userId, secUserId, 0, 20, new TremoloApi.Callback() {
@@ -336,7 +339,7 @@ public class WideAreaAuthorTask {
 
                     @Override
                     public void fail(Throwable e, String msg) {
-                        logger.e(e, msg);
+                        taskLogger.e(e, msg);
                         callback.fail(msg);
                     }
                 });
@@ -366,7 +369,7 @@ public class WideAreaAuthorTask {
 
                     @Override
                     public void fail(Throwable e, String msg) {
-                        logger.e(e, msg);
+                        taskLogger.e(e, msg);
                         callback.fail(msg);
                     }
                 });

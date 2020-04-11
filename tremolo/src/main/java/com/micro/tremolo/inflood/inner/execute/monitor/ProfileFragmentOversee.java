@@ -43,6 +43,7 @@ public class ProfileFragmentOversee extends Oversee {
                 monitorLogger.i("User Profile Fragment a(Aweme)");
                 final Aweme aweme = new Aweme(hook, param.getArgs()[0]);
                 presenter.setData(aweme.getAuthor().getUid(), aweme.getAuthor().getSecUid());
+                presenter.setUIStatus(0, null, null);
             }
         }, TremoloParam.AWEME_FEED_MODEL_AWEME_CLASS);
         hook.methodMonitor(profileFragment, TremoloParam.AWEME_PROFILE_USER_FRAGMENT_LOAD_USER_METHOD, new ForeignHook() {
@@ -64,6 +65,7 @@ public class ProfileFragmentOversee extends Oversee {
                 User user = new User(hook, param.getArgs()[0]);
                 presenter.setRead(user.getFansCount());
                 presenter.setVideoCount(user.getAwemeCount());
+                presenter.setUIStatus(1, user, null);
             }
         }, TremoloParam.AWEME_PROFILE_USER_CLASS);
         hook.methodMonitor(TremoloParam.AWEME_PROFILE_VIDEO_CALL_CLASS, TremoloParam.AWEME_PROFILE_VIDEO_CALL_ITEMS_METHOD, new ForeignHook() {
@@ -74,6 +76,7 @@ public class ProfileFragmentOversee extends Oversee {
                     awemeList.add(new Aweme(hook, object));
                 }
                 presenter.setVideosSize(awemeList.size());
+                presenter.setUIStatus(2, null, awemeList);
             }
         });
     }
