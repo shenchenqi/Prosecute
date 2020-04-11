@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.micro.hook.ControlLayout;
 import com.micro.hook.config.Hook;
-import com.micro.root.Logger;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.InspectApply;
 import com.micro.root.utils.Lang;
@@ -23,14 +22,12 @@ import com.micro.tremolo.sqlite.table.VideoModelTable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.micro.tremolo.Const.monitorLogger;
+import static com.micro.tremolo.Const.controlLogger;
 
 /**
  * 自动控制布局
  */
 public class AutoUiControl extends ControlLayout implements BaseInterface {
-
-    private Logger logger = com.micro.root.Logger.getLogger("tremoloLog", "ControlLog");
 
     private final Context context;
 
@@ -44,21 +41,21 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
         this.mainFragmentControl = MainFragmentControl.getInstance(context, new MainFragmentControl.MainCallback() {
             @Override
             public void success(String value, int type) {
-                logger.d(String.format("MainFragment[%s][%s]", type, value));
+                controlLogger.d(String.format("MainFragment[%s][%s]", type, value));
             }
 
             @Override
             public void fail(String value, int type) {
-                logger.e(String.format("MainFragment[%s][%s]", type, value));
+                controlLogger.e(String.format("MainFragment[%s][%s]", type, value));
             }
         });
         this.profileFragmentControl = ProfileFragmentControl.getInstance(context, new ProfileFragmentControl.ProfileCallback() {
             @Override
             public void success(String value, int type) {
-                logger.d(String.format("ProfileFragment[%s][%s]", type, value));
+                controlLogger.d(String.format("ProfileFragment[%s][%s]", type, value));
                 if (type == ProfileFragmentControl.uiLoadMoreVideo) {
                     setCount++;
-                    logger.d(String.format("加载更多抖音号视频： [%s][%s], {[%s][%s][%s][%s]}", type, value, isRead, videoSize, count, setCount));
+                    controlLogger.d(String.format("加载更多抖音号视频： [%s][%s], {[%s][%s][%s][%s]}", type, value, isRead, videoSize, count, setCount));
                     if (isRead && videoSize < count && setCount < (count / 10)) {
                         profileFragmentControl.loadMoreVideo();
                     } else {
@@ -71,7 +68,7 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
 
             @Override
             public void fail(String value, int type) {
-                logger.e(String.format("ProfileFragment[%s][%s]", type, value));
+                controlLogger.e(String.format("ProfileFragment[%s][%s]", type, value));
             }
         });
     }
@@ -171,7 +168,7 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
             videoTable.setUserId(user.getUid());
             videoTable.setNickname(user.getNickname());
         }
-        monitorLogger.d(String.format("单个视频信息 [%s, %s]", videoTable.getId(), videoTable.getTitle()));
+        controlLogger.d(String.format("单个视频信息 [%s, %s]", videoTable.getId(), videoTable.getTitle()));
         return videoTable;
     }
 
@@ -228,7 +225,7 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
                 userTable.setUri(avatarThumb.getUrlKey());
             }
         }
-        //monitorLogger.d(String.format("视频用户 [%s, %s]", userTable.getUserId(), userTable.getNickname()));
+        controlLogger.d(String.format("视频用户 [%s, %s]", userTable.getUserId(), userTable.getNickname()));
         return userTable;
     }
 }

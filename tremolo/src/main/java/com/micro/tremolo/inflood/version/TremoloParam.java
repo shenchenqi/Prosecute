@@ -1,6 +1,6 @@
 package com.micro.tremolo.inflood.version;
 
-import static com.micro.tremolo.inflood.TremoloModule.logger;
+import static com.micro.tremolo.Const.monitorLogger;
 
 /**
  * created by kilin on 20-3-17 下午5:05
@@ -9,7 +9,7 @@ public abstract class TremoloParam {
     public static void init(String version) {
         String impl = "com.micro.tremolo.inflood.version.impl.V" + version.replaceAll("\\.", "");
         try {
-            logger.i("PARAM", String.format("初始化参数：%s", impl));
+            monitorLogger.i("PARAM", String.format("初始化参数：%s", impl));
             Class implClazz = Class.forName(impl);
             implClazz.newInstance();
         } catch (Throwable e) {
@@ -99,6 +99,8 @@ public abstract class TremoloParam {
     public static String AWEME_PROFILE_VIDEO_PROFILE_API_USER_METHOD;
     public static String AWEME_PROFILE_VIDEO_AWEME_API_CLASS;
     public static String AWEME_PROFILE_VIDEO_AWEME_API_LIST_METHOD;
+    public static String AWEME_PROFILE_SEARCH_USER_API_CLASS;
+    public static String AWEME_PROFILE_SEARCH_USER_USER_METHOD;
 
     protected abstract void utilsClass();
 

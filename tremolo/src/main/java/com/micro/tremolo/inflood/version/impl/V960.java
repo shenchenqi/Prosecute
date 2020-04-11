@@ -98,6 +98,8 @@ public class V960 extends TremoloParam {
         AWEME_PROFILE_VIDEO_PROFILE_API_USER_METHOD = "b";
         AWEME_PROFILE_VIDEO_AWEME_API_CLASS = PACKAGE_PROFILE + ".api.AwemeApi";
         AWEME_PROFILE_VIDEO_AWEME_API_LIST_METHOD = "a";
+        AWEME_PROFILE_SEARCH_USER_API_CLASS = PACKAGE_PROFILE + ".discover.api.SearchApi";
+        AWEME_PROFILE_SEARCH_USER_USER_METHOD = "a";
     }
 
     @Override

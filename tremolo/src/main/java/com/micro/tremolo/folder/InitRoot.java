@@ -2,18 +2,17 @@ package com.micro.tremolo.folder;
 
 import android.content.Context;
 
-import com.micro.root.Logger;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.folder.mvp.InitInter;
 import com.micro.tremolo.folder.mvp.InitPresenter;
 import com.micro.rom.RootRom;
 
+import static com.micro.tremolo.Const.rootLogger;
+
 /**
  * created by kilin on 20-3-17 下午5:40
  */
 public class InitRoot extends RootRom<InitPresenter, InitInter> {
-
-    public static final Logger logger = Logger.getLogger("DY", "RootLog");
 
     private static final String TAG = "InitRoot";
     private static InitRoot INSTANCE;
@@ -36,7 +35,7 @@ public class InitRoot extends RootRom<InitPresenter, InitInter> {
 
     private InitRoot(Context context) {
         super(context);
-        logger.i(TAG, "初始化");
+        rootLogger.i(TAG, "初始化");
     }
 
     @Override
@@ -46,7 +45,6 @@ public class InitRoot extends RootRom<InitPresenter, InitInter> {
 
     @Override
     protected void bindSetup(InitPresenter presenter) {
-        logger.i(TAG, "循环扫描");
-
+        rootLogger.i(TAG, "循环扫描");
     }
 }

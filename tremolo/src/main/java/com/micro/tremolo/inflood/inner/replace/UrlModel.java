@@ -4,8 +4,6 @@ import com.micro.hook.config.Hook;
 
 import java.util.List;
 
-import static com.micro.tremolo.inflood.TremoloModule.logger;
-
 /**
  * @Author Kilin
  * @Date 2020/3/25 11:03
@@ -25,7 +23,6 @@ public class UrlModel {
     }
 
     public void loadUrlModel(Hook hook, Object urlModel) {
-        logger.d("UrlModel", String.format("当前抓取的视频链接数据对象是否存在[%s]", urlModel != null));
         if (urlModel == null) {
             return;
         }

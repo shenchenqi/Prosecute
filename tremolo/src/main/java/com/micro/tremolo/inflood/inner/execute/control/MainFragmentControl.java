@@ -11,19 +11,19 @@ import android.widget.TextView;
 import androidx.core.util.Pair;
 
 import com.micro.hook.ControlLayout;
-import com.micro.root.Logger;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.micro.tremolo.Const.controlLogger;
+
 /**
  * @Author KiLin
  * @Time 2020/4/9 9:36
  */
 public class MainFragmentControl extends ControlLayout {
-    private Logger logger = com.micro.root.Logger.getLogger("tremoloLog", "ControlLog");
 
     private final static int clickAttention = 994;
     private final static int clickLive = 995;
@@ -65,7 +65,7 @@ public class MainFragmentControl extends ControlLayout {
                         clickAttentionView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -74,7 +74,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -91,7 +91,7 @@ public class MainFragmentControl extends ControlLayout {
                         clickLiveView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -100,7 +100,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -117,7 +117,7 @@ public class MainFragmentControl extends ControlLayout {
                         clickRefreshView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -126,7 +126,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -143,7 +143,7 @@ public class MainFragmentControl extends ControlLayout {
                         clickSearchView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -152,7 +152,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -169,7 +169,7 @@ public class MainFragmentControl extends ControlLayout {
                         clickRecommendView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -178,7 +178,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -195,7 +195,7 @@ public class MainFragmentControl extends ControlLayout {
                         clickUserView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -204,7 +204,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -221,7 +221,7 @@ public class MainFragmentControl extends ControlLayout {
                         moveToUser(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -230,7 +230,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -247,7 +247,7 @@ public class MainFragmentControl extends ControlLayout {
                         moveChangeVideoToTop(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -256,7 +256,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -273,7 +273,7 @@ public class MainFragmentControl extends ControlLayout {
                         moveChangeVideoToBottom(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -282,7 +282,7 @@ public class MainFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -436,7 +436,7 @@ public class MainFragmentControl extends ControlLayout {
     private void moveToUser(final Callback callback) {
         final float x = screenData[0] / 12;
         final float y = screenData[1] / 2;
-        logger.d(String.format("滑动 用户界面 准备 width [%s], height [%s]", x, y));
+        controlLogger.d(String.format("滑动 用户界面 准备 width [%s], height [%s]", x, y));
         handlerPost(handler, () -> startThread(() -> {
             List<Pair<Float, Float>> pairList = new ArrayList<>();
             pairList.add(new Pair<>(x * 11, y));
@@ -458,7 +458,7 @@ public class MainFragmentControl extends ControlLayout {
     private void moveChangeVideoToTop(final Callback callback) {
         final float x = screenData[0] / 2;
         final float y = screenData[1] / 24;
-        logger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
+        controlLogger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
         handlerPost(handler, () -> {
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();
@@ -482,7 +482,7 @@ public class MainFragmentControl extends ControlLayout {
     private void moveChangeVideoToBottom(final Callback callback) {
         final float x = screenData[0] / 2;
         final float y = screenData[1] / 24;
-        logger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
+        controlLogger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
         handlerPost(handler, () -> startThread(() -> {
             List<Pair<Float, Float>> pairList = new ArrayList<>();
             pairList.add(new Pair<>(x, y * 8));

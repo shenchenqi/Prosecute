@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.micro.tremolo.inflood.TremoloModule.logger;
-
 /**
  * @Author Kilin
  * @Date 2020/3/24 13:27
@@ -233,7 +231,6 @@ public class User {
     }
 
     public void loadUser(Hook hook, Object user) {
-        logger.d("User", String.format("当前抓取的抖音用户对象是否存在[%s]", user != null));
         if (user == null) {
             return;
         }

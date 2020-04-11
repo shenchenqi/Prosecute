@@ -3,8 +3,6 @@ package com.micro.root.task;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.micro.root.Logger;
-
 /**
  * @Description: 基类异步
  * @Author: ALin
@@ -16,7 +14,6 @@ public abstract class BaseAsync<Params, Progress, Result> extends AsyncTask<Para
 
     protected BaseAsync(Context context) {
         super();
-        Logger.getLogger("root", "Base-Async").i("BaseAsync", "AsyncTask初始化");
         this.context = context;
     }
 

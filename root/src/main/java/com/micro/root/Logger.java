@@ -16,7 +16,7 @@ public abstract class Logger implements ILog {
     }
 
     private Logger(String tab, String tag) {
-        this.tag = String.format("{%s [%s]}", tab, tag);
+        this.tag = String.format("[%s] [%s]", tab, tag);
     }
 
     private synchronized static String getMsg(String methodName, String msg) {

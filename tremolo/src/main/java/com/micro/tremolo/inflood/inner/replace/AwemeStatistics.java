@@ -2,8 +2,6 @@ package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
 
-import static com.micro.tremolo.inflood.TremoloModule.logger;
-
 /**
  * @Author Kilin
  * @Date 2020/3/25 10:26
@@ -25,7 +23,6 @@ public class AwemeStatistics {
     }
 
     public void loadAwemeStatistics(Hook hook, Object awemeStatistics) {
-        logger.d("AwemeStatistics", String.format("当前抓取的视频统计数据对象是否存在[%s]", awemeStatistics != null));
         if (awemeStatistics == null) {
             return;
         }

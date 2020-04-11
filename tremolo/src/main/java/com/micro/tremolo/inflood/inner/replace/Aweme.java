@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.micro.tremolo.inflood.TremoloModule.logger;
-
 /**
  * @Author Kilin
  * @Date 2020/3/24 18:10
@@ -199,7 +197,6 @@ public class Aweme {
     }
 
     public void loadAweme(Hook hook, Object aweme) {
-        logger.d("Aweme", String.format("当前抓取的视频对象是否存在[%s]", aweme != null));
         if (aweme == null) {
             return;
         }

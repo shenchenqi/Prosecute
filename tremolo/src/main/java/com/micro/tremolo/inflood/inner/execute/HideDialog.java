@@ -1,10 +1,9 @@
 package com.micro.tremolo.inflood.inner.execute;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.widget.TextView;
 
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
@@ -28,54 +27,33 @@ public class HideDialog implements PluginInter {
 
     @Override
     public void monitor() {
-        hook.methodMonitor(TremoloParam.DIALOG_CLASS, TremoloParam.DIALOG_ONE_METHOD, new ForeignHook(){
+        hook.methodMonitor(TremoloParam.DIALOG_CLASS, TremoloParam.DIALOG_ONE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 monitorLogger.d("underage view a()");
                 handler.postDelayed(() -> {
-                    hook.callMethod(param.getResult(), TremoloParam.DIALOG_HIDE_METHOD);
-                    /*TextView view = (TextView) hook.callMethod(param.getThisObject(), TremoloParam.BIND_VIEW, TremoloParam.UNDERAGE_CANCEL_INTEGER);
-                    if (view == null) {
-                        monitorLogger.e("未成年 提示框，自动点击失败");
-                    } else {
-                        view.performClick();
-                        monitorLogger.d("未成年 提示框，自动点击取消");
-                    }*/
+                    hide(param.getResult());
                 }, second);
             }
         });
-        hook.methodMonitor(TremoloParam.DIALOG_CLASS, TremoloParam.DIALOG_TWO_METHOD, new ForeignHook(){
+        hook.methodMonitor(TremoloParam.DIALOG_CLASS, TremoloParam.DIALOG_TWO_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 monitorLogger.d("underage view b()");
                 handler.postDelayed(() -> {
-                    hook.callMethod(param.getResult(), TremoloParam.DIALOG_HIDE_METHOD);
-                    /*TextView view = (TextView) hook.callMethod(param.getThisObject(), TremoloParam.BIND_VIEW, TremoloParam.UNDERAGE_CANCEL_INTEGER);
-                    if (view == null) {
-                        monitorLogger.e("未成年 提示框，自动点击失败");
-                    } else {
-                        view.performClick();
-                        monitorLogger.d("未成年 提示框，自动点击取消");
-                    }*/
+                    hide(param.getResult());
                 }, second);
             }
         });
-        hook.methodMonitor(TremoloParam.DIALOG_INFO_CLASS, TremoloParam.DIALOG_INFO_CREATE_METHOD, new ForeignHook(){
+        hook.methodMonitor(TremoloParam.DIALOG_INFO_CLASS, TremoloParam.DIALOG_INFO_CREATE_METHOD, new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 monitorLogger.d("my content view");
                 handler.postDelayed(() -> {
-                    /*TextView view = (TextView) hook.callMethod(param.getThisObject(), TremoloParam.BIND_VIEW, TremoloParam.INFO_CANCEL_INTEGER);
-                    if (view == null) {
-                        monitorLogger.e("个性信息 提示框，自动点击失败");
-                    } else {
-                        view.performClick();
-                        monitorLogger.d("个性信息 提示框，自动点击取消");
-                    }*/
-                    hook.callMethod(param.getThisObject(), TremoloParam.DIALOG_HIDE_METHOD);
+                    hide(param.getThisObject());
                 }, second);
             }
         }, Bundle.class);
@@ -85,14 +63,7 @@ public class HideDialog implements PluginInter {
                 super.afterHookedMethod(param);
                 monitorLogger.d("update view");
                 handler.postDelayed(() -> {
-                    hook.callMethod(param.getThisObject(), TremoloParam.DIALOG_HIDE_METHOD);
-                    /*TextView view = (TextView) hook.callMethod(param.getThisObject(), TremoloParam.BIND_VIEW, 2131168732);
-                    if (view == null) {
-                        monitorLogger.e("版本更新 提示框，自动点击失败");
-                    } else {
-                        view.performClick();
-                        monitorLogger.d("版本更新 提示框，自动点击取消");
-                    }*/
+                    hide(param.getThisObject());
                 }, second);
             }
         }, Bundle.class);
@@ -101,5 +72,12 @@ public class HideDialog implements PluginInter {
     @Override
     public Context getIContext() {
         return context;
+    }
+
+    private synchronized void hide(Object object) {
+        if (object instanceof Dialog) {
+            ((Dialog) object).hide();
+            /*hook.callMethod(object, TremoloParam.DIALOG_HIDE_METHOD);*/
+        }
     }
 }

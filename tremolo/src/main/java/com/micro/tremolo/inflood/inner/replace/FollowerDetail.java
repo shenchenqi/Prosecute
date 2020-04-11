@@ -2,8 +2,6 @@ package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
 
-import static com.micro.tremolo.inflood.TremoloModule.logger;
-
 /**
  * @Author Kilin
  * @Date 2020/3/26 15:42
@@ -24,7 +22,6 @@ public class FollowerDetail {
     }
 
     public void loadFollowerDetail(Hook hook, Object followerDetail) {
-        logger.d("FollowerDetail", String.format("当前抓取的数据对象是否存在[%s]", followerDetail != null));
         if (followerDetail == null) {
             return;
         }

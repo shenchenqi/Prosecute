@@ -3,10 +3,11 @@ package com.micro.tremolo.folder.mvp;
 import android.content.Context;
 
 import com.micro.rom.RomPresenter;
-import com.micro.tremolo.folder.InitRoot;
 import com.micro.tremolo.inflood.utils.CacheDefault;
 
 import org.litepal.LitePal;
+
+import static com.micro.tremolo.Const.rootLogger;
 
 /**
  * created by kilin on 20-3-18 下午1:48
@@ -19,7 +20,7 @@ public class InitPresenter extends RomPresenter<InitInter> {
 
     @Override
     protected void onAttached() {
-        InitRoot.logger.i("配置成功");
+        rootLogger.i("配置成功");
     }
 
     @Override

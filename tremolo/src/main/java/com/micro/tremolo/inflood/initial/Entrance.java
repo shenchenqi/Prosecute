@@ -17,7 +17,7 @@ import com.micro.tremolo.inflood.inner.execute.HideDialog;
 import com.micro.tremolo.inflood.inner.execute.monitor.MainFragmentOversee;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
-import static com.micro.tremolo.inflood.TremoloModule.logger;
+import static com.micro.tremolo.Const.monitorLogger;
 
 /**
  * created by kilin on 20-3-17 下午5:23
@@ -31,11 +31,11 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     public static Entrance getInstance(HookParam hookParam) {
         if (mEntrance == null) {
             try {
-                logger.i(TAG, "步骤事件: " + hookParam.getVersion());
+                monitorLogger.i(TAG, "步骤事件: " + hookParam.getVersion());
                 mEntrance = new Entrance(hookParam);
                 mEntrance.init();
             } catch (Throwable throwable) {
-                logger.e(throwable, TAG, "步骤事件失败");
+                monitorLogger.e(throwable, TAG, "步骤事件失败");
             }
         }
         return mEntrance;
@@ -58,18 +58,18 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     public void initParam(String version) {
-        logger.i(TAG, "initParam", "参数初始化： " + version);
+        monitorLogger.i(TAG, "initParam", "参数初始化： " + version);
         TremoloParam.init(version);
     }
 
     @Override
     public void hide() {
-        logger.i(TAG, "hide", "隐藏");
+        monitorLogger.i(TAG, "hide", "隐藏");
     }
 
     @Override
     public void executeSQL() {
-        logger.i(TAG, "executeSQL", "数据库");
+        monitorLogger.i(TAG, "executeSQL", "数据库");
     }
 
     private HideDialog dialog;
@@ -79,7 +79,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     public void config() {
-        logger.i(TAG, "config", "配置");
+        monitorLogger.i(TAG, "config", "配置");
         try {
             if (Const.collectType != 0) {
                 if (AutoUiControl.isAppOnForeground(getIContext()) == 500) {
@@ -95,7 +95,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
             mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext());
             profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext());
         } catch (Throwable throwable) {
-            logger.e(throwable, "配置报错");
+            monitorLogger.e(throwable, "配置报错");
         }
     }
 

@@ -40,7 +40,7 @@ public class LogContent implements PluginInter {
         long threadId = getThreadId(hook, msg);
         boolean isLooperMain = isLooperMain(hook, msg);
         Object object = getMsg(hook, msg);
-        Logger logger = Logger.getLogger("DouYinLog", String.format("DYLog [%s]", tag));
+        Logger logger = Logger.getLogger("tremoloLog", String.format("DYLog-%s", tag));
         logger.i(String.format("status[%s], type[%s], threadId[%s], isLooperMain[%s] \n content[%s] \n msg[%s]", status, type, threadId, isLooperMain, content, object == null ? "" : object.toString()));
     }
 

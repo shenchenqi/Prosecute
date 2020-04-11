@@ -22,7 +22,7 @@ import retrofit2.http.POST;
  * @Time 2020/4/6 9:53
  */
 public class UploadNet {
-    private static Logger netLogger = com.micro.root.Logger.getLogger("tremoloLog", "NetLog");
+    private static Logger netLogger = Logger.getLogger("tremoloLog", "NetLog");
 
     private static Context context;
 

@@ -9,19 +9,19 @@ import android.widget.ImageView;
 import androidx.core.util.Pair;
 
 import com.micro.hook.ControlLayout;
-import com.micro.root.Logger;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.micro.tremolo.Const.controlLogger;
+
 /**
  * @Author KiLin
  * @Time 2020/4/9 9:41
  */
 public class ProfileFragmentControl extends ControlLayout {
-    private Logger logger = com.micro.root.Logger.getLogger("tremoloLog", "ControlLog");
 
     private final static int clickBack = 1000;
     public final static int uiLoadMoreVideo = 1001;
@@ -54,7 +54,7 @@ public class ProfileFragmentControl extends ControlLayout {
                         clickBackView(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -63,7 +63,7 @@ public class ProfileFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -79,7 +79,7 @@ public class ProfileFragmentControl extends ControlLayout {
                         moveToUserMoreVideo(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -88,7 +88,7 @@ public class ProfileFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -105,7 +105,7 @@ public class ProfileFragmentControl extends ControlLayout {
                         moveToVideo(new ControlLayout.Callback() {
                             @Override
                             public void success(String value) {
-                                logger.d(value);
+                                controlLogger.d(value);
                                 if (callback == null) {
                                     return;
                                 }
@@ -114,7 +114,7 @@ public class ProfileFragmentControl extends ControlLayout {
 
                             @Override
                             public void fail(String msg) {
-                                logger.e(msg);
+                                controlLogger.e(msg);
                                 if (callback == null) {
                                     return;
                                 }
@@ -169,7 +169,7 @@ public class ProfileFragmentControl extends ControlLayout {
     private void moveToUserMoreVideo(final Callback callback) {
         final float x = screenData[0] / 2;
         final float y = screenData[1] / 12;
-        logger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s]", x, y));
+        controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s]", x, y));
         handlerPost(handler, () -> {
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();
@@ -193,7 +193,7 @@ public class ProfileFragmentControl extends ControlLayout {
     private void moveToVideo(final Callback callback) {
         final float x = screenData[0] / 12;
         final float y = screenData[1] / 2;
-        logger.d(String.format("滑动 视频界面 准备 width [%s], height [%s]", x, y));
+        controlLogger.d(String.format("滑动 视频界面 准备 width [%s], height [%s]", x, y));
         handlerPost(handler, () -> {
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();

@@ -6,7 +6,6 @@ import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.PluginPresenter;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
-import com.micro.tremolo.inflood.inner.execute.TremoloApi;
 import com.micro.tremolo.inflood.inner.execute.control.MainActivityControl;
 import com.micro.tremolo.inflood.inner.execute.control.MainFragmentControl;
 import com.micro.tremolo.inflood.inner.execute.control.ProfileFragmentControl;
@@ -42,16 +41,12 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         this.hook = hook;
     }
 
-    private TremoloApi tremoloApi;
     private AutoUiControl autoUiControl;
     private MainActivityControl mainActivityControl;
     private MainFragmentControl mainFragmentControl;
     private ProfileFragmentControl profileFragmentControl;
 
     public void initCreate() {
-        if (tremoloApi == null) {
-            tremoloApi = new TremoloApi(hook, getContext());
-        }
         if (Const.isAutoUI) {
             if (autoUiControl == null) {
                 autoUiControl = new AutoUiControl(hook, getContext());
@@ -134,15 +129,15 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         this.videoCount = videoCount;
     }
 
-    public void autoMoveUser() {
-        if (autoUiControl != null) {
-            autoUiControl.autoMoveUser();
-        }
-    }
-
     public void setVideosSize(int size) {
         if (autoUiControl != null) {
             autoUiControl.setVideosSize(size);
+        }
+    }
+
+    public void autoMoveUser() {
+        if (autoUiControl != null) {
+            autoUiControl.autoMoveUser();
         }
     }
 

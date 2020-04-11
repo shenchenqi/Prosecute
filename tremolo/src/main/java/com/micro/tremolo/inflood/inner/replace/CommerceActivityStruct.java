@@ -4,8 +4,6 @@ import com.micro.hook.config.Hook;
 
 import java.util.List;
 
-import static com.micro.tremolo.inflood.TremoloModule.logger;
-
 /**
  * @Author Kilin
  * @Date 2020/3/25 11:01
@@ -31,7 +29,6 @@ public class CommerceActivityStruct {
     }
 
     public void loadCommerceActivityStruct(Hook hook, Object commerce) {
-        logger.d("CommerceActivityStruct", String.format("当前抓取的抖音商业活动结构对象是否存在[%s]", commerce != null));
         if (commerce == null) {
             return;
         }

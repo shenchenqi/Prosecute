@@ -13,7 +13,9 @@ import java.util.List;
  */
 public interface Const {
 
-    Logger monitorLogger = com.micro.root.Logger.getLogger("tremoloLog", "MonitorLog");
+    Logger rootLogger = Logger.getLogger("tremoloLog", "RootLog");
+    Logger monitorLogger = Logger.getLogger("tremoloLog", "MonitorLog");
+    Logger controlLogger = Logger.getLogger("tremoloLog", "ControlLog");
 
     int collectType = 2;//采集类型 0-未知;1-控制布局UI;2-广域获取数据;3-狭域监控数据
 

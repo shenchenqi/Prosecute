@@ -8,19 +8,19 @@ import androidx.core.util.Pair;
 
 import com.micro.hook.ControlLayout;
 import com.micro.hook.config.Hook;
-import com.micro.root.Logger;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.micro.tremolo.Const.controlLogger;
+
 /**
  * @Author KiLin
  * @Time 2020/4/9 9:33
  */
 public class MainActivityControl extends ControlLayout {
-    private Logger logger = com.micro.root.Logger.getLogger("tremoloLog", "ControlLog");
 
     public static MainActivityControl getInstance(Context context, Hook hook) {
         return new MainActivityControl(context, hook);
@@ -45,7 +45,7 @@ public class MainActivityControl extends ControlLayout {
     public void simulateChangeVideo() {
         float x = screenData[0] / 2;
         float y = screenData[1] / 24;
-        logger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s], 移动 [%s]", screenData[0], screenData[1], y));
+        controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s], 移动 [%s]", screenData[0], screenData[1], y));
         List<Pair<Float, Float>> pairList = new ArrayList<>();
         pairList.add(new Pair<>(x, y * 20));
         pairList.add(new Pair<>(x, y * 19));
@@ -64,7 +64,7 @@ public class MainActivityControl extends ControlLayout {
     public void simulateRefreshVideo() {
         float x = screenData[0] / 2;
         float y = screenData[1] / 24;
-        logger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s], 移动 [%s]", screenData[0], screenData[1], y));
+        controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s], 移动 [%s]", screenData[0], screenData[1], y));
         List<Pair<Float, Float>> pairList = new ArrayList<>();
         pairList.add(new Pair<>(x, y * 4));
         pairList.add(new Pair<>(x, y * 6));
@@ -82,7 +82,7 @@ public class MainActivityControl extends ControlLayout {
 
     private void callTouchEvent(final List<MotionEvent> events) {
         if (mainActivity == null) {
-            logger.e("Main Activity is null");
+            controlLogger.e("Main Activity is null");
             return;
         }
         handlerPost(handler, () -> {
