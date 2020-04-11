@@ -8,4 +8,6 @@ import com.micro.root.Logger;
 public interface Const {
 
     Logger hookLog = Logger.getLogger("XpHook","PluginLog");
+
+    int moduleStatus = 0;//0-多模块；1-抖音模块；2-快手模块
 }

@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/rom" />
             <option value="$PROJECT_DIR$/root" />
             <option value="$PROJECT_DIR$/tremolo" />
+            <option value="$PROJECT_DIR$/worker" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

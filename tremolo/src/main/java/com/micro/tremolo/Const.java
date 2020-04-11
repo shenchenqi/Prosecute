@@ -16,9 +16,10 @@ public interface Const {
 
     String PACKAGE_NAME = "com.ss.android.ugc.aweme";
     String APPLICATION = "android.app.Application";
-    // "com.ss.android.ugc.aweme.app.AwemeApplication"
-    // "com.ss.android.ugc.aweme.app.host.HostApplication"
-    // "com.ss.android.ugc.aweme.app.BaseMediaApplication";
+    // com.ss.android.ugc.aweme.app.AwemeApplication
+    // com.ss.android.ugc.aweme.app.host.HostApplication
+    // com.ss.android.ugc.aweme.app.BaseMediaApplication
+    // android.app.Application;
     List<String> VERSIONS = Arrays.asList("9.6.0");
     String CREATE_DIR = "Micro/Backup/init";
 
