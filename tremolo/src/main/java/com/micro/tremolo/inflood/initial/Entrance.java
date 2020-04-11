@@ -5,6 +5,9 @@ import android.content.Context;
 import com.micro.hook.setup.Setup;
 import com.micro.hook.config.HookParam;
 import com.micro.tremolo.Const;
+import com.micro.tremolo.inflood.inner.execute.api.ProfileOtherApi;
+import com.micro.tremolo.inflood.inner.execute.api.SearchUserApi;
+import com.micro.tremolo.inflood.inner.execute.api.VideoListApi;
 import com.micro.tremolo.inflood.inner.execute.monitor.MainActivityOversee;
 import com.micro.tremolo.inflood.inner.execute.monitor.ProfileFragmentOversee;
 import com.micro.tremolo.inflood.inner.execute.task.NarrowAreaTask;
@@ -87,9 +90,12 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
                     Const.setTopApply(getIContext());
                 }
             }
+            SearchUserApi.setInstance(getHookParam().getHook(), getIContext());
+            ProfileOtherApi.setInstance(getHookParam().getHook(), getIContext());
+            VideoListApi.setInstance(getHookParam().getHook(), getIContext());
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
-            WideAreaTask.getInstance(getHookParam().getHook(), getIContext());
-            NarrowAreaTask.getInstance(getHookParam().getHook(), getIContext());
+            WideAreaTask.getInstance();
+            NarrowAreaTask.getInstance();
             mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext());
             mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext());
             profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext());

@@ -3,13 +3,11 @@ package com.micro.tremolo.inflood.inner.execute.task;
 import android.content.Context;
 import android.os.Handler;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.Const;
-import com.micro.tremolo.inflood.inner.execute.TremoloApi;
+import com.micro.tremolo.inflood.inner.execute.api.ProfileOtherApi;
+import com.micro.tremolo.inflood.inner.execute.api.VideoListApi;
 import com.micro.tremolo.inflood.inner.execute.monitor.oversee.Oversee;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.sqlite.from.Author;
@@ -37,9 +35,9 @@ public class WideAreaTask {
 
     private static WideAreaTask mWideAreaTask;
 
-    public static WideAreaTask getInstance(Hook hook, Context context) {
+    public static WideAreaTask getInstance() {
         if (mWideAreaTask == null) {
-            mWideAreaTask = new WideAreaTask(hook, context);
+            mWideAreaTask = new WideAreaTask();
         }
         return mWideAreaTask;
     }
@@ -52,14 +50,14 @@ public class WideAreaTask {
 
     public static void canTremoloData(Context context) {
         if (!Const.isWideArea) {
-            taskLogger.i("当前不是广域采集模式");
+            taskLogger.i("广域采集模式 未开启");
             return;
         }
         Handler handler = new Handler(context.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                taskLogger.i("检测扫描");
+                taskLogger.i("广域采集模式 检测扫描");
                 WideAreaTask.requestData();
                 handler.postDelayed(this::run, BaseInterface.second * 20);
             }
@@ -67,27 +65,13 @@ public class WideAreaTask {
     }
 
     private static void requestData() {
-        requestData(new Callback() {
-            @Override
-            public void over(String authorID) {
-                userMap.remove(authorID);
-                taskLogger.d("请求完成");
-                isRun = false;
-                if (number < 6 && mOversee != null) {
-                    taskLogger.d("请求完成, 视频切换");
-                    mOversee.nextVideo();
-                }
-            }
-
-            @Override
-            public void fail(String authorID, int type, String msg) {
-                userMap.remove(authorID);
-                taskLogger.e(String.format("出错[%s][%s][%s]", authorID, type, msg));
-                isRun = false;
-                if (number < 6 && mOversee != null) {
-                    taskLogger.d("请求出错, 视频切换");
-                    mOversee.nextVideo();
-                }
+        requestData(authorID -> {
+            userMap.remove(authorID);
+            taskLogger.d("广域采集模式 运行结束");
+            isRun = false;
+            if (number < 6 && mOversee != null) {
+                taskLogger.d("广域采集模式 运行结束 视频切换");
+                mOversee.nextVideo();
             }
         });
     }
@@ -95,127 +79,109 @@ public class WideAreaTask {
     private static boolean isRun = false;
     private static int number;
 
-    private static void requestData(Callback callback) {
+    private static void requestData(final Callback callback) {
         if (isRun) {
-            taskLogger.i("正在运行");
+            taskLogger.i("广域采集模式 正在运行");
             number++;
             if (number == 6 && mOversee != null) {
-                taskLogger.d("运行太久, 先进行视频切换");
+                taskLogger.d("广域采集模式 运行太久 先进行视频切换");
                 mOversee.nextVideo();
             }
             return;
         }
-        final WideCallback wideCallback = new WideCallback() {
-            @Override
-            public void userSuccess(String userId, String sceUserId) {
-                taskLogger.i(userId + " 用户请求 成功 ");
-                setVideoListApi(userId, sceUserId, true, 0, this);
-            }
-
-            @Override
-            public void userFail(String userId, String msg) {
-                taskLogger.i(userId + " 用户请求 报错 " + msg);
-                callback.fail(userId, 1, msg);
-            }
-
-            @Override
-            public void videosSuccess(boolean hasMore, String userId, String secUserId, Video video) {
-                taskLogger.i(userId + " 用户视频列表请求 成功 " + hasMore);
-                if (!hasMore) {
-                    callback.over(userId);
-                } else if (Lang.isNotNull(video)) {
-                    setVideoListApi(userId, secUserId, false, Long.parseLong(video.getCreateTime() + "000"), this);
-                } else {
-                    callback.fail(userId, 3, "当前拉取的视频列表为空");
-                }
-            }
-
-            @Override
-            public void videosFail(String userId, String msg) {
-                taskLogger.i(userId + " 用户视频列表请求 报错 " + msg);
-                callback.fail(userId, 2, msg);
-            }
-        };
         Map<String, String> map = new HashMap<>(userMap);
         if (map.isEmpty()) {
-            taskLogger.i(" 无用户数据 ");
-            callback.fail("userId", 4, "无数据");
+            taskLogger.e("广域采集模式 无用户数据");
+            callback.end("无用户数据");
             return;
         }
         isRun = true;
         number = 0;
-        taskLogger.i("开始进行数据采集");
+        taskLogger.d("广域采集模式 开始进行数据采集");
         for (Map.Entry<String, String> entry : map.entrySet()) {
             String authorID = entry.getKey();
             String secAuthorID = entry.getValue();
             if (Lang.isNotEmpty(authorID) && Lang.isNotEmpty(secAuthorID)) {
-                taskLogger.i(String.format("作者[%s]开始请求", authorID));
+                taskLogger.d(String.format("作者[%s]开始请求", authorID));
                 UserIdModelTable userIdModelTable = new UserIdModelTable();
                 userIdModelTable.setUserId(authorID);
                 userIdModelTable.setSceUserId(secAuthorID);
                 UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
-                    taskLogger.i(String.format("作者[%s]是否已存在服务器[%s]", authorID, isExist));
+                    taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
                     if (isExist) {
-                        setVideoListApi(userId, sceUserId, true, 0, wideCallback);
+                        VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
+                            @Override
+                            public void videoList(List<Video> videos) {
+                                if (Lang.isEmpty(videos)) {
+                                    return;
+                                }
+                                List<VideoModelTable> videoModelTables = new ArrayList<>();
+                                for (Video video : videos) {
+                                    videoModelTables.add(loadVideoTable(video));
+                                }
+                                VideoListModelTable videoListModelTable = new VideoListModelTable();
+                                videoListModelTable.setVideoModelTableList(videoModelTables);
+                                UploadNet.uploadVideoList(videoListModelTable);
+                            }
+
+                            @Override
+                            public void complete() {
+                                callback.end(userId);
+                            }
+
+                            @Override
+                            public void finish() {
+                                callback.end(userId);
+                            }
+                        });
                     } else {
-                        setUserApi(userId, sceUserId, wideCallback);
+                        ProfileOtherApi.loadApi(sceUserId, new ProfileOtherApi.Callback() {
+                            @Override
+                            public void complete(final Author author) {
+                                if (Lang.toLong(author.getFansCount()) > Const.fansCount) {
+                                    taskLogger.d(String.format("作者[%s]粉丝数超过1万", author.getUserId()));
+                                    UploadNet.uploadUser(loadUserTable(author));
+                                    VideoListApi.loadApi(author.getUserId(), author.getSceUserId(), new VideoListApi.Callback() {
+                                        @Override
+                                        public void videoList(List<Video> videos) {
+                                            if (Lang.isEmpty(videos)) {
+                                                return;
+                                            }
+                                            List<VideoModelTable> videoModelTables = new ArrayList<>();
+                                            for (Video video : videos) {
+                                                videoModelTables.add(loadVideoTable(video));
+                                            }
+                                            VideoListModelTable videoListModelTable = new VideoListModelTable();
+                                            videoListModelTable.setVideoModelTableList(videoModelTables);
+                                            UploadNet.uploadVideoList(videoListModelTable);
+                                        }
+
+                                        @Override
+                                        public void complete() {
+                                            callback.end(author.getUserId());
+                                        }
+
+                                        @Override
+                                        public void finish() {
+                                            callback.end(author.getUserId());
+                                        }
+                                    });
+                                } else {
+                                    taskLogger.e(String.format("作者[%s]粉丝数未超过1万", author.getUserId()));
+                                    callback.end(author.getUserId());
+                                }
+                            }
+
+                            @Override
+                            public void finish() {
+                                callback.end(userId);
+                            }
+                        });
                     }
                 });
                 return;
             }
         }
-    }
-
-    private static void setUserApi(final String authorID, String secAuthorID, final WideCallback callback) {
-        mWideAreaTask.requestUserApi(authorID, secAuthorID, new UserCallback() {
-            @Override
-            public Context getIContext() {
-                return null;
-            }
-
-            @Override
-            public void loadUserInfo(Author author) {
-                UploadNet.uploadUser(loadUserTable(author));
-                if (Lang.toLong(author.getFansCount()) > Const.fansCount) {
-                    callback.userSuccess(author.getUserId(), author.getSceUserId());
-                } else {
-                    callback.userFail(author.getUserId(), "当前作者粉丝未超过1万 过滤");
-                }
-            }
-
-            @Override
-            public void fail(String msg) {
-                callback.userFail(authorID, msg);
-            }
-        });
-    }
-
-    private static void setVideoListApi(final String authorID, final String secAuthorID, boolean isFirst, long time, final WideCallback callback) {
-        mWideAreaTask.requestVideoListApi(isFirst, authorID, secAuthorID, time, new VideosCallback() {
-            @Override
-            public Context getIContext() {
-                return null;
-            }
-
-            @Override
-            public void loadVideoList(boolean hasMore, String userId, String secUserId, List<Video> videos) {
-                List<VideoModelTable> videoTableList = new ArrayList<>();
-                for (Video video : videos) {
-                    videoTableList.add(loadVideoTable(video));
-                }
-                if (!videoTableList.isEmpty()) {
-                    VideoListModelTable videoListModelTable = new VideoListModelTable();
-                    videoListModelTable.setVideoModelTableList(videoTableList);
-                    UploadNet.uploadVideoList(videoListModelTable);
-                }
-                callback.videosSuccess(hasMore, userId, secUserId, videos.isEmpty() ? null : videos.get(videos.size() - 1));
-            }
-
-            @Override
-            public void fail(String msg) {
-                callback.videosFail(authorID, msg);
-            }
-        });
     }
 
     private static UserModelTable loadUserTable(Author author) {
@@ -263,150 +229,11 @@ public class WideAreaTask {
         return videoTable;
     }
 
-    private final Hook hook;
-    private final Handler handler;
-
-    private WideAreaTask(Hook hook, Context context) {
-        this.hook = hook;
-        this.handler = new Handler(context.getMainLooper());
-    }
-
-    private synchronized void post(long time, Runnable runnable) {
-        if (time <= 0) {
-            handler.post(runnable);
-        } else {
-            handler.postDelayed(runnable, time);
-        }
-    }
-
-    private synchronized JSONObject getJsonObject(String text) {
-        return JSON.parseObject(text);
-    }
-
-    private void requestUserApi(final String userId, final String secUserId, final UserCallback callback) {
-        taskLogger.i(String.format("作者[%s]信息请求接口", userId));
-        post(callback.second * 5, () -> {
-            TremoloApi.profileApi(hook, secUserId, new TremoloApi.Callback() {
-                @Override
-                public void success(String data) {
-                    if (Lang.isEmpty(data)) {
-                        callback.fail(userId + " 的抖音用户接口返回数据为空");
-                    } else {
-                        JSONObject dataObject = getJsonObject(data);
-                        if (Lang.isNull(dataObject)) {
-                            callback.fail(userId + " 的抖音用户接口返回数据解析出错");
-                        } else {
-                            callback.loadUserInfo(new Author(dataObject.getString("user")));
-                        }
-                    }
-                }
-
-                @Override
-                public void fail(Throwable e, String msg) {
-                    taskLogger.e(e, msg);
-                    callback.fail(msg);
-                }
-            });
-        });
-    }
-
-    private void requestVideoListApi(final boolean isFirst, final String userId, final String secUserId, final long time, final VideosCallback callback) {
-        taskLogger.i(String.format("作者[%s]视频列表请求接口", userId));
-        post(callback.second * 5, () -> {
-            if (isFirst) {
-                TremoloApi.feedVideoApi(hook, isFirst, userId, secUserId, 0, 20, new TremoloApi.Callback() {
-                    @Override
-                    public void success(String data) {
-                        if (Lang.isEmpty(data)) {
-                            callback.fail(userId + " 的抖音视频列表接口返回数据为空");
-                        } else {
-                            JSONObject dataObject = getJsonObject(data);
-                            if (Lang.isNull(dataObject)) {
-                                callback.fail(userId + " 的抖音用户接口返回数据解析出错");
-                            } else {
-                                boolean hasMore = dataObject.getBooleanValue("hasMore");
-                                List<Object> videoList = JSON.parseArray(dataObject.getString("items"), Object.class);
-                                List<Video> videos = new ArrayList<>();
-                                if (videoList != null && !videoList.isEmpty()) {
-                                    for (Object video : videoList) {
-                                        videos.add(new Video(JSON.toJSONString(video)));
-                                    }
-                                }
-                                callback.loadVideoList(hasMore, userId, secUserId, videos);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void fail(Throwable e, String msg) {
-                        taskLogger.e(e, msg);
-                        callback.fail(msg);
-                    }
-                });
-            } else {
-                TremoloApi.feedVideoApi(hook, isFirst, userId, secUserId, time, 10, new TremoloApi.Callback() {
-                    @Override
-                    public void success(String data) {
-                        if (Lang.isEmpty(data)) {
-                            callback.fail(userId + " 的抖音视频列表接口返回数据为空");
-                        } else {
-                            JSONObject dataObject = getJsonObject(data);
-                            if (Lang.isNull(dataObject)) {
-                                callback.fail(userId + " 的抖音用户接口返回数据解析出错");
-                            } else {
-                                boolean hasMore = dataObject.getBooleanValue("hasMore");
-                                List<Object> videoList = JSON.parseArray(dataObject.getString("items"), Object.class);
-                                List<Video> videos = new ArrayList<>();
-                                if (videoList != null && !videoList.isEmpty()) {
-                                    for (Object video : videoList) {
-                                        videos.add(new Video(JSON.toJSONString(video)));
-                                    }
-                                }
-                                callback.loadVideoList(hasMore, userId, secUserId, videos);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void fail(Throwable e, String msg) {
-                        taskLogger.e(e, msg);
-                        callback.fail(msg);
-                    }
-                });
-            }
-        });
-    }
-
-    public interface Callback {
-        void over(String authorID);
-
-        void fail(String authorID, int type, String msg);
-    }
-
-    private interface WideCallback {
-        void userSuccess(String userId, String sceUserId);
-
-        void userFail(String userId, String msg);
-
-        void videosSuccess(boolean hasMore, String userId, String secUserId, Video video);
-
-        void videosFail(String userId, String msg);
-    }
-
     public interface NetUserCallback {
         void profileExist(String userId, String sceUserId, boolean isExist);
     }
 
-    private interface UserCallback extends BaseInterface {
-        void loadUserInfo(Author author);
-
-        void fail(String msg);
-    }
-
-    private interface VideosCallback extends BaseInterface {
-
-        void loadVideoList(boolean hasMore, String userId, String secUserId, List<Video> videos);
-
-        void fail(String msg);
+    public interface Callback {
+        void end(String authorID);
     }
 }
