@@ -8,6 +8,7 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.tremolo.inflood.inner.execute.monitor.oversee.Oversee;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.User;
 import com.micro.tremolo.inflood.version.TremoloParam;
@@ -42,7 +43,7 @@ public class ProfileFragmentOversee extends Oversee {
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 monitorLogger.i("User Profile Fragment a(Aweme)");
                 final Aweme aweme = new Aweme(hook, param.getArgs()[0]);
-                presenter.setData(aweme.getAuthor().getUid(), aweme.getAuthor().getSecUid());
+                WideAreaTask.setData(aweme.getAuthor().getUid(), aweme.getAuthor().getSecUid());
                 presenter.setUIStatus(0, null, null);
             }
         }, TremoloParam.AWEME_FEED_MODEL_AWEME_CLASS);

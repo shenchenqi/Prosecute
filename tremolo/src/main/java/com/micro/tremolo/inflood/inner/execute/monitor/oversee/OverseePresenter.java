@@ -10,7 +10,6 @@ import com.micro.tremolo.inflood.inner.execute.control.AutoUiControl;
 import com.micro.tremolo.inflood.inner.execute.control.MainActivityControl;
 import com.micro.tremolo.inflood.inner.execute.control.MainFragmentControl;
 import com.micro.tremolo.inflood.inner.execute.control.ProfileFragmentControl;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
 import com.micro.tremolo.inflood.inner.replace.Aweme;
 import com.micro.tremolo.inflood.inner.replace.User;
 
@@ -93,16 +92,6 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
             autoUiControl.setProfileFragmentView(profileFragmentView);
         } else if (profileFragmentControl != null) {
             profileFragmentControl.setProfileFragmentView(profileFragmentView);
-        }
-    }
-
-    public void setData(String authorId, String secAuthorId) {
-        if (Const.isWideArea) {
-            if (WideAreaTask.userMap.containsKey(authorId)) {
-                monitorLogger.d(String.format("抖音用户已存在 [%s, %s]", authorId, secAuthorId));
-            } else {
-                WideAreaTask.userMap.put(authorId, secAuthorId);
-            }
         }
     }
 

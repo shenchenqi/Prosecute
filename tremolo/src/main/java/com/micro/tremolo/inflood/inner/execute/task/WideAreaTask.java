@@ -5,6 +5,7 @@ import android.os.Handler;
 
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.Lang;
+import com.micro.task.PluginTask;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.execute.api.ProfileOtherApi;
 import com.micro.tremolo.inflood.inner.execute.api.VideoListApi;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.micro.tremolo.Const.monitorLogger;
 import static com.micro.tremolo.Const.taskLogger;
 
 /**
@@ -29,9 +31,31 @@ import static com.micro.tremolo.Const.taskLogger;
  * @Time 2020/4/10 13:10
  * 根据视频作者的ID，secID进行接口访问拿取数据
  */
-public class WideAreaTask {
+public class WideAreaTask extends BaseTaskExecutor {
 
-    public final static Map<String, String> userMap = new HashMap<>();
+    private final static Map<String, String> userMap = new HashMap<>();
+
+    public static void setData(String authorId, String secAuthorId) {
+        if (Const.isWideArea) {
+            if (userMap.containsKey(authorId)) {
+                monitorLogger.d(String.format("抖音用户已存在 [%s, %s]", authorId, secAuthorId));
+            } else {
+                userMap.put(authorId, secAuthorId);
+            }
+        }
+    }
+
+    private final static Map<String, String> videoMap = new HashMap<>();
+
+    private static void setVideo(String authorId, String secAuthorId) {
+        if (Const.isWideArea) {
+            if (videoMap.containsKey(authorId)) {
+                monitorLogger.d(String.format("抖音用户已存在 [%s, %s]", authorId, secAuthorId));
+            } else {
+                videoMap.put(authorId, secAuthorId);
+            }
+        }
+    }
 
     private static WideAreaTask mWideAreaTask;
 
@@ -65,13 +89,21 @@ public class WideAreaTask {
     }
 
     private static void requestData() {
-        requestData(authorID -> {
-            userMap.remove(authorID);
-            taskLogger.d("广域采集模式 运行结束");
-            isRun = false;
-            if (number < 6 && mOversee != null) {
-                taskLogger.d("广域采集模式 运行结束 视频切换");
-                mOversee.nextVideo();
+        requestData(new Callback() {
+            @Override
+            public void exist(String authorID) {
+
+            }
+
+            @Override
+            public void end(String authorID) {
+                userMap.remove(authorID);
+                taskLogger.d("广域采集模式 运行结束");
+                isRun = false;
+                if (number < 6 && mOversee != null) {
+                    taskLogger.d("广域采集模式 运行结束 视频切换");
+                    mOversee.nextVideo();
+                }
             }
         });
     }
@@ -99,89 +131,56 @@ public class WideAreaTask {
         number = 0;
         taskLogger.d("广域采集模式 开始进行数据采集");
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            String authorID = entry.getKey();
-            String secAuthorID = entry.getValue();
+            final String authorID = entry.getKey();
+            final String secAuthorID = entry.getValue();
             if (Lang.isNotEmpty(authorID) && Lang.isNotEmpty(secAuthorID)) {
                 taskLogger.d(String.format("作者[%s]开始请求", authorID));
-                UserIdModelTable userIdModelTable = new UserIdModelTable();
-                userIdModelTable.setUserId(authorID);
-                userIdModelTable.setSceUserId(secAuthorID);
-                UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
-                    taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
-                    if (isExist) {
-                        VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
+                loadUser(authorID, secAuthorID, new Callback() {
+                    @Override
+                    public void exist(String authorID) {
+                        loadVideo(authorID, secAuthorID, new Callback() {
                             @Override
-                            public void videoList(List<Video> videos) {
-                                if (Lang.isEmpty(videos)) {
-                                    return;
-                                }
-                                List<VideoModelTable> videoModelTables = new ArrayList<>();
-                                for (Video video : videos) {
-                                    videoModelTables.add(loadVideoTable(video));
-                                }
-                                VideoListModelTable videoListModelTable = new VideoListModelTable();
-                                videoListModelTable.setVideoModelTableList(videoModelTables);
-                                UploadNet.uploadVideoList(videoListModelTable);
+                            public void exist(String authorID) {
+
                             }
 
                             @Override
-                            public void complete() {
-                                callback.end(userId);
-                            }
-
-                            @Override
-                            public void finish() {
-                                callback.end(userId);
+                            public void end(String authorID) {
+                                callback.end(authorID);
                             }
                         });
-                    } else {
-                        ProfileOtherApi.loadApi(sceUserId, new ProfileOtherApi.Callback() {
-                            @Override
-                            public void complete(final Author author) {
-                                if (Lang.toLong(author.getFansCount()) > Const.fansCount) {
-                                    taskLogger.d(String.format("作者[%s]粉丝数超过1万", author.getUserId()));
-                                    UploadNet.uploadUser(loadUserTable(author));
-                                    VideoListApi.loadApi(author.getUserId(), author.getSceUserId(), new VideoListApi.Callback() {
-                                        @Override
-                                        public void videoList(List<Video> videos) {
-                                            if (Lang.isEmpty(videos)) {
-                                                return;
-                                            }
-                                            List<VideoModelTable> videoModelTables = new ArrayList<>();
-                                            for (Video video : videos) {
-                                                videoModelTables.add(loadVideoTable(video));
-                                            }
-                                            VideoListModelTable videoListModelTable = new VideoListModelTable();
-                                            videoListModelTable.setVideoModelTableList(videoModelTables);
-                                            UploadNet.uploadVideoList(videoListModelTable);
-                                        }
+                    }
 
-                                        @Override
-                                        public void complete() {
-                                            callback.end(author.getUserId());
-                                        }
-
-                                        @Override
-                                        public void finish() {
-                                            callback.end(author.getUserId());
-                                        }
-                                    });
-                                } else {
-                                    taskLogger.e(String.format("作者[%s]粉丝数未超过1万", author.getUserId()));
-                                    callback.end(author.getUserId());
-                                }
-                            }
-
-                            @Override
-                            public void finish() {
-                                callback.end(userId);
-                            }
-                        });
+                    @Override
+                    public void end(String authorID) {
+                        callback.end(authorID);
                     }
                 });
                 return;
             }
         }
+    }
+
+    private static void loadUser(final String authorID, String secAuthorID, final Callback callback) {
+        taskLogger.d(String.format("作者[%s]开始请求", authorID));
+        ProfileOtherApi.loadApi(secAuthorID, new ProfileOtherApi.Callback() {
+            @Override
+            public void complete(final Author author) {
+                if (Lang.toLong(author.getFansCount()) > Const.fansCount) {
+                    taskLogger.d(String.format("作者[%s]粉丝数超过1万", author.getUserId()));
+                    UploadNet.uploadUser(loadUserTable(author));
+                    callback.exist(author.getUserId());
+                } else {
+                    taskLogger.e(String.format("作者[%s]粉丝数未超过1万", author.getUserId()));
+                    callback.end(author.getUserId());
+                }
+            }
+
+            @Override
+            public void finish() {
+                callback.end(authorID);
+            }
+        });
     }
 
     private static UserModelTable loadUserTable(Author author) {
@@ -213,6 +212,45 @@ public class WideAreaTask {
         return userTable;
     }
 
+    private static void loadVideo(String authorID, String secAuthorID, final Callback callback) {
+        UserIdModelTable userIdModelTable = new UserIdModelTable();
+        userIdModelTable.setUserId(authorID);
+        userIdModelTable.setSceUserId(secAuthorID);
+        UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
+            taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
+            if (!isExist) {
+                VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
+                    @Override
+                    public void videoList(List<Video> videos) {
+                        if (Lang.isEmpty(videos)) {
+                            return;
+                        }
+                        List<VideoModelTable> videoModelTables = new ArrayList<>();
+                        for (Video video : videos) {
+                            videoModelTables.add(loadVideoTable(video));
+                        }
+                        VideoListModelTable videoListModelTable = new VideoListModelTable();
+                        videoListModelTable.setVideoModelTableList(videoModelTables);
+                        UploadNet.uploadVideoList(videoListModelTable);
+                        callback.end(userId);
+                    }
+
+                    @Override
+                    public void complete() {
+                        callback.end(userId);
+                    }
+
+                    @Override
+                    public void finish() {
+                        callback.end(userId);
+                    }
+                });
+            } else {
+                callback.end(userId);
+            }
+        });
+    }
+
     private static VideoModelTable loadVideoTable(Video video) {
         VideoModelTable videoTable = new VideoModelTable();
         videoTable.setId(video.getId());
@@ -229,11 +267,167 @@ public class WideAreaTask {
         return videoTable;
     }
 
+    public static class UserTask extends PluginTask {
+        private boolean isRun = false;
+
+        @Override
+        protected String taskName() {
+            return "user-task";
+        }
+
+        @Override
+        protected void process() {
+            Map<String, String> map = new HashMap<>(userMap);
+            if (map.isEmpty()) {
+                taskLogger.e("广域采集模式 用户采集 无数据");
+                return;
+            }
+            if (isRun) {
+                taskLogger.e("广域采集模式 用户采集 正在运行");
+                return;
+            }
+            isRun = true;
+            taskLogger.d("广域采集模式 用户采集 开始进行");
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                final String authorID = entry.getKey();
+                final String secAuthorID = entry.getValue();
+                if (Lang.isNotEmpty(authorID) && Lang.isNotEmpty(secAuthorID)) {
+                    taskLogger.d(String.format("用户[%s] 用户采集 开始请求", authorID));
+                    loadUser(authorID, secAuthorID, new Callback() {
+                        @Override
+                        public void exist(String authorID) {
+                            userMap.remove(authorID);
+                            setVideo(authorID, secAuthorID);
+                            isRun = false;
+                        }
+
+                        @Override
+                        public void end(String authorID) {
+                            userMap.remove(authorID);
+                            isRun = false;
+                        }
+                    });
+                    return;
+                }
+            }
+        }
+
+        @Override
+        protected void error(Throwable throwable) {
+            taskLogger.e(throwable, "广域采集模式 用户采集 报错");
+            isRun = false;
+        }
+
+        @Override
+        public void finish() {
+            taskLogger.i("广域采集模式 用户采集 结束");
+            isRun = false;
+            mWideAreaTask.removeTask(this);
+        }
+
+        @Override
+        public boolean isCycle() {
+            return true;
+        }
+
+        @Override
+        public boolean isSingle() {
+            return false;
+        }
+    }
+
+    public static class VideoTask extends PluginTask {
+        private boolean isRun = false;
+
+        @Override
+        protected String taskName() {
+            return "video-task";
+        }
+
+        @Override
+        protected void process() {
+            Map<String, String> map = new HashMap<>(videoMap);
+            if (map.isEmpty()) {
+                taskLogger.e("广域采集模式 视频采集 无数据");
+                return;
+            }
+            if (isRun) {
+                taskLogger.e("广域采集模式 视频采集 正在运行");
+                return;
+            }
+            isRun = true;
+            taskLogger.d("广域采集模式 视频采集 开始进行");
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                final String authorID = entry.getKey();
+                final String secAuthorID = entry.getValue();
+                if (Lang.isNotEmpty(authorID) && Lang.isNotEmpty(secAuthorID)) {
+                    taskLogger.d(String.format("用户[%s] 视频采集 开始请求", authorID));
+                    loadVideo(authorID, secAuthorID, new Callback() {
+                        @Override
+                        public void exist(String authorID) {
+                            isRun = false;
+                        }
+
+                        @Override
+                        public void end(String authorID) {
+                            videoMap.remove(authorID);
+                            isRun = false;
+                        }
+                    });
+                    return;
+                }
+            }
+        }
+
+        @Override
+        protected void error(Throwable throwable) {
+            taskLogger.e(throwable, "广域采集模式 视频采集 报错");
+            isRun = false;
+        }
+
+        @Override
+        public void finish() {
+            taskLogger.i("广域采集模式 视频采集 结束");
+            isRun = false;
+            mWideAreaTask.removeTask(this);
+        }
+
+        @Override
+        public boolean isCycle() {
+            return true;
+        }
+
+        @Override
+        public boolean isSingle() {
+            return true;
+        }
+    }
+
+    public static void setTasks() {
+        if (Const.isWideArea) {
+            mWideAreaTask.loadScheduled();
+            /*mWideAreaTask.setDistribution(new UserTask());
+            mWideAreaTask.setDistribution(new VideoTask());*/
+        }
+    }
+
+    @Override
+    protected Runnable changeUI() {
+        return () -> {
+            if (mOversee != null) {
+                taskLogger.d("广域采集模式 运行结束 视频切换");
+                mOversee.nextVideo();
+            }
+        };
+    }
+
     public interface NetUserCallback {
         void profileExist(String userId, String sceUserId, boolean isExist);
     }
 
     public interface Callback {
+        void exist(String authorID);
+
         void end(String authorID);
     }
 }

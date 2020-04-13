@@ -23,7 +23,7 @@ public abstract class PluginTask implements Runnable {
     protected abstract String taskName();
 
     protected long timeout() {
-        return 60 * 1000L;
+        return 10 * 1000L;
     }
 
     protected boolean isCycleConfig() {
@@ -43,10 +43,6 @@ public abstract class PluginTask implements Runnable {
     }
 
     private long startTime;
-
-    public long getStartTime() {
-        return startTime;
-    }
 
     public void setStartTime(long startTime) {
         this.startTime = startTime;
@@ -89,7 +85,7 @@ public abstract class PluginTask implements Runnable {
             if (semaphore != null) {
                 semaphore.release();
             }
-            finish(true);
+            finish();
         }
     }
 
@@ -97,5 +93,5 @@ public abstract class PluginTask implements Runnable {
 
     protected abstract void error(Throwable throwable);
 
-    public abstract void finish(boolean success);
+    public abstract void finish();
 }

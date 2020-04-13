@@ -8,18 +8,19 @@ import android.os.Message;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * @Author KiLin
  * @Time 2020/4/11 9:13
  */
-public abstract class BaseExecutor {
+public class BaseExecutor {
 
-    protected Handler getMainHandler() {
+    public static Handler getMainHandler() {
         return new Handler(Looper.getMainLooper());
     }
 
-    protected Handler getMainHandleMessage(final MessageCallback callback) {
+    public static Handler getMainHandleMessage(final MessageCallback callback) {
         return new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -28,17 +29,17 @@ public abstract class BaseExecutor {
         };
     }
 
-    private Looper getSubLooper(String name) {
+    private static Looper getSubLooper(String name) {
         HandlerThread handlerThread = new HandlerThread(name);
         handlerThread.start();
         return handlerThread.getLooper();
     }
 
-    protected Handler getSubHandler(String name) {
+    public static Handler getSubHandler(String name) {
         return new Handler(getSubLooper(name));
     }
 
-    protected Handler getSubHandleMessage(String name, final MessageCallback callback) {
+    public static Handler getSubHandleMessage(String name, final MessageCallback callback) {
         return new Handler(getSubLooper(name)) {
             @Override
             public void handleMessage(Message msg) {
@@ -47,24 +48,24 @@ public abstract class BaseExecutor {
         };
     }
 
-    protected ExecutorService getFixedThreadPool(int nThreads) {
+    public static ExecutorService getFixedThreadPool(int nThreads, ThreadFactory factory) {
         //核心线程
-        return Executors.newFixedThreadPool(nThreads);
+        return Executors.newFixedThreadPool(nThreads, factory);
     }
 
-    protected ExecutorService getCachedThreadPool() {
+    public static ExecutorService getCachedThreadPool() {
         //缓存线程
         return Executors.newCachedThreadPool();
     }
 
-    protected ExecutorService getSingleThreadPool() {
+    public static ExecutorService getSingleThreadPool() {
         //单线程
         return Executors.newSingleThreadExecutor();
     }
 
-    protected ScheduledExecutorService getScheduledThreadPool(int corePoolSize) {
+    public static ScheduledExecutorService getScheduledThreadPool(int corePoolSize, ThreadFactory factory) {
         //定时线程
-        return Executors.newScheduledThreadPool(corePoolSize);
+        return Executors.newScheduledThreadPool(corePoolSize, factory);
     }
 
     public interface MessageCallback {
