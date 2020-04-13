@@ -108,7 +108,7 @@ public class WideAreaTask extends BaseTaskExecutor {
                 createShowNotice(String.format("用户[%s]数据采集成功", authorID));
                 userMap.remove(authorID);
                 taskLogger.d("广域采集模式 运行结束");
-                isRun = false;
+                isTaskRun = false;
                 if (number < 6 && mOversee != null) {
                     taskLogger.d("广域采集模式 运行结束 视频切换");
                     createShowNotice("视频切换");
@@ -118,11 +118,11 @@ public class WideAreaTask extends BaseTaskExecutor {
         });
     }
 
-    private static boolean isRun = false;
+    private static boolean isTaskRun = false;
     private static int number;
 
     private static void requestData(final Callback callback) {
-        if (isRun) {
+        if (isTaskRun) {
             taskLogger.i("广域采集模式 正在运行");
             number++;
             if (number == 6 && mOversee != null) {
@@ -139,7 +139,7 @@ public class WideAreaTask extends BaseTaskExecutor {
             createShowNotice("无数据");
             return;
         }
-        isRun = true;
+        isTaskRun = true;
         number = 0;
         taskLogger.d("广域采集模式 开始进行数据采集");
         createShowNotice("开始采集");
@@ -178,7 +178,7 @@ public class WideAreaTask extends BaseTaskExecutor {
     }
 
     private static void loadUser(final String authorID, String secAuthorID, final Callback callback) {
-        taskLogger.d(String.format("作者[%s]开始请求", authorID));
+        taskLogger.d(String.format("作者[%s]开始请求 接口", authorID));
         ProfileOtherApi.loadApi(secAuthorID, new ProfileOtherApi.Callback() {
             @Override
             public void complete(final Author author) {
