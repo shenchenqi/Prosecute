@@ -50,8 +50,9 @@ public class VideoListApi extends BaseApi {
                     } else {
                         List<Video> videos = getVideos((List<Object>) dataObject.get("items"));
                         callback.videoList(videos);
-                        if (dataObject.getBooleanValue("hasMore")) {
-                            long maxCursor = dataObject.getLongValue("maxCursor");
+                        long maxCursor = dataObject.getLongValue("maxCursor");
+                        taskLogger.d("抖音视频列表接口 返回数据 最近多少天 " + Lang.dayDiffer(maxCursor));
+                        if (dataObject.getBooleanValue("hasMore") && Lang.dayDiffer(maxCursor) < 90) {
                             loadVideoListApi(false, userId, secUserId, maxCursor, this);
                         } else {
                             callback.complete();
