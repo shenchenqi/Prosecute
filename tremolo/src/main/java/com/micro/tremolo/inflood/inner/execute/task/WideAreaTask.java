@@ -80,21 +80,25 @@ public class WideAreaTask extends BaseTaskExecutor {
         WideAreaTask.mOversee = mOversee;
     }
 
+    private static Handler handler;
+
     public static void canTremoloData(Context context) {
         createShowNotice("抖音开启扫描");
         if (!Const.isWideArea) {
             taskLogger.i("广域采集模式 未开启");
             return;
         }
-        Handler handler = new Handler(context.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                taskLogger.i("广域采集模式 检测扫描");
-                WideAreaTask.requestData();
-                handler.postDelayed(this::run, BaseInterface.second * 20);
-            }
-        }, BaseInterface.second * 20);
+        if (handler == null) {
+            handler = new Handler(context.getMainLooper());
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    taskLogger.i("广域采集模式 检测扫描");
+                    WideAreaTask.requestData();
+                    handler.postDelayed(this::run, BaseInterface.second * 20);
+                }
+            }, BaseInterface.second * 20);
+        }
     }
 
     private static void requestData() {
@@ -138,7 +142,6 @@ public class WideAreaTask extends BaseTaskExecutor {
         if (map.isEmpty()) {
             taskLogger.e("广域采集模式 无用户数据");
             callback.end("无用户数据");
-            createShowNotice("无需要采集的对象");
             return;
         }
         isTaskRun = true;
@@ -152,7 +155,6 @@ public class WideAreaTask extends BaseTaskExecutor {
                 loadUser(authorID, secAuthorID, new Callback() {
                     @Override
                     public void exist(String authorID) {
-                        createShowNotice(String.format("用户[%s] 已上传", authorID));
                         loadVideo(authorID, secAuthorID, new Callback() {
                             @Override
                             public void exist(String authorID) {
@@ -161,7 +163,6 @@ public class WideAreaTask extends BaseTaskExecutor {
 
                             @Override
                             public void end(String authorID) {
-                                createShowNotice(String.format("用户[%s] 视频列表 结束", authorID));
                                 callback.end(authorID);
                             }
                         });
@@ -169,7 +170,6 @@ public class WideAreaTask extends BaseTaskExecutor {
 
                     @Override
                     public void end(String authorID) {
-                        createShowNotice(String.format("用户[%s] 上传失败", authorID));
                         callback.end(authorID);
                     }
                 });
@@ -229,42 +229,44 @@ public class WideAreaTask extends BaseTaskExecutor {
         return userTable;
     }
 
-    private static void loadVideo(String authorID, String secAuthorID, final Callback callback) {
-        UserIdModelTable userIdModelTable = new UserIdModelTable();
-        userIdModelTable.setUserId(authorID);
-        userIdModelTable.setSceUserId(secAuthorID);
-        UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
-            taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
-            if (!isExist) {
-                VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
-                    @Override
-                    public void videoList(List<Video> videos) {
-                        if (Lang.isEmpty(videos)) {
-                            return;
+    private static void loadVideo(final String authorID, final String secAuthorID, final Callback callback) {
+        handler.postDelayed(() -> {
+            UserIdModelTable userIdModelTable = new UserIdModelTable();
+            userIdModelTable.setUserId(authorID);
+            userIdModelTable.setSceUserId(secAuthorID);
+            UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
+                taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
+                if (isExist) {
+                    VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
+                        @Override
+                        public void videoList(List<Video> videos) {
+                            if (Lang.isEmpty(videos)) {
+                                return;
+                            }
+                            List<VideoModelTable> videoModelTables = new ArrayList<>();
+                            for (Video video : videos) {
+                                videoModelTables.add(loadVideoTable(video));
+                            }
+                            VideoListModelTable videoListModelTable = new VideoListModelTable();
+                            videoListModelTable.setVideoModelTableList(videoModelTables);
+                            UploadNet.uploadVideoList(videoListModelTable);
                         }
-                        List<VideoModelTable> videoModelTables = new ArrayList<>();
-                        for (Video video : videos) {
-                            videoModelTables.add(loadVideoTable(video));
+
+                        @Override
+                        public void complete() {
+                            callback.end(userId);
                         }
-                        VideoListModelTable videoListModelTable = new VideoListModelTable();
-                        videoListModelTable.setVideoModelTableList(videoModelTables);
-                        UploadNet.uploadVideoList(videoListModelTable);
-                    }
 
-                    @Override
-                    public void complete() {
-                        callback.end(userId);
-                    }
-
-                    @Override
-                    public void finish() {
-                        callback.end(userId);
-                    }
-                });
-            } else {
-                callback.end(userId);
-            }
-        });
+                        @Override
+                        public void finish() {
+                            callback.end(userId);
+                        }
+                    });
+                } else {
+                    callback.end(userId);
+                }
+            });
+        }, BaseInterface.second * 5);
     }
 
     private static VideoModelTable loadVideoTable(Video video) {

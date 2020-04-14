@@ -9,5 +9,5 @@ public interface Const {
 
     Logger hookLog = Logger.getLogger("XpHook","PluginLog");
 
-    int moduleStatus = 2;//0-多模块；1-抖音模块；2-快手模块
+    int moduleStatus = 1;//0-多模块；1-抖音模块；2-快手模块
 }
