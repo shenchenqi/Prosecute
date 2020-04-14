@@ -18,6 +18,7 @@ import com.micro.tremolo.inflood.inner.execute.LogContent;
 import com.micro.tremolo.inflood.inner.execute.HideDialog;
 import com.micro.tremolo.inflood.inner.execute.monitor.MainFragmentOversee;
 import com.micro.tremolo.inflood.version.TremoloParam;
+import com.micro.tremolo.notice.CollectNotice;
 
 import static com.micro.tremolo.Const.monitorLogger;
 
@@ -45,6 +46,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     private Entrance(HookParam hookParam) throws Throwable {
         super(hookParam);
+        CollectNotice.createShowNotice(getIContext(), "抖音助手", "抖音采集已准备");
         UploadNet.initNet(hookParam.getApplication());
     }
 

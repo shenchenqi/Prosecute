@@ -1,6 +1,7 @@
 package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.Lang;
 
 /**
  * @Author Kilin
@@ -23,7 +24,7 @@ public class AwemeStatistics {
     }
 
     public void loadAwemeStatistics(Hook hook, Object awemeStatistics) {
-        if (awemeStatistics == null) {
+        if (Lang.isNull(awemeStatistics)) {
             return;
         }
         this.aid = getAid(hook, awemeStatistics);

@@ -1,6 +1,7 @@
 package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.Lang;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class CommerceActivityStruct {
     }
 
     public void loadCommerceActivityStruct(Hook hook, Object commerce) {
-        if (commerce == null) {
+        if (Lang.isNull(commerce)) {
             return;
         }
         this.actType = getActType(hook, commerce);

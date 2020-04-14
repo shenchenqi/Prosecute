@@ -1,6 +1,7 @@
 package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.Lang;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class UrlModel {
     }
 
     public void loadUrlModel(Hook hook, Object urlModel) {
-        if (urlModel == null) {
+        if (Lang.isNull(urlModel)) {
             return;
         }
         this.fileHash = getFileHash(hook, urlModel);

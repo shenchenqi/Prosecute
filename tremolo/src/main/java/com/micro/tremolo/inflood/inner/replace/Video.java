@@ -1,6 +1,7 @@
 package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.Lang;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class Video {
     }
 
     public void loadVideo(Hook hook, Object video) {
-        if (video == null) {
+        if (Lang.isNull(video)) {
             return;
         }
         this.animatedCover = getAnimatedCover(hook, video);

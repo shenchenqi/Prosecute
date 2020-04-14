@@ -74,13 +74,14 @@ public class WideAreaTask extends BaseTaskExecutor {
     }
 
     private static Context context;
+
     private static void createShowNotice(String content) {
         CollectNotice.createShowNotice(context, "抖音助手-广域采集模式", content);
     }
 
     public static void canTremoloData(Context context) {
         WideAreaTask.context = context;
-        createShowNotice("抖音采集");
+        createShowNotice("抖音开启扫描");
         if (!Const.isWideArea) {
             taskLogger.i("广域采集模式 未开启");
             return;
@@ -105,14 +106,15 @@ public class WideAreaTask extends BaseTaskExecutor {
 
             @Override
             public void end(String authorID) {
-                createShowNotice(String.format("用户[%s]数据采集成功", authorID));
                 userMap.remove(authorID);
                 taskLogger.d("广域采集模式 运行结束");
                 isTaskRun = false;
                 if (number < 6 && mOversee != null) {
                     taskLogger.d("广域采集模式 运行结束 视频切换");
-                    createShowNotice("视频切换");
+                    createShowNotice(String.format("用户[%s] 采集结束 视频准备切换", authorID));
                     mOversee.nextVideo();
+                } else {
+                    createShowNotice(String.format("用户[%s] 采集结束 未准备切换视频", authorID));
                 }
             }
         });
@@ -127,7 +129,7 @@ public class WideAreaTask extends BaseTaskExecutor {
             number++;
             if (number == 6 && mOversee != null) {
                 taskLogger.d("广域采集模式 运行太久 先进行视频切换");
-                createShowNotice("视频切换");
+                createShowNotice("采集花费太久时间 视频准备切换");
                 mOversee.nextVideo();
             }
             return;
@@ -136,13 +138,13 @@ public class WideAreaTask extends BaseTaskExecutor {
         if (map.isEmpty()) {
             taskLogger.e("广域采集模式 无用户数据");
             callback.end("无用户数据");
-            createShowNotice("无数据");
+            createShowNotice("无需要采集的对象");
             return;
         }
         isTaskRun = true;
         number = 0;
         taskLogger.d("广域采集模式 开始进行数据采集");
-        createShowNotice("开始采集");
+        createShowNotice("采集准备开始");
         for (Map.Entry<String, String> entry : map.entrySet()) {
             final String authorID = entry.getKey();
             final String secAuthorID = entry.getValue();
@@ -151,7 +153,6 @@ public class WideAreaTask extends BaseTaskExecutor {
                 loadUser(authorID, secAuthorID, new Callback() {
                     @Override
                     public void exist(String authorID) {
-                        createShowNotice(String.format("作者[%s]信息上传成功", authorID));
                         loadVideo(authorID, secAuthorID, new Callback() {
                             @Override
                             public void exist(String authorID) {
@@ -160,7 +161,6 @@ public class WideAreaTask extends BaseTaskExecutor {
 
                             @Override
                             public void end(String authorID) {
-                                createShowNotice(String.format("作者[%s]视频信息上传结束", authorID));
                                 callback.end(authorID);
                             }
                         });
@@ -168,7 +168,6 @@ public class WideAreaTask extends BaseTaskExecutor {
 
                     @Override
                     public void end(String authorID) {
-                        createShowNotice(String.format("作者[%s]信息上传结束", authorID));
                         callback.end(authorID);
                     }
                 });

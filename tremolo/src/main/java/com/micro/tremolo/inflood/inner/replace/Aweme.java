@@ -3,6 +3,7 @@ package com.micro.tremolo.inflood.inner.replace;
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.Lang;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import java.util.ArrayList;
@@ -197,7 +198,7 @@ public class Aweme {
     }
 
     public void loadAweme(Hook hook, Object aweme) {
-        if (aweme == null) {
+        if (Lang.isNull(aweme)) {
             return;
         }
         this.activityId = getActivityId(hook, aweme);

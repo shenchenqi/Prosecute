@@ -1,6 +1,7 @@
 package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.Lang;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -231,7 +232,7 @@ public class User {
     }
 
     public void loadUser(Hook hook, Object user) {
-        if (user == null) {
+        if (Lang.isNull(user)) {
             return;
         }
         this.acceptPrivatePolicy = isAcceptPrivatePolicy(hook, user);

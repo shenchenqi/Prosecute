@@ -86,4 +86,5 @@ dependencies {
     implementation project(path: ':hook')
     implementation project(path: ':rom')
     implementation project(path: ':tremolo')
+    implementation project(path: ':worker')
 }

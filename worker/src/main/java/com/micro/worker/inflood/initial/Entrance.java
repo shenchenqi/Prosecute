@@ -5,7 +5,9 @@ import android.content.Context;
 import com.micro.hook.config.HookParam;
 import com.micro.hook.setup.Setup;
 import com.micro.worker.inflood.inner.TestHook;
+import com.micro.worker.inflood.inner.execute.LogContent;
 import com.micro.worker.inflood.version.WorkerParam;
+import com.micro.worker.notice.CollectNotice;
 
 import static com.micro.worker.Const.monitorLogger;
 
@@ -34,11 +36,12 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     private Entrance(HookParam hookParam) {
         super(hookParam);
+        CollectNotice.createShowNotice(getIContext(), "快手助手", "快手采集已准备");
     }
 
     @Override
     protected void log() {
-
+        new LogContent(getHookParam().getHook()).monitor();
     }
 
     @Override

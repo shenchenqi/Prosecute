@@ -16,14 +16,14 @@ import java.util.List;
 public interface Const {
 
     String PACKAGE_NAME = "com.smile.gifmaker";
-    String APPLICATION = "com.kwai.hotfix.loader.app.TinkerApplication";
+    String APPLICATION = "android.app.Application";
     //com.yxcorp.gifshow.App
     //com.kwai.hotfix.loader.app.TinkerApplication
     //android.app.Application
-    List<String> VERSIONS = Arrays.asList("7.2.0");
+    List<String> VERSIONS = Arrays.asList("7.2.0.12758");
     String CREATE_DIR = "Micro/Backup/init";
 
-    Logger monitorLogger = Logger.getLogger("tremoloLog", "MonitorLog");
+    Logger monitorLogger = Logger.getLogger("workerLog", "MonitorLog");
 
     static int isAppOnForeground(Context context) {
         return InspectApply.isAppOnForeground(context, Const.PACKAGE_NAME);

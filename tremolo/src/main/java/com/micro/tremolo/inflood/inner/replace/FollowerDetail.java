@@ -1,6 +1,7 @@
 package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.Lang;
 
 /**
  * @Author Kilin
@@ -22,7 +23,7 @@ public class FollowerDetail {
     }
 
     public void loadFollowerDetail(Hook hook, Object followerDetail) {
-        if (followerDetail == null) {
+        if (Lang.isNull(followerDetail)) {
             return;
         }
         this.appName = getAppName(hook, followerDetail);

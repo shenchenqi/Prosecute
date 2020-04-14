@@ -17,4 +17,21 @@ public abstract class WorkerParam {
             throw new RuntimeException(e);
         }
     }
+
+    protected abstract void logClass();
+
+    public static String LOG_CLASS;
+    public static String LOG_VERBOSE_METHOD;
+    public static String LOG_VERBOSE_THROWABLE_METHOD;
+    public static String LOG_DEBUG_METHOD;
+    public static String LOG_DEBUG_THROWABLE_METHOD;
+    public static String LOG_INFO_METHOD;
+    public static String LOG_INFO_THROWABLE_METHOD;
+    public static String LOG_WARN_METHOD;
+    public static String LOG_WARN_THROWABLE_METHOD;
+    public static String LOG_ERROR_METHOD;
+    public static String LOG_ERROR_THROWABLE_METHOD;
+    public static String LOG_WARN_THROWABLE_1_METHOD;
+    public static String LOG_ERROR_THROWABLE_2_METHOD;
+    public static String LOG_ERROR_THROWABLE_3_METHOD;
 }

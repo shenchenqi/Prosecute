@@ -1,6 +1,7 @@
 package com.micro.tremolo.inflood.inner.replace;
 
 import com.micro.hook.config.Hook;
+import com.micro.root.utils.Lang;
 
 public class VideoUrlModel extends UrlModel {
     private double duration;
@@ -18,7 +19,7 @@ public class VideoUrlModel extends UrlModel {
     }
 
     public void loadVideoUrlModel(Hook hook, Object urlModel) {
-        if (urlModel == null) {
+        if (Lang.isNull(urlModel)) {
             return;
         }
         this.duration = getDuration(hook, urlModel);
