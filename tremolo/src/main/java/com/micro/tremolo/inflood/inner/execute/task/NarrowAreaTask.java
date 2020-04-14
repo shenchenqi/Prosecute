@@ -1,13 +1,17 @@
 package com.micro.tremolo.inflood.inner.execute.task;
 
+import android.content.Context;
+
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.inflood.inner.execute.api.ProfileOtherApi;
 import com.micro.tremolo.inflood.inner.execute.api.SearchUserApi;
 import com.micro.tremolo.inflood.inner.execute.api.VideoListApi;
 import com.micro.tremolo.network.UploadNet;
+import com.micro.tremolo.notice.CollectNotice;
 import com.micro.tremolo.sqlite.from.Author;
 import com.micro.tremolo.sqlite.from.Video;
+import com.micro.tremolo.sqlite.table.UserIdModelTable;
 import com.micro.tremolo.sqlite.table.UserModelTable;
 import com.micro.tremolo.sqlite.table.VideoListModelTable;
 import com.micro.tremolo.sqlite.table.VideoModelTable;
@@ -26,11 +30,18 @@ public class NarrowAreaTask {
 
     private static NarrowAreaTask mNarrowAreaTask;
 
-    public static NarrowAreaTask getInstance() {
+    public static NarrowAreaTask getInstance(Context context) {
+        NarrowAreaTask.context = context;
         if (mNarrowAreaTask == null) {
             mNarrowAreaTask = new NarrowAreaTask();
         }
         return mNarrowAreaTask;
+    }
+
+    private static Context context;
+
+    private static void createShowNotice(String content) {
+        CollectNotice.createShowNotice(context, "抖音助手-狭域指定模式", content);
     }
 
     public static void requestData(String search) {
@@ -38,64 +49,119 @@ public class NarrowAreaTask {
             taskLogger.d("狭域指定模式 未开启");
             return;
         }
-        requestData(search, () -> {
-            taskLogger.d("狭域指定模式 运行结束");
-            isRun = false;
+        createShowNotice("搜索用户");
+        requestData(search, new Callback() {
+            @Override
+            public void author(Author author) {
+
+            }
+
+            @Override
+            public void exist(String userId) {
+
+            }
+
+            @Override
+            public void end(String userId) {
+                taskLogger.d("狭域指定模式 运行结束");
+                isRun = false;
+            }
         });
     }
 
     private static boolean isRun = false;
 
-    private static void requestData(final String search, Callback callback) {
+    private static void requestData(final String search, final Callback callback) {
         if (isRun) {
             taskLogger.i("狭域指定模式 正在运行");
             return;
         }
         isRun = true;
-        SearchUserApi.loadApi(search, new SearchUserApi.Callback() {
+        loadSearch(search, new Callback() {
             @Override
-            public void complete(Author author) {
-                ProfileOtherApi.loadApi(author.getSceUserId(), new ProfileOtherApi.Callback() {
+            public void author(final Author author) {
+                createShowNotice("搜索用户 已匹配");
+                loadUser(author.getUserId(), author.getSceUserId(), new Callback() {
                     @Override
-                    public void complete(final Author author) {
-                        UploadNet.uploadUser(loadUserTable(author));
-                        VideoListApi.loadApi(author.getUserId(), author.getSceUserId(), new VideoListApi.Callback() {
+                    public void author(Author author) {
+
+                    }
+
+                    @Override
+                    public void exist(String userId) {
+                        createShowNotice("搜索用户信息 已上传");
+                        loadVideo(userId, author.getSceUserId(), new Callback() {
                             @Override
-                            public void videoList(List<Video> videos) {
-                                if (Lang.isEmpty(videos)) {
-                                    return;
-                                }
-                                List<VideoModelTable> videoModelTables = new ArrayList<>();
-                                for (Video video : videos) {
-                                    videoModelTables.add(loadVideoTable(video));
-                                }
-                                VideoListModelTable videoListModelTable = new VideoListModelTable();
-                                videoListModelTable.setVideoModelTableList(videoModelTables);
-                                UploadNet.uploadVideoList(videoListModelTable);
+                            public void author(Author author) {
+
                             }
 
                             @Override
-                            public void complete() {
-                                callback.end();
+                            public void exist(String userId) {
+
                             }
 
                             @Override
-                            public void finish() {
-                                callback.end();
+                            public void end(String userId) {
+                                createShowNotice("搜索用户 视频列表 结束");
+                                callback.end(userId);
                             }
                         });
                     }
 
                     @Override
-                    public void finish() {
-                        callback.end();
+                    public void end(String userId) {
+                        createShowNotice("搜索用户信息 上传失败");
+                        callback.end(userId);
                     }
                 });
             }
 
             @Override
+            public void exist(String userId) {
+
+            }
+
+            @Override
+            public void end(String userId) {
+                createShowNotice("搜索用户 未匹配");
+                callback.end(userId);
+            }
+        });
+    }
+
+    private static void loadSearch(String search, final Callback callback) {
+        SearchUserApi.loadApi(search, new SearchUserApi.Callback() {
+            @Override
+            public void complete(Author author) {
+                callback.author(author);
+            }
+
+            @Override
             public void finish() {
-                callback.end();
+                callback.end("");
+            }
+        });
+    }
+
+    private static void loadUser(final String authorID, String secAuthorID, final Callback callback) {
+        taskLogger.d(String.format("作者[%s]开始请求 接口", authorID));
+        ProfileOtherApi.loadApi(secAuthorID, new ProfileOtherApi.Callback() {
+            @Override
+            public void complete(final Author author) {
+                if (Lang.toLong(author.getFansCount()) > Const.fansCount) {
+                    taskLogger.d(String.format("作者[%s]粉丝数超过1万", author.getUserId()));
+                    UploadNet.uploadUser(loadUserTable(author));
+                    callback.exist(author.getUserId());
+                } else {
+                    taskLogger.e(String.format("作者[%s]粉丝数未超过1万", author.getUserId()));
+                    callback.end(author.getUserId());
+                }
+            }
+
+            @Override
+            public void finish() {
+                callback.end(authorID);
             }
         });
     }
@@ -129,6 +195,44 @@ public class NarrowAreaTask {
         return userTable;
     }
 
+    private static void loadVideo(String authorID, String secAuthorID, final Callback callback) {
+        UserIdModelTable userIdModelTable = new UserIdModelTable();
+        userIdModelTable.setUserId(authorID);
+        userIdModelTable.setSceUserId(secAuthorID);
+        UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
+            taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
+            if (!isExist) {
+                VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
+                    @Override
+                    public void videoList(List<Video> videos) {
+                        if (Lang.isEmpty(videos)) {
+                            return;
+                        }
+                        List<VideoModelTable> videoModelTables = new ArrayList<>();
+                        for (Video video : videos) {
+                            videoModelTables.add(loadVideoTable(video));
+                        }
+                        VideoListModelTable videoListModelTable = new VideoListModelTable();
+                        videoListModelTable.setVideoModelTableList(videoModelTables);
+                        UploadNet.uploadVideoList(videoListModelTable);
+                    }
+
+                    @Override
+                    public void complete() {
+                        callback.end(userId);
+                    }
+
+                    @Override
+                    public void finish() {
+                        callback.end(userId);
+                    }
+                });
+            } else {
+                callback.end(userId);
+            }
+        });
+    }
+
     private static VideoModelTable loadVideoTable(Video video) {
         VideoModelTable videoTable = new VideoModelTable();
         videoTable.setId(video.getId());
@@ -146,6 +250,10 @@ public class NarrowAreaTask {
     }
 
     public interface Callback {
-        void end();
+        void author(Author author);
+
+        void exist(String userId);
+
+        void end(String userId);
     }
 }

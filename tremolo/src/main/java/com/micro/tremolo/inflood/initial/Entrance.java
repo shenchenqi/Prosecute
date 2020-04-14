@@ -96,8 +96,8 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
             ProfileOtherApi.setInstance(getHookParam().getHook(), getIContext());
             VideoListApi.setInstance(getHookParam().getHook(), getIContext());
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
-            WideAreaTask.getInstance();
-            NarrowAreaTask.getInstance();
+            WideAreaTask.getInstance(getIContext());
+            NarrowAreaTask.getInstance(getIContext());
             mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext());
             mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext());
             profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext());

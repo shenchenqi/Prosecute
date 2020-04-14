@@ -28,7 +28,7 @@ public class TestHook {
         photoDetailActivity(hook);
     }
 
-    private static void util(Hook hook) {
+    private static void util(final Hook hook) {
         hook.methodMonitor("com.yxcorp.gifshow.util.CPU", "a", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
@@ -39,7 +39,7 @@ public class TestHook {
         }, Context.class, byte[].class, int.class);
     }
 
-    private static void gifShowActivity(Hook hook) {
+    private static void gifShowActivity(final Hook hook) {
         String gifShowActivity = "com.yxcorp.gifshow.activity.GifshowActivity";
         hook.methodMonitor(gifShowActivity, "getUrl", new ForeignHook(){
             @Override
@@ -85,7 +85,7 @@ public class TestHook {
         }, int.class, int.class, CharSequence.class);
     }
 
-    private static void homeActivity(Hook hook) {
+    private static void homeActivity(final Hook hook) {
         String homeActivity = "com.yxcorp.gifshow.HomeActivity";
         hook.methodMonitor(homeActivity, "e", new ForeignHook() {
             @Override
@@ -311,7 +311,7 @@ public class TestHook {
         }, String.class, int.class, int.class, Intent.class);
     }
 
-    private static void userProfileActivity(Hook hook) {
+    private static void userProfileActivity(final Hook hook) {
         String userProfileActivity = "com.yxcorp.gifshow.profile.activity.UserProfileActivity";
         hook.methodMonitor(userProfileActivity, "j", new ForeignHook() {
             @Override
@@ -437,7 +437,7 @@ public class TestHook {
         }, "com.yxcorp.gifshow.al.a.a");
     }
 
-    private static void photoDetailActivity(Hook hook) {
+    private static void photoDetailActivity(final Hook hook) {
         String photoDetailActivity = "com.yxcorp.gifshow.detail.PhotoDetailActivity";
         hook.methodMonitor(photoDetailActivity, "C_", new ForeignHook() {
             @Override

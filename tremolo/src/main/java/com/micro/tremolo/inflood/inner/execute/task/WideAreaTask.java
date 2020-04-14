@@ -60,17 +60,12 @@ public class WideAreaTask extends BaseTaskExecutor {
 
     private static WideAreaTask mWideAreaTask;
 
-    public static WideAreaTask getInstance() {
+    public static WideAreaTask getInstance(Context context) {
+        WideAreaTask.context = context;
         if (mWideAreaTask == null) {
             mWideAreaTask = new WideAreaTask();
         }
         return mWideAreaTask;
-    }
-
-    private static Oversee mOversee;
-
-    public static void setOversee(Oversee mOversee) {
-        WideAreaTask.mOversee = mOversee;
     }
 
     private static Context context;
@@ -79,8 +74,13 @@ public class WideAreaTask extends BaseTaskExecutor {
         CollectNotice.createShowNotice(context, "抖音助手-广域采集模式", content);
     }
 
+    private static Oversee mOversee;
+
+    public static void setOversee(Oversee mOversee) {
+        WideAreaTask.mOversee = mOversee;
+    }
+
     public static void canTremoloData(Context context) {
-        WideAreaTask.context = context;
         createShowNotice("抖音开启扫描");
         if (!Const.isWideArea) {
             taskLogger.i("广域采集模式 未开启");
@@ -144,7 +144,6 @@ public class WideAreaTask extends BaseTaskExecutor {
         isTaskRun = true;
         number = 0;
         taskLogger.d("广域采集模式 开始进行数据采集");
-        createShowNotice("采集准备开始");
         for (Map.Entry<String, String> entry : map.entrySet()) {
             final String authorID = entry.getKey();
             final String secAuthorID = entry.getValue();
@@ -153,6 +152,7 @@ public class WideAreaTask extends BaseTaskExecutor {
                 loadUser(authorID, secAuthorID, new Callback() {
                     @Override
                     public void exist(String authorID) {
+                        createShowNotice(String.format("用户[%s] 已上传", authorID));
                         loadVideo(authorID, secAuthorID, new Callback() {
                             @Override
                             public void exist(String authorID) {
@@ -161,6 +161,7 @@ public class WideAreaTask extends BaseTaskExecutor {
 
                             @Override
                             public void end(String authorID) {
+                                createShowNotice(String.format("用户[%s] 视频列表 结束", authorID));
                                 callback.end(authorID);
                             }
                         });
@@ -168,6 +169,7 @@ public class WideAreaTask extends BaseTaskExecutor {
 
                     @Override
                     public void end(String authorID) {
+                        createShowNotice(String.format("用户[%s] 上传失败", authorID));
                         callback.end(authorID);
                     }
                 });
