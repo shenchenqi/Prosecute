@@ -11,7 +11,7 @@ import com.micro.worker.inflood.inner.execute.monitor.oversee.Oversee;
  */
 public class HomeActivityOversee extends Oversee {
 
-    protected HomeActivityOversee(Hook hook, Context context) throws Throwable {
+    public HomeActivityOversee(Hook hook, Context context) throws Throwable {
         super(hook, context);
     }
 

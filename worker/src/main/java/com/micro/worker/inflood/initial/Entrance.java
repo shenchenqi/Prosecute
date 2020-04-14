@@ -5,7 +5,10 @@ import android.content.Context;
 import com.micro.hook.config.HookParam;
 import com.micro.hook.setup.Setup;
 import com.micro.worker.inflood.inner.TestHook;
+import com.micro.worker.inflood.inner.execute.HideDialog;
 import com.micro.worker.inflood.inner.execute.LogContent;
+import com.micro.worker.inflood.inner.execute.api.UserProfileApi;
+import com.micro.worker.inflood.inner.execute.monitor.HomeActivityOversee;
 import com.micro.worker.inflood.version.WorkerParam;
 import com.micro.worker.notice.CollectNotice;
 
@@ -49,9 +52,19 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         monitorLogger.i(TAG, "executeSQL", "数据库");
     }
 
+    private HideDialog dialog;
+    private HomeActivityOversee homeActivityOversee;
+
     @Override
     protected void config() {
         monitorLogger.i(TAG, "config", "配置");
+        try {
+            dialog = new HideDialog(getHookParam().getHook(), getIContext());
+            UserProfileApi.initApi(getHookParam().getHook(), getIContext());
+            homeActivityOversee = new HomeActivityOversee(getHookParam().getHook(), getIContext());
+        } catch (Throwable throwable) {
+            monitorLogger.e(throwable, "配置报错");
+        }
     }
 
     @Override
@@ -61,7 +74,12 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     @Override
     protected void monitor() {
-
+        if (dialog != null) {
+            dialog.monitor();
+        }
+        if (homeActivityOversee != null) {
+            homeActivityOversee.monitor();
+        }
     }
 
     @Override

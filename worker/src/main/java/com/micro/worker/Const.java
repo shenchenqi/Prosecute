@@ -24,6 +24,7 @@ public interface Const {
     String CREATE_DIR = "Micro/Backup/init";
 
     Logger monitorLogger = Logger.getLogger("workerLog", "MonitorLog");
+    Logger taskLogger = Logger.getLogger("workerLog", "TaskLog");
 
     static int isAppOnForeground(Context context) {
         return InspectApply.isAppOnForeground(context, Const.PACKAGE_NAME);

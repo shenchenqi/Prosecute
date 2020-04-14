@@ -1,5 +1,6 @@
 package com.micro.worker.inflood.inner.replace;
 
+import com.alibaba.fastjson.JSON;
 import com.micro.hook.config.Hook;
 import com.micro.root.utils.Lang;
 
@@ -12,10 +13,10 @@ import java.util.List;
 public class User {
     private String hint;
     private int mAge;
-    private String mAlias;
-    private String mAvatar;
-    private Object[] mAvatars;//CDNUrl[]
-    private String mBackgroundUrl;
+    private String mAlias;//昵称
+    private String mAvatar;//头像
+    private Object[] mAvatars;//CDNUrl[] 头像数组
+    private String mBackgroundUrl;//背景图片
     private Object[] mBackgroundUrls;//CDNUrl[]
     private boolean mBanned;
     private boolean mBlacked;
@@ -40,11 +41,11 @@ public class User {
     private transient boolean mHasUnReadStory;
     private String mHiddenUserDesc;
     private String mHiddenUserName;
-    private String mId;
+    private String mId;//用户ID
     private boolean mIsDefaultHead;
     private boolean mIsHiddenUser;
     private boolean mIsLiving;
-    private String mKwaiId;
+    private String mKwaiId;//快手号
     private Object mLiveTipInfo;//LiveTipInfo
     private String mLlsid;
     private boolean mMessageDeny;
@@ -53,11 +54,11 @@ public class User {
     private List<String> mMissURelation;
     private long mMissUTime;
     private String mMobileHash;
-    private String mName;
+    private String mName;//名称
     private boolean mNewest;
     private String mOnlineTimeInfo;
     private Object mOpenFriendName;//OpenFriendName
-    private Object mOwnerCount;//UserOwnerCount
+    private UserOwnerCount mOwnerCount;//UserOwnerCount 统计数据
     private transient String mPage;
     private int mPendantType;
     private Object[] mPendants;//CDNUrl[]
@@ -69,13 +70,13 @@ public class User {
     private String mPrsid;
     private int mRelation;
     private String mSearchUssid;
-    private String mSex;
+    private String mSex;//性别 M-男;F-女;
     private String mSubtitle;
-    private String mText;
+    private String mText;//签名
     private int mUserAge;
     private boolean mUserMessageDeny;
-    private boolean mVerified;
-    private Object mVerifiedDetail;//UserVerifiedDetail
+    private boolean mVerified;//是否有标签
+    private UserVerifiedDetail mVerifiedDetail;//UserVerifiedDetail 标签信息
 
     public User(Hook hook, Object user) {
         loadUser(hook, user);
@@ -605,8 +606,8 @@ public class User {
         return hook.getField(user, "mOpenFriendName");
     }
 
-    private Object getOwnerCount(Hook hook, Object user) {
-        return hook.getField(user, "mOwnerCount");
+    private UserOwnerCount getOwnerCount(Hook hook, Object user) {
+        return new UserOwnerCount(hook, hook.getField(user, "mOwnerCount"));
     }
 
     private String getPage(Hook hook, Object user) {
@@ -677,7 +678,79 @@ public class User {
         return hook.getBooleanField(user, "mVerified");
     }
 
-    private Object getVerifiedDetail(Hook hook, Object user) {
-        return hook.getField(user, "mVerifiedDetail");
+    private UserVerifiedDetail getVerifiedDetail(Hook hook, Object user) {
+        return new UserVerifiedDetail(hook, hook.getField(user, "mVerifiedDetail"));
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "\nhint='" + hint + '\'' +
+                ", \nmAge=" + mAge +
+                ", \nmAlias='" + mAlias + '\'' +
+                ", \nmAvatar='" + mAvatar + '\'' +
+                ", \nmAvatars=" + JSON.toJSONString(mAvatars) +
+                ", \nmBackgroundUrl='" + mBackgroundUrl + '\'' +
+                ", \nmBackgroundUrls=" + JSON.toJSONString(mBackgroundUrls) +
+                ", \nmBanned=" + mBanned +
+                ", \nmBlacked=" + mBlacked +
+                ", \nmCommentDeny=" + mCommentDeny +
+                ", \nmCommonPoint=" + JSON.toJSONString(mCommonPoint) +
+                ", \nmConstellation='" + mConstellation + '\'' +
+                ", \nmContactName='" + mContactName + '\'' +
+                ", \nmDistance=" + mDistance +
+                ", \nmDistanceInfo='" + mDistanceInfo + '\'' +
+                ", \nmDownloadDeny=" + mDownloadDeny +
+                ", \nmExactMatchTip='" + mExactMatchTip + '\'' +
+                ", \nmExtraInfo=" + JSON.toJSONString(mExtraInfo) +
+                ", \nmFansCount=" + mFansCount +
+                ", \nmFavorited=" + mFavorited +
+                ", \nmFollowReason='" + mFollowReason + '\'' +
+                ", \nmFollowRequesting=" + mFollowRequesting +
+                ", \nmFollowStatus=" + JSON.toJSONString(mFollowStatus) +
+                ", \nmFollowed=" + mFollowed +
+                ", \nmFollowerRelation=" + JSON.toJSONString(mFollowerRelation) +
+                ", \nmFriend=" + mFriend +
+                ", \nmHasGreeted=" + mHasGreeted +
+                ", \nmHasUnReadStory=" + mHasUnReadStory +
+                ", \nmHiddenUserDesc='" + mHiddenUserDesc + '\'' +
+                ", \nmHiddenUserName='" + mHiddenUserName + '\'' +
+                ", \nmId='" + mId + '\'' +
+                ", \nmIsDefaultHead=" + mIsDefaultHead +
+                ", \nmIsHiddenUser=" + mIsHiddenUser +
+                ", \nmIsLiving=" + mIsLiving +
+                ", \nmKwaiId='" + mKwaiId + '\'' +
+                ", \nmLiveTipInfo=" + JSON.toJSONString(mLiveTipInfo) +
+                ", \nmLlsid='" + mLlsid + '\'' +
+                ", \nmMessageDeny=" + mMessageDeny +
+                ", \nmMissUDeny=" + mMissUDeny +
+                ", \nmMissUInfo=" + JSON.toJSONString(mMissUInfo) +
+                ", \nmMissURelation=" + mMissURelation +
+                ", \nmMissUTime=" + mMissUTime +
+                ", \nmMobileHash='" + mMobileHash + '\'' +
+                ", \nmName='" + mName + '\'' +
+                ", \nmNewest=" + mNewest +
+                ", \nmOnlineTimeInfo='" + mOnlineTimeInfo + '\'' +
+                ", \nmOpenFriendName=" + JSON.toJSONString(mOpenFriendName) +
+                ", \nmOwnerCount=" + JSON.toJSONString(mOwnerCount) +
+                ", \nmPage='" + mPage + '\'' +
+                ", \nmPendantType=" + mPendantType +
+                ", \nmPendants=" + JSON.toJSONString(mPendants) +
+                ", \nmPhotoList=" + mPhotoList +
+                ", \nmPlatform=" + mPlatform +
+                ", \nmPlatformUserName='" + mPlatformUserName + '\'' +
+                ", \nmPrivate=" + mPrivate +
+                ", \nmProfilePageInfo=" + JSON.toJSONString(mProfilePageInfo) +
+                ", \nmPrsid='" + mPrsid + '\'' +
+                ", \nmRelation=" + mRelation +
+                ", \nmSearchUssid='" + mSearchUssid + '\'' +
+                ", \nmSex='" + mSex + '\'' +
+                ", \nmSubtitle='" + mSubtitle + '\'' +
+                ", \nmText='" + mText + '\'' +
+                ", \nmUserAge=" + mUserAge +
+                ", \nmUserMessageDeny=" + mUserMessageDeny +
+                ", \nmVerified=" + mVerified +
+                ", \nmVerifiedDetail=" + JSON.toJSONString(mVerifiedDetail) +
+                " \n}";
     }
 }

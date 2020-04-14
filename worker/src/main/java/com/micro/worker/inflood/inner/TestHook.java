@@ -11,6 +11,8 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.root.Logger;
+import com.micro.worker.inflood.inner.execute.api.UserProfileApi;
+import com.micro.worker.inflood.inner.replace.User;
 
 /**
  * @Author KiLin
@@ -26,6 +28,7 @@ public class TestHook {
         homeActivity(hook);
         userProfileActivity(hook);
         photoDetailActivity(hook);
+        api(hook);
     }
 
     private static void util(final Hook hook) {
@@ -37,47 +40,55 @@ public class TestHook {
                         param.getResult()));
             }
         }, Context.class, byte[].class, int.class);
+        hook.methodMonitor("com.yxcorp.gifshow.retrofit.degrade.m", "intercept", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("degrade.m intercept(okhttp3.s.a) 参数[%s] 返回数据[%s]",
+                        JSON.toJSONString(param.getArgs()[0]),
+                        param.getResult()));
+            }
+        }, "okhttp3.s.a");
     }
 
     private static void gifShowActivity(final Hook hook) {
         String gifShowActivity = "com.yxcorp.gifshow.activity.GifshowActivity";
-        hook.methodMonitor(gifShowActivity, "getUrl", new ForeignHook(){
+        hook.methodMonitor(gifShowActivity, "getUrl", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("gif show activity getUrl() 返回数据[%s]", JSON.toJSONString(param.getResult())));
             }
         });
-        hook.methodMonitor(gifShowActivity, "getPage2", new ForeignHook(){
+        hook.methodMonitor(gifShowActivity, "getPage2", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("gif show activity getPage2() 返回数据[%s]", JSON.toJSONString(param.getResult())));
             }
         });
-        hook.methodMonitor(gifShowActivity, "getPagePath", new ForeignHook(){
+        hook.methodMonitor(gifShowActivity, "getPagePath", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("gif show activity getPagePath() 返回数据[%s]", JSON.toJSONString(param.getResult())));
             }
         });
-        hook.methodMonitor(gifShowActivity, "getPreUrl", new ForeignHook(){
+        hook.methodMonitor(gifShowActivity, "getPreUrl", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("gif show activity getPreUrl() 返回数据[%s]", JSON.toJSONString(param.getResult())));
             }
         });
-        hook.methodMonitor(gifShowActivity, "getUrlWithAnchorPoint", new ForeignHook(){
+        hook.methodMonitor(gifShowActivity, "getUrlWithAnchorPoint", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("gif show activity getUrlWithAnchorPoint() 返回数据[%s]", JSON.toJSONString(param.getResult())));
             }
         });
-        hook.methodMonitor(gifShowActivity, "setTitle", new ForeignHook(){
+        hook.methodMonitor(gifShowActivity, "setTitle", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("gif show activity setTitle(int, int, int) 猜数[%s, %s, %s]", param.getArgs()[0], param.getArgs()[1], param.getArgs()[2]));
             }
         }, int.class, int.class, int.class);
-        hook.methodMonitor(gifShowActivity, "setTitle", new ForeignHook(){
+        hook.methodMonitor(gifShowActivity, "setTitle", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("gif show activity setTitle(int, int, CharSequence) 猜数[%s, %s, %s]", param.getArgs()[0], param.getArgs()[1], param.getArgs()[2]));
@@ -371,6 +382,8 @@ public class TestHook {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("user profile activity getUrl() 返回数据[%s]", JSON.toJSONString(param.getResult())));
+                User user = new User(hook, hook.getField(param.getThisObject(), "e"));
+                UserProfileApi.loadApi(user, null);
             }
         });
         hook.methodMonitor(userProfileActivity, "k", new ForeignHook() {
@@ -485,6 +498,76 @@ public class TestHook {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("photo detail activity n() 返回数据[%s]", JSON.toJSONString(param.getResult())));
+            }
+        });
+    }
+
+    private static void api(Hook hook) {
+        /*Object object = hook.callStaticMethod("com.yxcorp.gifshow.KwaiApp", "getApiService");
+        hook.methodMonitor("com.yxcorp.gifshow.retrofit.service.KwaiApiService", "profileFeed", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("apiService profileFeed(String, String, int, String, String, String) 参数[%s, %s, %s, %s, %s, %s] 返回数据[%s]",
+                        param.getArgs()[0], param.getArgs()[1], param.getArgs()[2], param.getArgs()[3], param.getArgs()[4], param.getArgs()[5],
+                        JSON.toJSONString(param.getResult())));
+            }
+        }, String.class, String.class, int.class, String.class, String.class, String.class);
+        hook.methodMonitor("com.yxcorp.gifshow.retrofit.service.KwaiApiService", "userProfileV2", new ForeignHook() {
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("apiService profileFeed(String, String, RequestTiming) 参数[%s, %s, %s] 返回数据[%s]",
+                        param.getArgs()[0], param.getArgs()[1], param.getArgs()[2],
+                        JSON.toJSONString(param.getResult())));
+            }
+        }, String.class, String.class, "com.kuaishou.gifshow.network.degrade.RequestTiming");*/
+        hook.methodMonitor("com.kuaishou.gamezone.tube.slideplay.b.b.c", "a", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("slideplay.b.b.c userProfileV2() 参数[%s]",
+                        param.getArgs()[0]));
+            }
+        }, "com.kuaishou.gamezone.tube.slideplay.b.b.c");
+        hook.methodMonitor("com.yxcorp.gifshow.ad.detail.presenter.thanos.side.h", "c", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("thanos.side.h userProfileV2() 参数[%s]",
+                        param.getArgs()[0]));
+            }
+        }, "com.yxcorp.gifshow.ad.detail.presenter.thanos.side.h");
+        hook.methodMonitor("com.yxcorp.gifshow.detail.slidev2.presenter.cn", "d", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("slidev2.presenter.cn userProfileV2() "));
+            }
+        });
+        hook.methodMonitor("com.yxcorp.gifshow.plugin.impl.i", "a", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("plugin.impl.i userProfileV2() 参数[%s, %s, %s], 返回猜数[%s]",
+                        param.getArgs()[0], param.getArgs()[1], JSON.toJSONString(param.getArgs()[2]),
+                        JSON.toJSONString(param.getResult())));
+            }
+        }, String.class, boolean.class, "com.kuaishou.gifshow.network.degrade.RequestTiming");
+        hook.methodMonitor("com.yxcorp.gifshow.profile.fragment.w", "b", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("profile.fragment.w userProfileV2() 参数[%s]",
+                        param.getArgs()[0]));
+            }
+        }, String.class);
+        hook.methodMonitor("com.yxcorp.gifshow.profile.presenter.dc", "aC_", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("profile.presenter.dc userProfileV2()"));
+            }
+        });
+        hook.methodMonitor("com.yxcorp.gifshow.profile.presenter.profile.w", "d", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("profile.presenter.profile.w userProfileV2()"));
+                String id = (String) hook.callMethod(hook.getField(param.getThisObject(), "b"), "getId");
+                Object object = hook.getStaticField("com.kuaishou.gifshow.network.degrade.RequestTiming", "DEFAULT");
+                logger.d(String.format("profile.presenter.profile.w userProfileV2() [%s, %s]", id, JSON.toJSONString(object)));
             }
         });
     }
