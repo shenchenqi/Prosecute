@@ -128,4 +128,21 @@ public class UserOwnerCount {
     private int getSong(Hook hook, Object userOwner) {
         return hook.getIntegerField(userOwner, "mSong");
     }
+
+    @Override
+    public String toString() {
+        return "UserOwnerCount{" +
+                "\nmArticlePublic=" + mArticlePublic +
+                ", \nmCollection=" + mCollection +
+                ", \nmFan=" + mFan +
+                ", \nmFansCountText='" + mFansCountText + '\'' +
+                ", \nmFollow=" + mFollow +
+                ", \nmLike=" + mLike +
+                ", \nmMoment=" + mMoment +
+                ", \nmPhoto=" + mPhoto +
+                ", \nmPrivatePhoto=" + mPrivatePhoto +
+                ", \nmPublicPhoto=" + mPublicPhoto +
+                ", \nmSong=" + mSong +
+                '}';
+    }
 }

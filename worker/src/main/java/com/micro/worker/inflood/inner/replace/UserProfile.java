@@ -1,5 +1,6 @@
 package com.micro.worker.inflood.inner.replace;
 
+import com.alibaba.fastjson.JSON;
 import com.micro.hook.config.Hook;
 import com.micro.root.utils.Lang;
 
@@ -11,49 +12,48 @@ import java.util.List;
  * @Time 2020/4/15 9:30
  */
 public class UserProfile {
-    public boolean canSendMessage;
-    public boolean isBlocked;
-    public boolean isFans;
-    public boolean isFollowRequesting;
-    public boolean isFollowing;
-    public boolean isFriend;
-    public Object mAdBusinessInfo;//AdBusinessInfo
-    public String mAge;
-    public String mAgePrivacy;
-    public String mBirthday;
-    public Object mBirthdayConfig;//BirthdayConfig
-    public String mCityCode;
-    public String mCityName;
-    public List<String> mCollectTabs = new ArrayList();
-    public String mConstellation;
-    public Object mCourse;//CourseInfo
-    public boolean mDisplayProfileIntegrityDynamicEffect;
-    public List<Integer> mEnableBatchShareTab;
-    public boolean mEnableMomentTab;
-    public String mFollowReason;
-    public Object mFriendFollow;//FriendFollow
-    public boolean mFrozen;
-    public String mFrozenMessage;
-    public boolean mIsBlockedByOwner;
-    public boolean mIsDefaultBackground;
-    public boolean mIsDefaultHead;
-    public boolean mIsDefaultName;
-    public boolean mIsFavorite;
-    public long mLatestVisitCount;
-    public Object mMessageGroupMemberInfo;//MessageGroupMemberInfo
-    public Object mMissUInfo;//UserProfileMissUInfo
-    public UserOwnerCount mOwnerCount;
-    public Object mProfile;//UserInfo
-    public List<Object> mProfileExtraLinkList;//ProfileExtraLink
-    public Object mProfileImGroupInfo;//ImGroupInfoWrapper
-    public Object mProfileShopInfo;//ProfileShopInfo
-    public Object mSameFollow;//UserSameFollow
-    public int mSelectedTabId;
-    public boolean mShowDataAssistantEntrance;
-    public Object mStoryInfo;//StoryInfo
-    public Object mUserFollowerRelation;//UserFollowerRelation
-    public Object mUserRemark;//UserRemark
-    public Object mUserSettingOption;//UserSettingOption
+    private boolean canSendMessage;
+    private boolean isBlocked;
+    private boolean isFans;
+    private boolean isFollowRequesting;
+    private boolean isFollowing;
+    private boolean isFriend;
+    private String mAge;
+    private String mAgePrivacy;
+    private String mBirthday;
+    private Object mBirthdayConfig;//BirthdayConfig
+    private String mCityCode;
+    private String mCityName;
+    private List<String> mCollectTabs;
+    private String mConstellation;
+    private Object mCourse;//CourseInfo
+    private boolean mDisplayProfileIntegrityDynamicEffect;
+    private List<Integer> mEnableBatchShareTab;
+    private boolean mEnableMomentTab;
+    private String mFollowReason;
+    private Object mFriendFollow;//FriendFollow
+    private boolean mFrozen;
+    private String mFrozenMessage;
+    private boolean mIsBlockedByOwner;
+    private boolean mIsDefaultBackground;
+    private boolean mIsDefaultHead;
+    private boolean mIsDefaultName;
+    private boolean mIsFavorite;
+    private long mLatestVisitCount;
+    private Object mMessageGroupMemberInfo;//MessageGroupMemberInfo
+    private Object mMissUInfo;//UserProfileMissUInfo
+    private UserOwnerCount mOwnerCount;
+    private UserInfo mProfile;//UserInfo
+    private List<Object> mProfileExtraLinkList;//ProfileExtraLink
+    private Object mProfileImGroupInfo;//ImGroupInfoWrapper
+    private Object mProfileShopInfo;//ProfileShopInfo
+    private Object mSameFollow;//UserSameFollow
+    private int mSelectedTabId;
+    private boolean mShowDataAssistantEntrance;
+    private Object mStoryInfo;//StoryInfo
+    private Object mUserFollowerRelation;//UserFollowerRelation
+    private Object mUserRemark;//UserRemark
+    private Object mUserSettingOption;//UserSettingOption
 
     public UserProfile(Hook hook, Object profile) {
         loadUserProfile(hook, profile);
@@ -69,7 +69,6 @@ public class UserProfile {
         this.isFollowRequesting = isFollowRequesting(hook, profile);
         this.isFollowing = isFollowing(hook, profile);
         this.isFriend = isFriend(hook, profile);
-        this.mAdBusinessInfo = getAdBusinessInfo(hook, profile);
         this.mAge = getAge(hook, profile);
         this.mAgePrivacy = getAgePrivacy(hook, profile);
         this.mBirthday = getBirthday(hook, profile);
@@ -77,35 +76,35 @@ public class UserProfile {
         this.mCityCode = getCityCode(hook, profile);
         this.mCityName = getCityName(hook, profile);
         this.mCollectTabs = getCollectTabs(hook, profile);
-        this.mConstellation = mConstellation;
-        this.mCourse = mCourse;
-        this.mDisplayProfileIntegrityDynamicEffect = mDisplayProfileIntegrityDynamicEffect;
-        this.mEnableBatchShareTab = mEnableBatchShareTab;
-        this.mEnableMomentTab = mEnableMomentTab;
-        this.mFollowReason = mFollowReason;
-        this.mFriendFollow = mFriendFollow;
-        this.mFrozen = mFrozen;
-        this.mFrozenMessage = mFrozenMessage;
-        this.mIsBlockedByOwner = mIsBlockedByOwner;
-        this.mIsDefaultBackground = mIsDefaultBackground;
-        this.mIsDefaultHead = mIsDefaultHead;
-        this.mIsDefaultName = mIsDefaultName;
-        this.mIsFavorite = mIsFavorite;
-        this.mLatestVisitCount = mLatestVisitCount;
-        this.mMessageGroupMemberInfo = mMessageGroupMemberInfo;
-        this.mMissUInfo = mMissUInfo;
-        this.mOwnerCount = mOwnerCount;
-        this.mProfile = mProfile;
-        this.mProfileExtraLinkList = mProfileExtraLinkList;
-        this.mProfileImGroupInfo = mProfileImGroupInfo;
-        this.mProfileShopInfo = mProfileShopInfo;
-        this.mSameFollow = mSameFollow;
-        this.mSelectedTabId = mSelectedTabId;
-        this.mShowDataAssistantEntrance = mShowDataAssistantEntrance;
-        this.mStoryInfo = mStoryInfo;
-        this.mUserFollowerRelation = mUserFollowerRelation;
-        this.mUserRemark = mUserRemark;
-        this.mUserSettingOption = mUserSettingOption;
+        this.mConstellation = getConstellation(hook, profile);
+        this.mCourse = getCourse(hook, profile);
+        this.mDisplayProfileIntegrityDynamicEffect = isDisplayProfileIntegrityDynamicEffect(hook, profile);
+        this.mEnableBatchShareTab = getEnableBatchShareTab(hook, profile);
+        this.mEnableMomentTab = isEnableMomentTab(hook, profile);
+        this.mFollowReason = getFollowReason(hook, profile);
+        this.mFriendFollow = getFriendFollow(hook, profile);
+        this.mFrozen = isFrozen(hook, profile);
+        this.mFrozenMessage = getFrozenMessage(hook, profile);
+        this.mIsBlockedByOwner = isBlockedByOwner(hook, profile);
+        this.mIsDefaultBackground = isDefaultBackground(hook, profile);
+        this.mIsDefaultHead = isDefaultHead(hook, profile);
+        this.mIsDefaultName = isDefaultName(hook, profile);
+        this.mIsFavorite = isFavorite(hook, profile);
+        this.mLatestVisitCount = getLatestVisitCount(hook, profile);
+        this.mMessageGroupMemberInfo = getMessageGroupMemberInfo(hook, profile);
+        this.mMissUInfo = getMissUInfo(hook, profile);
+        this.mOwnerCount = getOwnerCount(hook, profile);
+        this.mProfile = getProfile(hook, profile);
+        this.mProfileExtraLinkList = getProfileExtraLinkList(hook, profile);
+        this.mProfileImGroupInfo = getProfileImGroupInfo(hook, profile);
+        this.mProfileShopInfo = getProfileShopInfo(hook, profile);
+        this.mSameFollow = getSameFollow(hook, profile);
+        this.mSelectedTabId = getSelectedTabId(hook, profile);
+        this.mShowDataAssistantEntrance = isShowDataAssistantEntrance(hook, profile);
+        this.mStoryInfo = getStoryInfo(hook, profile);
+        this.mUserFollowerRelation = getUserFollowerRelation(hook, profile);
+        this.mUserRemark = getUserRemark(hook, profile);
+        this.mUserSettingOption = getUserSettingOption(hook, profile);
     }
 
     public boolean isCanSendMessage() {
@@ -130,10 +129,6 @@ public class UserProfile {
 
     public boolean isFriend() {
         return isFriend;
-    }
-
-    public Object getmAdBusinessInfo() {
-        return mAdBusinessInfo;
     }
 
     public String getmAge() {
@@ -305,7 +300,7 @@ public class UserProfile {
     }
 
     private Object getAdBusinessInfo(Hook hook, Object profile) {
-        return hook.getBooleanField(hook, "mAdBusinessInfo");
+        return hook.getBooleanField(profile, "mAdBusinessInfo");
     }
 
     private String getAge(Hook hook, Object profile) {
@@ -345,7 +340,7 @@ public class UserProfile {
     }
 
     private boolean isDisplayProfileIntegrityDynamicEffect(Hook hook, Object profile) {
-        return hook.getBooleanField(hook, "mDisplayProfileIntegrityDynamicEffect");
+        return hook.getBooleanField(profile, "mDisplayProfileIntegrityDynamicEffect");
     }
 
     private List<Integer> getEnableBatchShareTab(Hook hook, Object profile) {
@@ -408,8 +403,8 @@ public class UserProfile {
         return new UserOwnerCount(hook, hook.getField(profile, "mOwnerCount"));
     }
 
-    private Object getProfile(Hook hook, Object profile) {
-        return hook.getField(profile, "mProfile");
+    private UserInfo getProfile(Hook hook, Object profile) {
+        return new UserInfo(hook, hook.getField(profile, "mProfile"));
     }
 
     private List<Object> getProfileExtraLinkList(Hook hook, Object profile) {
@@ -450,5 +445,53 @@ public class UserProfile {
 
     private Object getUserSettingOption(Hook hook, Object profile) {
         return hook.getField(profile, "mUserSettingOption");
+    }
+
+    @Override
+    public String toString() {
+        return "UserProfile{" +
+                "\ncanSendMessage=" + canSendMessage +
+                ", \nisBlocked=" + isBlocked +
+                ", \nisFans=" + isFans +
+                ", \nisFollowRequesting=" + isFollowRequesting +
+                ", \nisFollowing=" + isFollowing +
+                ", \nisFriend=" + isFriend +
+                ", \nmAge='" + mAge + '\'' +
+                ", \nmAgePrivacy='" + mAgePrivacy + '\'' +
+                ", \nmBirthday='" + mBirthday + '\'' +
+                ", \nmBirthdayConfig=" + JSON.toJSONString(mBirthdayConfig) +
+                ", \nmCityCode='" + mCityCode + '\'' +
+                ", \nmCityName='" + mCityName + '\'' +
+                ", \nmCollectTabs=" + JSON.toJSONString(mCollectTabs) +
+                ", \nmConstellation='" + mConstellation + '\'' +
+                ", \nmCourse=" + JSON.toJSONString(mCourse) +
+                ", \nmDisplayProfileIntegrityDynamicEffect=" + mDisplayProfileIntegrityDynamicEffect +
+                ", \nmEnableBatchShareTab=" + JSON.toJSONString(mEnableBatchShareTab) +
+                ", \nmEnableMomentTab=" + mEnableMomentTab +
+                ", \nmFollowReason='" + mFollowReason + '\'' +
+                ", \nmFriendFollow=" + JSON.toJSONString(mFriendFollow) +
+                ", \nmFrozen=" + mFrozen +
+                ", \nmFrozenMessage='" + mFrozenMessage + '\'' +
+                ", \nmIsBlockedByOwner=" + mIsBlockedByOwner +
+                ", \nmIsDefaultBackground=" + mIsDefaultBackground +
+                ", \nmIsDefaultHead=" + mIsDefaultHead +
+                ", \nmIsDefaultName=" + mIsDefaultName +
+                ", \nmIsFavorite=" + mIsFavorite +
+                ", \nmLatestVisitCount=" + mLatestVisitCount +
+                ", \nmMessageGroupMemberInfo=" + JSON.toJSONString(mMessageGroupMemberInfo) +
+                ", \nmMissUInfo=" + JSON.toJSONString(mMissUInfo) +
+                ", \nmOwnerCount=" + mOwnerCount.toString() +
+                ", \nmProfile=" + mProfile.toString() +
+                ", \nmProfileExtraLinkList=" + JSON.toJSONString(mProfileExtraLinkList) +
+                ", \nmProfileImGroupInfo=" + JSON.toJSONString(mProfileImGroupInfo) +
+                ", \nmProfileShopInfo=" + JSON.toJSONString(mProfileShopInfo) +
+                ", \nmSameFollow=" + JSON.toJSONString(mSameFollow) +
+                ", \nmSelectedTabId=" + mSelectedTabId +
+                ", \nmShowDataAssistantEntrance=" + mShowDataAssistantEntrance +
+                ", \nmStoryInfo=" + JSON.toJSONString(mStoryInfo) +
+                ", \nmUserFollowerRelation=" + JSON.toJSONString(mUserFollowerRelation) +
+                ", \nmUserRemark=" + JSON.toJSONString(mUserRemark) +
+                ", \nmUserSettingOption=" + JSON.toJSONString(mUserSettingOption) +
+                '}';
     }
 }

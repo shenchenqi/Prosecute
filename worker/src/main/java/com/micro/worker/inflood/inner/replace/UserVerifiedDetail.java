@@ -58,4 +58,14 @@ public class UserVerifiedDetail {
     private int getType(Hook hook, Object userVerified) {
         return hook.getIntegerField(userVerified, "mType");
     }
+
+    @Override
+    public String toString() {
+        return "UserVerifiedDetail{" +
+                "\nmDescription='" + mDescription + '\'' +
+                ", \nmIconType=" + mIconType +
+                ", \nmIsMusician=" + mIsMusician +
+                ", \nmType=" + mType +
+                '}';
+    }
 }

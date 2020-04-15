@@ -11,6 +11,7 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.root.Logger;
+import com.micro.worker.inflood.inner.execute.api.UserProfileApi;
 import com.micro.worker.inflood.inner.replace.User;
 import com.micro.worker.inflood.inner.replace.UserProfileResponse;
 
@@ -385,7 +386,8 @@ public class TestHook {
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("user profile activity getUrl() 返回数据[%s]", JSON.toJSONString(param.getResult())));
                 User user = new User(hook, hook.getField(param.getThisObject(), "e"));
-                taskLogger.d(user.toString());
+                UserProfileApi.loadApi(user, null);
+                /*taskLogger.d(user.toString());*/
             }
         });
         hook.methodMonitor(userProfileActivity, "k", new ForeignHook() {

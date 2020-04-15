@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.micro.hook.config.HookParam;
 import com.micro.hook.setup.Setup;
+import com.micro.worker.Const;
 import com.micro.worker.inflood.inner.TestHook;
 import com.micro.worker.inflood.inner.execute.HideDialog;
 import com.micro.worker.inflood.inner.execute.LogContent;
@@ -59,6 +60,13 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
     protected void config() {
         monitorLogger.i(TAG, "config", "配置");
         try {
+            if (Const.collectType != 0) {
+                if (Const.isAppOnForeground(getIContext()) == 500) {
+                    Const.openApply(getIContext());
+                } else if (Const.isAppOnForeground(getIContext()) == 400) {
+                    Const.setTopApply(getIContext());
+                }
+            }
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
             UserProfileApi.initApi(getHookParam().getHook(), getIContext());
             homeActivityOversee = new HomeActivityOversee(getHookParam().getHook(), getIContext());

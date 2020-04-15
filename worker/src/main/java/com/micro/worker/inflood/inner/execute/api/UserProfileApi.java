@@ -2,9 +2,13 @@ package com.micro.worker.inflood.inner.execute.api;
 
 import android.content.Context;
 
+import com.micro.foreign.ForeignHook;
+import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.worker.inflood.inner.replace.User;
 import com.micro.worker.inflood.version.WorkerParam;
+
+import io.reactivex.functions.Consumer;
 
 import static com.micro.worker.Const.taskLogger;
 
@@ -50,7 +54,23 @@ public class UserProfileApi extends BaseApi {
         post(second * 5, () -> startThread(() -> {
             try {
                 Object object = profileUserApi(userId);
-                callback.success(getJsonString(object));
+                Object mapObject = hook.callMethod(object, "map", hook.newInstance("com.yxcorp.retrofit.consumer.e"));
+                /*Object callbackObject = hook.newInstance("io.reactivex.c.g", getIContext());
+                hook.methodMonitor(callbackObject.getClass(), "accept", new ForeignHook() {
+                    @Override
+                    public void beforeHookedMethod(ForeignHookParam param) throws Throwable {
+                        callback.success(getJsonString(param.getArgs()[0]));
+                    }
+                }, Object.class);
+                Object throwableObject = hook.newInstance("com.yxcorp.gifshow.retrofit.a.c", getIContext());
+                hook.methodMonitor(throwableObject.getClass(), "accept", new ForeignHook() {
+                    @Override
+                    public void beforeHookedMethod(ForeignHookParam param) throws Throwable {
+                        callback.fail((Throwable) param.getArgs()[0], "用户信息 报错: ");
+                    }
+                }, Throwable.class);*/
+                Object subscribeObject = hook.callMethod(mapObject, "subscribe", null, null);
+                hook.callMethod(hook.newInstance("io.reactivex.disposables.a"), "a", subscribeObject);
             } catch (Throwable e) {
                 callback.fail(e, "用户信息 报错: ");
             }

@@ -5,6 +5,8 @@ import android.content.Context;
 import com.micro.root.Logger;
 import com.micro.root.utils.InspectApply;
 
+import org.litepal.LitePal;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +27,16 @@ public interface Const {
 
     Logger monitorLogger = Logger.getLogger("workerLog", "MonitorLog");
     Logger taskLogger = Logger.getLogger("workerLog", "TaskLog");
+
+    int collectType = 2;//采集类型 0-未知;1-控制布局UI;2-广域获取数据;3-狭域监控数据
+
+    static void workerApp(Context context) {
+        LitePal.initialize(context);
+
+        if (!InspectApply.checkApkExist(context, PACKAGE_NAME)) {
+            InspectApply.installAPK(context, InspectApply.apkPath(context, "kuaishou_v7.2.0.12758.apk"), "7.2.0.12758");
+        }
+    }
 
     static int isAppOnForeground(Context context) {
         return InspectApply.isAppOnForeground(context, Const.PACKAGE_NAME);
