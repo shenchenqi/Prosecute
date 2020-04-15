@@ -1,8 +1,10 @@
-package com.micro.tremolo.sqlite.table;
+package com.micro.tremolo.model.params;
 
-import java.io.Serializable;
-
-public class UserIdModelTable implements Serializable /*extends DataTable*/ {
+/**
+ * @Author KiLin
+ * @Time 2020/4/15 10:24
+ */
+public class UserIdParam extends BaseParam {
     private String userId;
 
     public String getUserId() {

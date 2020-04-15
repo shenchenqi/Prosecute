@@ -26,12 +26,12 @@ public class TestHook {
     private static final Logger logger = Logger.getLogger("tremoloLog", "TestLog");
 
     public static void test(Hook hook) {
-        mainActivity(hook);
+        /*mainActivity(hook);
         mainFragment(hook);
         mainPageFragment(hook);
         activityReference(hook);
         profileFragment(hook);
-        api(hook);
+        api(hook);*/
     }
 
     private static void mainActivity(final Hook hook) {

@@ -9,12 +9,11 @@ import com.micro.tremolo.inflood.inner.execute.api.SearchUserApi;
 import com.micro.tremolo.inflood.inner.execute.api.VideoListApi;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.notice.CollectNotice;
-import com.micro.tremolo.sqlite.from.Author;
-import com.micro.tremolo.sqlite.from.Video;
-import com.micro.tremolo.sqlite.table.UserIdModelTable;
-import com.micro.tremolo.sqlite.table.UserModelTable;
-import com.micro.tremolo.sqlite.table.VideoListModelTable;
-import com.micro.tremolo.sqlite.table.VideoModelTable;
+import com.micro.tremolo.model.from.Author;
+import com.micro.tremolo.model.from.Video;
+import com.micro.tremolo.model.params.UserIdParam;
+import com.micro.tremolo.model.params.VideoArrayParam;
+import com.micro.tremolo.model.params.VideoParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,9 +148,9 @@ public class NarrowAreaTask {
         ProfileOtherApi.loadApi(secAuthorID, new ProfileOtherApi.Callback() {
             @Override
             public void complete(final Author author) {
-                if (Lang.toLong(author.getFansCount()) > Const.fansCount) {
+                if (author.getFansCount() > Const.fansCount) {
                     taskLogger.d(String.format("作者[%s]粉丝数超过1万", author.getUserId()));
-                    UploadNet.uploadUser(loadUserTable(author));
+                    UploadNet.uploadUser(author.getUserParam());
                     callback.exist(author.getUserId());
                 } else {
                     taskLogger.e(String.format("作者[%s]粉丝数未超过1万", author.getUserId()));
@@ -166,40 +165,11 @@ public class NarrowAreaTask {
         });
     }
 
-    private static UserModelTable loadUserTable(Author author) {
-        UserModelTable userTable = new UserModelTable();
-        userTable.setUserId(author.getUserId());
-        userTable.setSceUserId(author.getSceUserId());
-        userTable.setNickname(author.getNickname());
-        userTable.setTremoloId(author.getTremoloId());
-        userTable.setTremoloNumberId(author.getTremoloNumberId());
-        userTable.setBirthday(author.getBirthday());
-        userTable.setCity(author.getCity());
-        userTable.setCountry(author.getCountry());
-        userTable.setDistrict(author.getDistrict());
-        userTable.setSchoolName(author.getSchoolName());
-        userTable.setSignature(author.getSignature());
-        userTable.setCustomVerify(author.getCustomVerify());
-        userTable.setEnterpriseVerify(author.getEnterpriseVerify());
-        userTable.setRequestId(author.getRequestId());
-        userTable.setFollowingCount(String.valueOf(author.getFollowingCount()));
-        userTable.setAwemeCount(String.valueOf(author.getAwemeCount()));
-        userTable.setMovingCount(String.valueOf(author.getMovingCount()));
-        userTable.setFansCount(String.valueOf(author.getFansCount()));
-        userTable.setFavoritingCount(String.valueOf(author.getFavoritingCount()));
-        userTable.setAvatarList(author.getAvatarList());
-        userTable.setUri(author.getUri());
-        userTable.setUrlKey(author.getUrlKey());
-        userTable.setAvatarMediumList(author.getAvatarMediumList());
-        userTable.setAvatarThumbList(author.getAvatarThumbList());
-        return userTable;
-    }
-
     private static void loadVideo(String authorID, String secAuthorID, final Callback callback) {
-        UserIdModelTable userIdModelTable = new UserIdModelTable();
-        userIdModelTable.setUserId(authorID);
-        userIdModelTable.setSceUserId(secAuthorID);
-        UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
+        UserIdParam userIdParam = new UserIdParam();
+        userIdParam.setUserId(authorID);
+        userIdParam.setSceUserId(secAuthorID);
+        UploadNet.isUserExist(userIdParam, (userId, sceUserId, isExist) -> {
             taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
             if (!isExist) {
                 VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
@@ -208,13 +178,13 @@ public class NarrowAreaTask {
                         if (Lang.isEmpty(videos)) {
                             return;
                         }
-                        List<VideoModelTable> videoModelTables = new ArrayList<>();
+                        List<VideoParam> videoParams = new ArrayList<>();
                         for (Video video : videos) {
-                            videoModelTables.add(loadVideoTable(video));
+                            videoParams.add(video.getVideoParam());
                         }
-                        VideoListModelTable videoListModelTable = new VideoListModelTable();
-                        videoListModelTable.setVideoModelTableList(videoModelTables);
-                        UploadNet.uploadVideoList(videoListModelTable);
+                        VideoArrayParam videoArrayParam = new VideoArrayParam();
+                        videoArrayParam.setData(videoParams);
+                        UploadNet.uploadVideoList(videoArrayParam);
                     }
 
                     @Override
@@ -231,22 +201,6 @@ public class NarrowAreaTask {
                 callback.end(userId);
             }
         });
-    }
-
-    private static VideoModelTable loadVideoTable(Video video) {
-        VideoModelTable videoTable = new VideoModelTable();
-        videoTable.setId(video.getId());
-        videoTable.setTitle(video.getTitle());
-        videoTable.setCreateTime(String.valueOf(video.getCreateTime()));
-        videoTable.setShareUrl(video.getShareUrl());
-        videoTable.setCommentCount(String.valueOf(video.getCommentCount()));
-        videoTable.setDiggCount(String.valueOf(video.getDiggCount()));
-        videoTable.setDownloadCount(String.valueOf(video.getDownloadCount()));
-        videoTable.setShareCount(String.valueOf(video.getShareCount()));
-        videoTable.setUrlList(video.getUrlList());
-        videoTable.setUserId(video.getUserId());
-        videoTable.setNickname(video.getNickname());
-        return videoTable;
     }
 
     public interface Callback {

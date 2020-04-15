@@ -1,11 +1,12 @@
-package com.micro.tremolo.sqlite.table;
+package com.micro.tremolo.model.params;
 
-import com.alibaba.fastjson.JSON;
-
-import java.io.Serializable;
 import java.util.List;
 
-public class VideoModelTable implements Serializable/*extends DataTable*/ {
+/**
+ * @Author KiLin
+ * @Time 2020/4/15 10:26
+ */
+public class VideoParam extends BaseParam {
     private String id;
     private String title;
     private String createTime;
@@ -105,35 +106,5 @@ public class VideoModelTable implements Serializable/*extends DataTable*/ {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    /**
-     * 用户为空 = -3; 视频链接为空 = -2; 统计数据为空 = -1; 已准备 = 0; 未上传 = 1; 上传 = 2;
-     */
-    /*private int update;
-
-    public int getUpdate() {
-        return update;
-    }
-
-    public void setUpdate(int update) {
-        this.update = update;
-    }*/
-
-    @Override
-    public String toString() {
-        return "VideoModelTable{" +
-                "\nid='" + id + '\'' +
-                ", \ntitle='" + title + '\'' +
-                ", \ncreateTime=" + createTime +
-                ", \nshareUrl='" + shareUrl + '\'' +
-                ", \ncommentCount=" + commentCount +
-                ", \ndiggCount=" + diggCount +
-                ", \ndownloadCount=" + downloadCount +
-                ", \nshareCount=" + shareCount +
-                ", \nurlList=" + JSON.toJSONString(urlList) +
-                ", \nuserId='" + userId + '\'' +
-                ", \nnickname='" + nickname + '\'' +
-                "\n}";
     }
 }

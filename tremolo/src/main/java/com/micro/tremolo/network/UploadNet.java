@@ -8,10 +8,10 @@ import com.micro.network.available.model.ApiResponseBase;
 import com.micro.network.available.model.EmptyEntity;
 import com.micro.root.Logger;
 import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
-import com.micro.tremolo.sqlite.table.UserIdModelTable;
-import com.micro.tremolo.sqlite.table.UserModelTable;
-import com.micro.tremolo.sqlite.table.VideoListModelTable;
-import com.micro.tremolo.sqlite.table.VideoModelTable;
+import com.micro.tremolo.model.params.UserIdParam;
+import com.micro.tremolo.model.params.UserParam;
+import com.micro.tremolo.model.params.VideoArrayParam;
+import com.micro.tremolo.model.params.VideoParam;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -31,7 +31,7 @@ public class UploadNet {
         InitNetwork.loadNetwork(context, ApiService.class);
     }
 
-    public static synchronized void uploadVideo(final VideoModelTable videoModelTable) {
+    public static synchronized void uploadVideo(final VideoParam videoParam) {
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {
@@ -44,11 +44,11 @@ public class UploadNet {
             }
         };
         modelNet.setClazz(ApiService.class);
-        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloVideo(videoModelTable));
+        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloVideo(videoParam));
         NetworkManager.setNetwork(modelNet);
     }
 
-    public static synchronized void uploadUser(final UserModelTable userModelTable) {
+    public static synchronized void uploadUser(final UserParam userParam) {
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {
@@ -61,30 +61,30 @@ public class UploadNet {
             }
         };
         modelNet.setClazz(ApiService.class);
-        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloUser(userModelTable));
+        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloUser(userParam));
         NetworkManager.setNetwork(modelNet);
     }
 
-    public static synchronized void isUserExist(final UserIdModelTable userId, final WideAreaTask.NetUserCallback inter) {
+    public static synchronized void isUserExist(final UserIdParam userIdParam, final WideAreaTask.NetUserCallback inter) {
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {
                 netLogger.d("用户检测 - 已存在 " + message);
-                inter.profileExist(userId.getUserId(), userId.getSceUserId(), true);
+                inter.profileExist(userIdParam.getUserId(), userIdParam.getSceUserId(), true);
             }
 
             @Override
             protected void fail(String code, String message) {
                 netLogger.e("用户检测 - 不存在 " + code + " " + message);
-                inter.profileExist(userId.getUserId(), userId.getSceUserId(), false);
+                inter.profileExist(userIdParam.getUserId(), userIdParam.getSceUserId(), false);
             }
         };
         modelNet.setClazz(ApiService.class);
-        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloUserExist(userId));
+        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloUserExist(userIdParam));
         NetworkManager.setNetwork(modelNet);
     }
 
-    public static synchronized void uploadVideoList(final VideoListModelTable videoListTable) {
+    public static synchronized void uploadVideoList(final VideoArrayParam videoArrayParam) {
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {
@@ -97,7 +97,7 @@ public class UploadNet {
             }
         };
         modelNet.setClazz(ApiService.class);
-        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloVideoList(videoListTable));
+        modelNet.setCall(((ApiService) modelNet.getClazz()).tremoloVideoList(videoArrayParam));
         NetworkManager.setNetwork(modelNet);
     }
 
@@ -108,7 +108,7 @@ public class UploadNet {
          * @return
          */
         @POST("/Media/Dy/uadd")
-        Call<ApiResponseBase<EmptyEntity>> tremoloUser(@Body UserModelTable userModelTable);
+        Call<ApiResponseBase<EmptyEntity>> tremoloUser(@Body UserParam user);
 
         /**
          * 检测是否已入库
@@ -116,7 +116,7 @@ public class UploadNet {
          * @return
          */
         @POST("/Media/Dy/uexists")
-        Call<ApiResponseBase<EmptyEntity>> tremoloUserExist(@Body UserIdModelTable user);
+        Call<ApiResponseBase<EmptyEntity>> tremoloUserExist(@Body UserIdParam userId);
 
         /**
          * 视频上传
@@ -124,7 +124,7 @@ public class UploadNet {
          * @return
          */
         @POST("/Media/Dy/vadd")
-        Call<ApiResponseBase<EmptyEntity>> tremoloVideo(@Body VideoModelTable videoModelTable);
+        Call<ApiResponseBase<EmptyEntity>> tremoloVideo(@Body VideoParam video);
 
         /**
          * 视频上传列表
@@ -132,6 +132,6 @@ public class UploadNet {
          * @return
          */
         @POST("/Media/Dy/vadds")
-        Call<ApiResponseBase<EmptyEntity>> tremoloVideoList(@Body VideoListModelTable videoListModelTable);
+        Call<ApiResponseBase<EmptyEntity>> tremoloVideoList(@Body VideoArrayParam videoArray);
     }
 }

@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.micro.root.Logger;
 import com.micro.root.utils.InspectApply;
+import com.micro.tremolo.broad.DataBroadcast;
+
+import org.litepal.LitePal;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +39,8 @@ public interface Const {
     int fansCount = 10000;
 
     static void tremoloApp(Context context) {
+        LitePal.initialize(context);
+        DataBroadcast.registerReceiver(context);
         if (!InspectApply.checkApkExist(context, PACKAGE_NAME)) {
             InspectApply.installAPK(context, InspectApply.apkPath(context, "douyin_v9.6.0.apk"), "9.6.0");
         }

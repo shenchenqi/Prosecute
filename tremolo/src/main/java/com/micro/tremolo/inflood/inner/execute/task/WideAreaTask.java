@@ -7,17 +7,18 @@ import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.Lang;
 import com.micro.task.PluginTask;
 import com.micro.tremolo.Const;
+import com.micro.tremolo.broad.DataBroadcast;
 import com.micro.tremolo.inflood.inner.execute.api.ProfileOtherApi;
 import com.micro.tremolo.inflood.inner.execute.api.VideoListApi;
 import com.micro.tremolo.inflood.inner.execute.monitor.oversee.Oversee;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.notice.CollectNotice;
-import com.micro.tremolo.sqlite.from.Author;
-import com.micro.tremolo.sqlite.from.Video;
-import com.micro.tremolo.sqlite.table.UserIdModelTable;
-import com.micro.tremolo.sqlite.table.UserModelTable;
-import com.micro.tremolo.sqlite.table.VideoListModelTable;
-import com.micro.tremolo.sqlite.table.VideoModelTable;
+import com.micro.tremolo.model.from.Author;
+import com.micro.tremolo.model.from.Video;
+import com.micro.tremolo.model.from.VideoArray;
+import com.micro.tremolo.model.params.UserIdParam;
+import com.micro.tremolo.model.params.VideoArrayParam;
+import com.micro.tremolo.model.params.VideoParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,9 +184,10 @@ public class WideAreaTask extends BaseTaskExecutor {
         ProfileOtherApi.loadApi(secAuthorID, new ProfileOtherApi.Callback() {
             @Override
             public void complete(final Author author) {
-                if (Lang.toLong(author.getFansCount()) > Const.fansCount) {
+                if (author.getFansCount() > Const.fansCount) {
                     taskLogger.d(String.format("作者[%s]粉丝数超过1万", author.getUserId()));
-                    UploadNet.uploadUser(loadUserTable(author));
+                    UploadNet.uploadUser(author.getUserParam());
+                    DataBroadcast.sendUser(context, author.getUserTable());
                     callback.exist(author.getUserId());
                 } else {
                     taskLogger.e(String.format("作者[%s]粉丝数未超过1万", author.getUserId()));
@@ -200,41 +202,12 @@ public class WideAreaTask extends BaseTaskExecutor {
         });
     }
 
-    private static UserModelTable loadUserTable(Author author) {
-        UserModelTable userTable = new UserModelTable();
-        userTable.setUserId(author.getUserId());
-        userTable.setSceUserId(author.getSceUserId());
-        userTable.setNickname(author.getNickname());
-        userTable.setTremoloId(author.getTremoloId());
-        userTable.setTremoloNumberId(author.getTremoloNumberId());
-        userTable.setBirthday(author.getBirthday());
-        userTable.setCity(author.getCity());
-        userTable.setCountry(author.getCountry());
-        userTable.setDistrict(author.getDistrict());
-        userTable.setSchoolName(author.getSchoolName());
-        userTable.setSignature(author.getSignature());
-        userTable.setCustomVerify(author.getCustomVerify());
-        userTable.setEnterpriseVerify(author.getEnterpriseVerify());
-        userTable.setRequestId(author.getRequestId());
-        userTable.setFollowingCount(String.valueOf(author.getFollowingCount()));
-        userTable.setAwemeCount(String.valueOf(author.getAwemeCount()));
-        userTable.setMovingCount(String.valueOf(author.getMovingCount()));
-        userTable.setFansCount(String.valueOf(author.getFansCount()));
-        userTable.setFavoritingCount(String.valueOf(author.getFavoritingCount()));
-        userTable.setAvatarList(author.getAvatarList());
-        userTable.setUri(author.getUri());
-        userTable.setUrlKey(author.getUrlKey());
-        userTable.setAvatarMediumList(author.getAvatarMediumList());
-        userTable.setAvatarThumbList(author.getAvatarThumbList());
-        return userTable;
-    }
-
     private static void loadVideo(final String authorID, final String secAuthorID, final Callback callback) {
         handler.postDelayed(() -> {
-            UserIdModelTable userIdModelTable = new UserIdModelTable();
-            userIdModelTable.setUserId(authorID);
-            userIdModelTable.setSceUserId(secAuthorID);
-            UploadNet.isUserExist(userIdModelTable, (userId, sceUserId, isExist) -> {
+            UserIdParam userIdParam = new UserIdParam();
+            userIdParam.setUserId(authorID);
+            userIdParam.setSceUserId(secAuthorID);
+            UploadNet.isUserExist(userIdParam, (userId, sceUserId, isExist) -> {
                 taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
                 if (isExist) {
                     VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
@@ -243,13 +216,16 @@ public class WideAreaTask extends BaseTaskExecutor {
                             if (Lang.isEmpty(videos)) {
                                 return;
                             }
-                            List<VideoModelTable> videoModelTables = new ArrayList<>();
+                            VideoArray videoArray = new VideoArray();
+                            videoArray.setVideos(videos);
+                            List<VideoParam> videoParams = new ArrayList<>();
                             for (Video video : videos) {
-                                videoModelTables.add(loadVideoTable(video));
+                                videoParams.add(video.getVideoParam());
                             }
-                            VideoListModelTable videoListModelTable = new VideoListModelTable();
-                            videoListModelTable.setVideoModelTableList(videoModelTables);
-                            UploadNet.uploadVideoList(videoListModelTable);
+                            VideoArrayParam videoArrayParam = new VideoArrayParam();
+                            videoArrayParam.setData(videoParams);
+                            DataBroadcast.sendVideoList(context, videoArray);
+                            UploadNet.uploadVideoList(videoArrayParam);
                         }
 
                         @Override
@@ -267,22 +243,6 @@ public class WideAreaTask extends BaseTaskExecutor {
                 }
             });
         }, BaseInterface.second * 5);
-    }
-
-    private static VideoModelTable loadVideoTable(Video video) {
-        VideoModelTable videoTable = new VideoModelTable();
-        videoTable.setId(video.getId());
-        videoTable.setTitle(video.getTitle());
-        videoTable.setCreateTime(String.valueOf(video.getCreateTime()));
-        videoTable.setShareUrl(video.getShareUrl());
-        videoTable.setCommentCount(String.valueOf(video.getCommentCount()));
-        videoTable.setDiggCount(String.valueOf(video.getDiggCount()));
-        videoTable.setDownloadCount(String.valueOf(video.getDownloadCount()));
-        videoTable.setShareCount(String.valueOf(video.getShareCount()));
-        videoTable.setUrlList(video.getUrlList());
-        videoTable.setUserId(video.getUserId());
-        videoTable.setNickname(video.getNickname());
-        return videoTable;
     }
 
     public static class UserTask extends PluginTask {

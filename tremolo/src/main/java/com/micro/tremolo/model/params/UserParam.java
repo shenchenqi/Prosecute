@@ -1,9 +1,12 @@
-package com.micro.tremolo.sqlite.table;
+package com.micro.tremolo.model.params;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class UserModelTable implements Serializable /*extends DataTable*/ {
+/**
+ * @Author KiLin
+ * @Time 2020/4/15 10:25
+ */
+public class UserParam extends BaseParam {
     private String userId;
     private String sceUserId;
     private String nickname;
@@ -220,111 +223,4 @@ public class UserModelTable implements Serializable /*extends DataTable*/ {
     public void setUrlKey(String urlKey) {
         this.urlKey = urlKey;
     }
-
-    /**
-     * 已准备 = 0; 未上传 = 1; 上传 = 2;
-     */
-    /*private int update;
-
-    public int getUpdate() {
-        return update;
-    }
-
-    public void setUpdate(int update) {
-        this.update = update;
-    }*/
-
-    @Override
-    public String toString() {
-        return "UserModelTable{" +
-                "\nuserId='" + userId + '\'' +
-                "\nsceUserId='" + sceUserId + '\'' +
-                ", \nnickname='" + nickname + '\'' +
-                ", \ntremoloId='" + tremoloId + '\'' +
-                ", \ntremoloNumberId='" + tremoloNumberId + '\'' +
-                ", \nbirthday='" + birthday + '\'' +
-                ", \ncity='" + city + '\'' +
-                ", \ncountry='" + country + '\'' +
-                ", \ndistrict='" + district + '\'' +
-                ", \nschoolName='" + schoolName + '\'' +
-                ", \nsignature='" + signature + '\'' +
-                ", \ncustomVerify='" + customVerify + '\'' +
-                ", \nenterpriseVerify='" + enterpriseVerify + '\'' +
-                ", \nrequestId='" + requestId + '\'' +
-                ", \nfollowingCount=" + followingCount +
-                ", \nfavoritingCount=" + favoritingCount +
-                ", \nawemeCount=" + awemeCount +
-                ", \nfansCount=" + fansCount +
-                ", \nmovingCount=" + movingCount +
-                ", \navatarList=" + avatarList +
-                ", \navatarMediumList=" + avatarMediumList +
-                ", \navatarThumbList=" + avatarThumbList +
-                ", \nuri='" + uri + '\'' +
-                ", \nurlKey='" + urlKey + '\'' +
-                "\n}";
-    }
-
-    /*public Map<String, Object> getUserMap() {
-        Map<String, Object> map = new HashMap<>();
-        if (Lang.isNotEmpty(getUserId())) {
-            map.put("userId", getUserId());
-        }
-        if (Lang.isNotEmpty(getNickname())) {
-            map.put("nickname", getNickname());
-        }
-        if (Lang.isNotEmpty(getTremoloId())) {
-            map.put("tremoloId", getTremoloId());
-        }
-        if (Lang.isNotEmpty(getTremoloNumberId())) {
-            map.put("tremoloNumberId", getTremoloNumberId());
-        }
-        if (Lang.isNotEmpty(getBirthday())) {
-            map.put("birthday", getBirthday());
-        }
-        if (Lang.isNotEmpty(getCity())) {
-            map.put("city", getCity());
-        }
-        if (Lang.isNotEmpty(getCountry())) {
-            map.put("country", getCountry());
-        }
-        if (Lang.isNotEmpty(getDistrict())) {
-            map.put("district", getDistrict());
-        }
-        if (Lang.isNotEmpty(getSchoolName())) {
-            map.put("schoolName", getSchoolName());
-        }
-        if (Lang.isNotEmpty(getSignature())) {
-            map.put("signature", getSignature());
-        }
-        if (Lang.isNotEmpty(getCustomVerify())) {
-            map.put("customVerify", getCustomVerify());
-        }
-        if (Lang.isNotEmpty(getEnterpriseVerify())) {
-            map.put("enterpriseVerify", getEnterpriseVerify());
-        }
-        if (Lang.isNotEmpty(getRequestId())) {
-            map.put("requestId", getRequestId());
-        }
-        map.put("followingCount", getFollowingCount());
-        map.put("favoritingCount", getFavoritingCount());
-        map.put("awemeCount", getAwemeCount());
-        map.put("fansCount", getFansCount());
-        map.put("movingCount", getMovingCount());
-        if (Lang.isNotEmpty(getAvatarList())) {
-            map.put("avatarList", getAvatarList());
-        }
-        if (Lang.isNotEmpty(getAvatarMediumList())) {
-            map.put("avatarMediumList", getAvatarMediumList());
-        }
-        if (Lang.isNotEmpty(getAvatarThumbList())) {
-            map.put("avatarThumbList", getAvatarThumbList());
-        }
-        if (Lang.isNotEmpty(getUri())) {
-            map.put("uri", getUri());
-        }
-        if (Lang.isNotEmpty(getUrlKey())) {
-            map.put("urlKey", getUrlKey());
-        }
-        return map;
-    }*/
 }

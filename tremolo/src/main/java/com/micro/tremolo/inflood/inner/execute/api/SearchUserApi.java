@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.micro.hook.config.Hook;
 import com.micro.root.utils.Lang;
 import com.micro.tremolo.inflood.version.TremoloParam;
-import com.micro.tremolo.sqlite.from.Author;
+import com.micro.tremolo.model.from.Author;
 
 import java.util.List;
 
