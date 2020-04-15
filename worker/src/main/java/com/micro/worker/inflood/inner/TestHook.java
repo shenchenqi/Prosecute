@@ -11,8 +11,10 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.root.Logger;
-import com.micro.worker.inflood.inner.execute.api.UserProfileApi;
 import com.micro.worker.inflood.inner.replace.User;
+import com.micro.worker.inflood.inner.replace.UserProfileResponse;
+
+import static com.micro.worker.Const.taskLogger;
 
 /**
  * @Author KiLin
@@ -383,7 +385,7 @@ public class TestHook {
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
                 logger.d(String.format("user profile activity getUrl() 返回数据[%s]", JSON.toJSONString(param.getResult())));
                 User user = new User(hook, hook.getField(param.getThisObject(), "e"));
-                UserProfileApi.loadApi(user, null);
+                taskLogger.d(user.toString());
             }
         });
         hook.methodMonitor(userProfileActivity, "k", new ForeignHook() {
@@ -515,7 +517,7 @@ public class TestHook {
         hook.methodMonitor("com.yxcorp.gifshow.retrofit.service.KwaiApiService", "userProfileV2", new ForeignHook() {
             @Override
             public void afterHookedMethod(ForeignHookParam param) throws Throwable {
-                logger.d(String.format("apiService profileFeed(String, String, RequestTiming) 参数[%s, %s, %s] 返回数据[%s]",
+                logger.d(String.format("apiService userProfileV2(String, String, RequestTiming) 参数[%s, %s, %s] 返回数据[%s]",
                         param.getArgs()[0], param.getArgs()[1], param.getArgs()[2],
                         JSON.toJSONString(param.getResult())));
             }
@@ -570,5 +572,12 @@ public class TestHook {
                 logger.d(String.format("profile.presenter.profile.w userProfileV2() [%s, %s]", id, JSON.toJSONString(object)));
             }
         });
+        hook.methodMonitor("com.yxcorp.gifshow.profile.presenter.profile.w", "b", new ForeignHook(){
+            @Override
+            public void afterHookedMethod(ForeignHookParam param) throws Throwable {
+                logger.d(String.format("profile.presenter.profile.w b(UserProfileResponse) 猜数[%s]", JSON.toJSONString(param.getArgs()[0])));
+                taskLogger.d(new UserProfileResponse(hook, param.getArgs()[0]).toString());
+            }
+        }, "com.yxcorp.gifshow.model.response.UserProfileResponse");
     }
 }
