@@ -48,11 +48,11 @@ public abstract class BaseWeChatExecutor extends BaseCode {
         };
     }
 
-    protected void removeTask(BaseRunnable task) {
+    public void removeTask(BaseRunnable task) {
         removeQueue(task);
     }
 
-    protected void addTask(BaseRunnable task) {
+    public void addTask(BaseRunnable task) {
         if (task.isSingle()) {
             singleQueue.offer(task);
         } else {

@@ -32,7 +32,7 @@ import static com.micro.tremolo.Const.taskLogger;
  * @Time 2020/4/10 13:10
  * 根据视频作者的ID，secID进行接口访问拿取数据
  */
-public class WideAreaTremolo {
+public class WideAreaTask {
 
     private final static Map<String, String> userMap = new HashMap<>();
 
@@ -58,12 +58,12 @@ public class WideAreaTremolo {
         }
     }
 
-    private static WideAreaTremolo mWideAreaTask;
+    private static WideAreaTask mWideAreaTask;
 
-    public static WideAreaTremolo getInstance(Context context) {
-        WideAreaTremolo.context = context;
+    public static WideAreaTask getInstance(Context context) {
+        WideAreaTask.context = context;
         if (mWideAreaTask == null) {
-            mWideAreaTask = new WideAreaTremolo();
+            mWideAreaTask = new WideAreaTask();
         }
         return mWideAreaTask;
     }
@@ -77,7 +77,7 @@ public class WideAreaTremolo {
     private static Oversee mOversee;
 
     public static void setOversee(Oversee mOversee) {
-        WideAreaTremolo.mOversee = mOversee;
+        WideAreaTask.mOversee = mOversee;
     }
 
     private static Handler handler;
@@ -94,7 +94,7 @@ public class WideAreaTremolo {
                 @Override
                 public void run() {
                     taskLogger.i("广域采集模式 检测扫描");
-                    WideAreaTremolo.requestData();
+                    WideAreaTask.requestData();
                     handler.postDelayed(this::run, BaseInterface.second * 20);
                 }
             }, BaseInterface.second * 20);
@@ -242,10 +242,6 @@ public class WideAreaTremolo {
                 }
             });
         }, BaseInterface.second * 5);
-    }
-
-    public interface NetUserCallback {
-        void profileExist(String userId, String sceUserId, boolean isExist);
     }
 
     public interface Callback {

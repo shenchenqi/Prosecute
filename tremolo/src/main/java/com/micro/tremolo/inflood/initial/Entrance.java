@@ -11,7 +11,8 @@ import com.micro.tremolo.inflood.inner.execute.api.VideoListApiTremolo;
 import com.micro.tremolo.inflood.inner.execute.monitor.MainActivityOversee;
 import com.micro.tremolo.inflood.inner.execute.monitor.ProfileFragmentOversee;
 import com.micro.tremolo.inflood.inner.execute.task.NarrowAreaTask;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaTremolo;
+import com.micro.tremolo.inflood.inner.execute.task.TremoloExecutor;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.inflood.inner.TestHook;
 import com.micro.tremolo.inflood.inner.execute.LogContent;
@@ -96,11 +97,12 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
             ProfileOtherApiTremolo.setInstance(getHookParam().getHook(), getIContext());
             VideoListApiTremolo.setInstance(getHookParam().getHook(), getIContext());
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
-            WideAreaTremolo.getInstance(getIContext());
+            WideAreaTask.getInstance(getIContext());
             NarrowAreaTask.getInstance(getIContext());
             mainActivityOversee = new MainActivityOversee(getHookParam().getHook(), getIContext());
             mainFragmentOversee = new MainFragmentOversee(getHookParam().getHook(), getIContext());
             profileFragmentOversee = new ProfileFragmentOversee(getHookParam().getHook(), getIContext());
+            new TremoloExecutor();
         } catch (Throwable throwable) {
             monitorLogger.e(throwable, "配置报错");
         }

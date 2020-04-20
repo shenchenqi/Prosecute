@@ -7,7 +7,7 @@ import com.micro.network.NetworkManager;
 import com.micro.network.available.model.ApiResponseBase;
 import com.micro.network.available.model.EmptyEntity;
 import com.micro.root.Logger;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaTremolo;
+import com.micro.tremolo.inflood.inner.execute.task.NetUserCallback;
 import com.micro.tremolo.model.params.UserIdParam;
 import com.micro.tremolo.model.params.UserParam;
 import com.micro.tremolo.model.params.VideoArrayParam;
@@ -65,7 +65,7 @@ public class UploadNet {
         NetworkManager.setNetwork(modelNet);
     }
 
-    public static synchronized void isUserExist(final UserIdParam userIdParam, final WideAreaTremolo.NetUserCallback inter) {
+    public static synchronized void isUserExist(final UserIdParam userIdParam, final NetUserCallback inter) {
         NetworkManager.ModelNet modelNet = new NetworkManager.ModelNet<ApiService, EmptyEntity>(context) {
             @Override
             protected void success(EmptyEntity model, String message) {

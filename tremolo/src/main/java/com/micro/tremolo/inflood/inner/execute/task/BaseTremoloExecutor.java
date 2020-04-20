@@ -52,11 +52,11 @@ public abstract class BaseTremoloExecutor extends BaseCode {
 
     protected abstract Runnable changeUI();
 
-    protected void removeTask(BaseRunnable task) {
+    public void removeTask(BaseRunnable task) {
         removeQueue(task);
     }
 
-    protected void addTask(BaseRunnable task) {
+    public void addTask(BaseRunnable task) {
         if (task.isSingle()) {
             singleQueue.offer(task);
         } else {
