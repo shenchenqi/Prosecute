@@ -1,4 +1,4 @@
-package com.micro.worker.notice;
+package com.micro.wechat.notice;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.widget.RemoteViews;
 
 import com.micro.root.notice.BaseNoticeBar;
 import com.micro.root.utils.Lang;
-import com.micro.worker.R;
+import com.micro.wechat.R;
 
 /**
  * created by kilin on 20-1-2 下午2:39
@@ -14,11 +14,11 @@ import com.micro.worker.R;
 public class CollectNotice extends BaseNoticeBar {
 
     public static void createShowNotice(Context context, String title, String content) {
-        new CollectNotice(context, String.format(Lang.isNotEmpty(title) ? "快手助手-(%s)" : "快手助手", title), content, null).createNotice();
+        new CollectNotice(context, String.format(Lang.isNotEmpty(title) ? "微信助手-(%s)" : "微信助手", title), content, null).createNotice();
     }
 
     public static void sendBroadcastNotice(Context context, String title, String content, Intent intent) {
-        CollectNotice collectNotice = new CollectNotice(context, String.format(Lang.isNotEmpty(title) ? "快手助手-(%s)" : "快手助手", title), content, intent);
+        CollectNotice collectNotice = new CollectNotice(context, String.format(Lang.isNotEmpty(title) ? "微信助手-(%s)" : "微信助手", title), content, intent);
         collectNotice.createNotice();
     }
 

@@ -46,7 +46,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
 
     private Entrance(HookParam hookParam) throws Throwable {
         super(hookParam);
-        CollectNotice.createShowNotice(getIContext(), "抖音助手", "抖音采集已准备");
+        CollectNotice.createShowNotice(getIContext(), "", "抖音采集已准备");
         UploadNet.initNet(hookParam.getApplication());
     }
 

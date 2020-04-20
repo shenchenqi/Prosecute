@@ -40,7 +40,7 @@ public class NarrowAreaTask {
     private static Context context;
 
     private static void createShowNotice(String content) {
-        CollectNotice.createShowNotice(context, "抖音助手-狭域指定模式", content);
+        CollectNotice.createShowNotice(context, "狭域指定模式", content);
     }
 
     public static void requestData(String search) {

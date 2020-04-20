@@ -72,7 +72,7 @@ public class WideAreaTask extends BaseTaskExecutor {
     private static Context context;
 
     private static void createShowNotice(String content) {
-        CollectNotice.createShowNotice(context, "抖音助手-广域采集模式", content);
+        CollectNotice.createShowNotice(context, "广域采集模式", content);
     }
 
     private static Oversee mOversee;

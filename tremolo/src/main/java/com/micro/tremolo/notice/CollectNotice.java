@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.micro.root.notice.BaseNoticeBar;
+import com.micro.root.utils.Lang;
 import com.micro.tremolo.R;
 
 /**
@@ -13,11 +14,11 @@ import com.micro.tremolo.R;
 public class CollectNotice extends BaseNoticeBar {
 
     public static void createShowNotice(Context context, String title, String content) {
-        new CollectNotice(context, title, content, null).createNotice();
+        new CollectNotice(context, String.format(Lang.isNotEmpty(title) ? "抖音助手-(%s)" : "抖音助手", title), content, null).createNotice();
     }
 
     public static void sendBroadcastNotice(Context context, String title, String content, Intent intent) {
-        CollectNotice collectNotice = new CollectNotice(context, title, content, intent);
+        CollectNotice collectNotice = new CollectNotice(context, String.format(Lang.isNotEmpty(title) ? "抖音助手-(%s)" : "抖音助手", title), content, intent);
         collectNotice.createNotice();
     }
 
