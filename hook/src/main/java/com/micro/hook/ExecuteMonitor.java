@@ -42,10 +42,11 @@ public abstract class ExecuteMonitor implements EventCallback {
             mHookRegisterMap.put(key, clazz);
         } else if (Lang.isEquals(2, HookConst.moduleStatus)) {
             mHookRegisterMap.put(key, clazz);
+        } else if (Lang.isEquals(3, HookConst.moduleStatus)) {
+            mHookRegisterMap.put(key, clazz);
         } else {
             mHookRegisterMap.put(key, clazz);
         }
-
     }
 
     protected final HookParam hookParam;

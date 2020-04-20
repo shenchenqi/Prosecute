@@ -18,6 +18,7 @@ public class NativeHook implements IXposedHookLoadPackage, IXposedHookInitPackag
         try {
             ExecuteMonitor.setHookRegister("TremoloModule", Class.forName("com.micro.tremolo.inflood.TremoloModule"));
             ExecuteMonitor.setHookRegister("WorkerModule", Class.forName("com.micro.worker.inflood.WorkerModule"));
+            ExecuteMonitor.setHookRegister("WeChatModule", Class.forName("com.micro.wechat.inflood.WeChatModule"));
         } catch (ClassNotFoundException e) {
             HookConst.hookLog.e(e, "hook 注册不成功");
         }
