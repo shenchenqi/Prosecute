@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.micro.HookConst;
 import com.micro.root.Logger;
+import com.micro.wechat.folder.InitRoot;
 
 import org.litepal.LitePal;
 
@@ -28,6 +29,7 @@ public interface Const extends HookConst {
     int collectType = 2;//采集类型 0-未知;1-控制布局UI;2-广域获取数据;3-狭域监控数据
 
     static void initWeChatApply(Context context) {
+        InitRoot.instance(context);
         LitePal.initialize(context);
         HookConst.installApp(context, PACKAGE_NAME, "kuaishou_v7.2.0.12758.apk", "7.2.0.12758");
     }

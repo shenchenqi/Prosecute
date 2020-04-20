@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.view.View;
 
+import com.micro.hook.BaseControl;
 import com.micro.hook.ControlLayout;
 import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
@@ -25,18 +26,16 @@ import static com.micro.tremolo.Const.taskLogger;
 /**
  * 自动控制布局
  */
-public class AutoUiControl extends ControlLayout implements BaseInterface {
-
-    private final Context context;
+public class AutoUiControl extends BaseControl implements BaseInterface {
 
     private final MainActivityControl mainActivityControl;
     private final MainFragmentControl mainFragmentControl;
     private final ProfileFragmentControl profileFragmentControl;
 
     public AutoUiControl(Hook hook, Context context) {
-        this.context = context;
+        super(context, hook);
         this.mainActivityControl = MainActivityControl.getInstance(context, hook);
-        this.mainFragmentControl = MainFragmentControl.getInstance(context, new MainFragmentControl.MainCallback() {
+        this.mainFragmentControl = MainFragmentControl.getInstance(context, hook, new MainFragmentControl.MainCallback() {
             @Override
             public void success(String value, int type) {
                 taskLogger.d(String.format("MainFragment[%s][%s]", type, value));
@@ -47,7 +46,7 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
                 taskLogger.e(String.format("MainFragment[%s][%s]", type, value));
             }
         });
-        this.profileFragmentControl = ProfileFragmentControl.getInstance(context, new ProfileFragmentControl.ProfileCallback() {
+        this.profileFragmentControl = ProfileFragmentControl.getInstance(context, hook, new ProfileFragmentControl.ProfileCallback() {
             @Override
             public void success(String value, int type) {
                 taskLogger.d(String.format("ProfileFragment[%s][%s]", type, value));
@@ -86,7 +85,7 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
             return;
         }
         if (handler == null) {
-            handler = new Handler(context.getMainLooper());
+            handler = new Handler(getIContext().getMainLooper());
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -121,11 +120,11 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
     }
 
     public void setMainFragmentView(View view) {
-        mainFragmentControl.setMainFragmentView(view);
+        mainFragmentControl.setView(view);
     }
 
     public void setProfileFragmentView(View view) {
-        profileFragmentControl.setProfileFragmentView(view);
+        profileFragmentControl.setView(view);
     }
 
     public void autoMoveUser() {
@@ -144,7 +143,7 @@ public class AutoUiControl extends ControlLayout implements BaseInterface {
 
     @Override
     public Context getIContext() {
-        return context;
+        return getContext();
     }
 
     public synchronized void obtainUser(User user) {

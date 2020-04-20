@@ -1,12 +1,11 @@
 package com.micro.tremolo.inflood.inner.execute.control;
 
 import android.content.Context;
-import android.os.Handler;
 import android.view.MotionEvent;
 
 import androidx.core.util.Pair;
 
-import com.micro.hook.ControlLayout;
+import com.micro.hook.BaseControl;
 import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.tremolo.inflood.version.TremoloParam;
@@ -20,20 +19,14 @@ import static com.micro.tremolo.Const.controlLogger;
  * @Author KiLin
  * @Time 2020/4/9 9:33
  */
-public class MainActivityControl extends ControlLayout {
+public class MainActivityControl extends BaseControl {
 
     public static MainActivityControl getInstance(Context context, Hook hook) {
         return new MainActivityControl(context, hook);
     }
 
-    private final Handler handler;
-    private final int[] screenData;
-    private final Hook hook;
-
     private MainActivityControl(Context context, Hook hook) {
-        this.screenData = phoneScreen(context);
-        this.hook = hook;
-        this.handler = new Handler(context.getMainLooper());
+        super(context, hook);
     }
 
     private Object mainActivity;
@@ -43,9 +36,9 @@ public class MainActivityControl extends ControlLayout {
     }
 
     public void simulateChangeVideo() {
-        float x = screenData[0] / 2;
-        float y = screenData[1] / 24;
-        controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s], 移动 [%s]", screenData[0], screenData[1], y));
+        float x = getWidth() / 2;
+        float y = getHeight() / 24;
+        controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s], 移动 [%s]", getWidth(), getHeight(), y));
         List<Pair<Float, Float>> pairList = new ArrayList<>();
         pairList.add(new Pair<>(x, y * 20));
         pairList.add(new Pair<>(x, y * 19));
@@ -62,9 +55,9 @@ public class MainActivityControl extends ControlLayout {
     }
 
     public void simulateRefreshVideo() {
-        float x = screenData[0] / 2;
-        float y = screenData[1] / 24;
-        controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s], 移动 [%s]", screenData[0], screenData[1], y));
+        float x = getWidth() / 2;
+        float y = getHeight() / 24;
+        controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s], 移动 [%s]", getWidth(), getHeight(), y));
         List<Pair<Float, Float>> pairList = new ArrayList<>();
         pairList.add(new Pair<>(x, y * 4));
         pairList.add(new Pair<>(x, y * 6));
@@ -85,7 +78,7 @@ public class MainActivityControl extends ControlLayout {
             controlLogger.e("Main Activity is null");
             return;
         }
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
             for (MotionEvent event : events) {
                 callDispatchTouchEvent(event);
             }
@@ -93,6 +86,6 @@ public class MainActivityControl extends ControlLayout {
     }
 
     private void callDispatchTouchEvent(MotionEvent event) {
-        hook.callMethod(mainActivity, TremoloParam.AWEME_MAIN_ACTIVITY_TOUCH_EVENT_METHOD, event);
+        getHook().callMethod(getControlFile(), TremoloParam.AWEME_MAIN_ACTIVITY_TOUCH_EVENT_METHOD, event);
     }
 }

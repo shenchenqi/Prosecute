@@ -57,14 +57,14 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
                 mainActivityControl = MainActivityControl.getInstance(getContext(), hook);
             }
             if (mainFragmentControl == null) {
-                mainFragmentControl = MainFragmentControl.getInstance(getContext());
+                mainFragmentControl = MainFragmentControl.getInstance(getContext(), hook);
             }
             if (profileFragmentControl == null) {
-                profileFragmentControl = ProfileFragmentControl.getInstance(getContext());
+                profileFragmentControl = ProfileFragmentControl.getInstance(getContext(), hook);
             }
         } else if (Const.isNarrowArea) {
             if (mainFragmentControl == null) {
-                mainFragmentControl = MainFragmentControl.getInstance(getContext());
+                mainFragmentControl = MainFragmentControl.getInstance(getContext(), hook);
             }
         } else {
             monitorLogger.d("不控制任何");
@@ -83,7 +83,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         if (autoUiControl != null) {
             autoUiControl.setMainFragmentView(mainFragmentView);
         } else if (mainFragmentControl != null) {
-            mainFragmentControl.setMainFragmentView(mainFragmentView);
+            mainFragmentControl.setView(mainFragmentView);
         }
     }
 
@@ -91,7 +91,7 @@ public class OverseePresenter extends PluginPresenter<OverseeInter> {
         if (autoUiControl != null) {
             autoUiControl.setProfileFragmentView(profileFragmentView);
         } else if (profileFragmentControl != null) {
-            profileFragmentControl.setProfileFragmentView(profileFragmentView);
+            profileFragmentControl.setView(profileFragmentView);
         }
     }
 

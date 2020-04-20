@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import androidx.core.util.Pair;
 
+import com.micro.hook.BaseControl;
 import com.micro.hook.ControlLayout;
+import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
@@ -23,7 +25,7 @@ import static com.micro.tremolo.Const.controlLogger;
  * @Author KiLin
  * @Time 2020/4/9 9:36
  */
-public class MainFragmentControl extends ControlLayout {
+public class MainFragmentControl extends BaseControl {
 
     private final static int clickAttention = 994;
     private final static int clickLive = 995;
@@ -35,21 +37,18 @@ public class MainFragmentControl extends ControlLayout {
     private final static int uiChangeVideoTop = 1001;
     private final static int uiChangeVideoBottom = 1002;
 
-    public static MainFragmentControl getInstance(Context context) {
-        return new MainFragmentControl(context, null);
+    public static MainFragmentControl getInstance(Context context, Hook hook) {
+        return new MainFragmentControl(context, hook, null);
     }
 
-    public static MainFragmentControl getInstance(Context context, MainCallback callback) {
-        return new MainFragmentControl(context, callback);
+    public static MainFragmentControl getInstance(Context context, Hook hook, MainCallback callback) {
+        return new MainFragmentControl(context, hook, callback);
     }
 
-    private final Context context;
-    private final int[] screenData;
     private Handler handler;
 
-    private MainFragmentControl(Context context, MainCallback callback) {
-        this.context = context;
-        this.screenData = phoneScreen(context);
+    private MainFragmentControl(Context context, Hook hook, MainCallback callback) {
+        super(context, hook);
         mainControlHandler(callback);
     }
 
@@ -57,7 +56,7 @@ public class MainFragmentControl extends ControlLayout {
         if (this.handler != null) {
             return;
         }
-        this.handler = new Handler(context.getMainLooper()) {
+        this.handler = new Handler(getContext().getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -347,7 +346,7 @@ public class MainFragmentControl extends ControlLayout {
             callback.fail("关注 布局不存在");
             return;
         }
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
             TextView attentionTv = bindView(mainFragmentView, TremoloParam.MAIN_FRAGMENT_ATTENTION_INTEGER);
             if (attentionTv != null) {
                 attentionTv.performClick();
@@ -363,7 +362,7 @@ public class MainFragmentControl extends ControlLayout {
             callback.fail("直播 布局不存在");
             return;
         }
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
             LinearLayout liveBt = bindView(mainFragmentView, TremoloParam.MAIN_FRAGMENT_LIVE_LAYOUT_INTEGER);
             if (liveBt != null) {
                 liveBt.performClick();
@@ -379,7 +378,7 @@ public class MainFragmentControl extends ControlLayout {
             callback.fail("查询 布局不存在");
             return;
         }
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
             LinearLayout searchBt = bindView(mainFragmentView, TremoloParam.MAIN_FRAGMENT_SEARCH_INTEGER);
             if (searchBt != null) {
                 searchBt.performClick();
@@ -395,7 +394,7 @@ public class MainFragmentControl extends ControlLayout {
             callback.fail("推荐 布局不存在");
             return;
         }
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
             TextView recommendTv = bindView(mainFragmentView, TremoloParam.MAIN_FRAGMENT_RECOMMEND_INTEGER);
             if (recommendTv != null) {
                 recommendTv.performClick();
@@ -412,7 +411,7 @@ public class MainFragmentControl extends ControlLayout {
             return;
         }
         //是直播会跳直播
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
             RelativeLayout userBt = bindView(mainFragmentView, TremoloParam.MAIN_FRAGMENT_USER_INTEGER);
             if (userBt != null) {
                 userBt.performClick();
@@ -428,16 +427,16 @@ public class MainFragmentControl extends ControlLayout {
             callback.fail("刷新 布局不存在");
             return;
         }
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
 
         }, callback.sleep());
     }
 
     private void moveToUser(final Callback callback) {
-        final float x = screenData[0] / 12;
-        final float y = screenData[1] / 2;
+        final float x = getWidth() / 12;
+        final float y = getHeight() / 2;
         controlLogger.d(String.format("滑动 用户界面 准备 width [%s], height [%s]", x, y));
-        handlerPost(handler, () -> startThread(() -> {
+        handlerPost(getHandler(), () -> startThread(() -> {
             List<Pair<Float, Float>> pairList = new ArrayList<>();
             pairList.add(new Pair<>(x * 11, y));
             pairList.add(new Pair<>(x * 10, y));
@@ -456,34 +455,32 @@ public class MainFragmentControl extends ControlLayout {
     }
 
     private void moveChangeVideoToTop(final Callback callback) {
-        final float x = screenData[0] / 2;
-        final float y = screenData[1] / 24;
+        final float x = getWidth() / 2;
+        final float y = getHeight() / 24;
         controlLogger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
-        handlerPost(handler, () -> {
-            startThread(() -> {
-                List<Pair<Float, Float>> pairList = new ArrayList<>();
-                pairList.add(new Pair<>(x, y * 20));
-                pairList.add(new Pair<>(x, y * 19));
-                pairList.add(new Pair<>(x, y * 18));
-                pairList.add(new Pair<>(x, y * 17));
-                pairList.add(new Pair<>(x, y * 16));
-                pairList.add(new Pair<>(x, y * 15));
-                pairList.add(new Pair<>(x, y * 14));
-                pairList.add(new Pair<>(x, y * 13));
-                pairList.add(new Pair<>(x, y * 12));
-                pairList.add(new Pair<>(x, y * 10));
-                pairList.add(new Pair<>(x, y * 4));
-                sendPointerSync(getMotionEvents(pairList));
-                callback.success("视频切换 向上滑动 成功 ");
-            });
-        }, callback.sleep());
+        handlerPost(getHandler(), () -> startThread(() -> {
+            List<Pair<Float, Float>> pairList = new ArrayList<>();
+            pairList.add(new Pair<>(x, y * 20));
+            pairList.add(new Pair<>(x, y * 19));
+            pairList.add(new Pair<>(x, y * 18));
+            pairList.add(new Pair<>(x, y * 17));
+            pairList.add(new Pair<>(x, y * 16));
+            pairList.add(new Pair<>(x, y * 15));
+            pairList.add(new Pair<>(x, y * 14));
+            pairList.add(new Pair<>(x, y * 13));
+            pairList.add(new Pair<>(x, y * 12));
+            pairList.add(new Pair<>(x, y * 10));
+            pairList.add(new Pair<>(x, y * 4));
+            sendPointerSync(getMotionEvents(pairList));
+            callback.success("视频切换 向上滑动 成功 ");
+        }), callback.sleep());
     }
 
     private void moveChangeVideoToBottom(final Callback callback) {
-        final float x = screenData[0] / 2;
-        final float y = screenData[1] / 24;
+        final float x = getWidth() / 2;
+        final float y = getHeight() / 24;
         controlLogger.d(String.format("滑动 视频切换 准备 width [%s], height [%s]", x, y));
-        handlerPost(handler, () -> startThread(() -> {
+        handlerPost(getHandler(), () -> startThread(() -> {
             List<Pair<Float, Float>> pairList = new ArrayList<>();
             pairList.add(new Pair<>(x, y * 8));
             pairList.add(new Pair<>(x, y * 9));

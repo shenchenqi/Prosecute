@@ -8,7 +8,9 @@ import android.widget.ImageView;
 
 import androidx.core.util.Pair;
 
+import com.micro.hook.BaseControl;
 import com.micro.hook.ControlLayout;
+import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
@@ -21,32 +23,29 @@ import static com.micro.tremolo.Const.controlLogger;
  * @Author KiLin
  * @Time 2020/4/9 9:41
  */
-public class ProfileFragmentControl extends ControlLayout {
+public class ProfileFragmentControl extends BaseControl {
 
     private final static int clickBack = 1000;
     public final static int uiLoadMoreVideo = 1001;
     public final static int uiMoveVideo = 1002;
 
-    public static ProfileFragmentControl getInstance(Context context) {
-        return new ProfileFragmentControl(context, null);
+    public static ProfileFragmentControl getInstance(Context context, Hook hook) {
+        return new ProfileFragmentControl(context, hook, null);
     }
 
-    public static ProfileFragmentControl getInstance(Context context, ProfileCallback callback) {
-        return new ProfileFragmentControl(context, callback);
+    public static ProfileFragmentControl getInstance(Context context, Hook hook, ProfileCallback callback) {
+        return new ProfileFragmentControl(context, hook, callback);
     }
 
-    private final Context context;
-    private final int[] screenData;
     private Handler handler;
 
-    private ProfileFragmentControl(Context context, ProfileCallback callback) {
-        this.context = context;
-        this.screenData = phoneScreen(context);
+    private ProfileFragmentControl(Context context, Hook hook, ProfileCallback callback) {
+        super(context, hook);
         userControlHandler(callback);
     }
 
     private void userControlHandler(final ProfileCallback callback) {
-        this.handler = new Handler(context.getMainLooper()) {
+        this.handler = new Handler(getContext().getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -132,12 +131,6 @@ public class ProfileFragmentControl extends ControlLayout {
         };
     }
 
-    private View profileFragmentView;
-
-    public void setProfileFragmentView(View profileFragmentView) {
-        this.profileFragmentView = profileFragmentView;
-    }
-
     public void clickBack() {
         handler.sendEmptyMessage(clickBack);
     }
@@ -151,12 +144,12 @@ public class ProfileFragmentControl extends ControlLayout {
     }
 
     private void clickBackView(final Callback callback) {//com.ss.android.ugc.aweme:id/ko 0x7f0701ae (2131165614)
-        if (profileFragmentView == null) {
+        if (getView() == null) {
             callback.fail("返回 布局不存在");
             return;
         }
-        handlerPost(handler, () -> {
-            ImageView backBt = bindView(profileFragmentView, TremoloParam.USER_BACK_INTEGER);
+        handlerPost(getHandler(), () -> {
+            ImageView backBt = bindView(getView(), TremoloParam.USER_BACK_INTEGER);
             if (backBt != null) {
                 backBt.performClick();
                 callback.success("返回点击成功");
@@ -167,10 +160,10 @@ public class ProfileFragmentControl extends ControlLayout {
     }
 
     private void moveToUserMoreVideo(final Callback callback) {
-        final float x = screenData[0] / 2;
-        final float y = screenData[1] / 12;
+        final float x = getWidth() / 2;
+        final float y = getHeight() / 12;
         controlLogger.d(String.format("滑动 加载更多视频 准备 width [%s], height [%s]", x, y));
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();
                 pairList.add(new Pair<>(x, y * 11));
@@ -191,10 +184,10 @@ public class ProfileFragmentControl extends ControlLayout {
     }
 
     private void moveToVideo(final Callback callback) {
-        final float x = screenData[0] / 12;
-        final float y = screenData[1] / 2;
+        final float x = getWidth() / 12;
+        final float y = getHeight() / 2;
         controlLogger.d(String.format("滑动 视频界面 准备 width [%s], height [%s]", x, y));
-        handlerPost(handler, () -> {
+        handlerPost(getHandler(), () -> {
             startThread(() -> {
                 List<Pair<Float, Float>> pairList = new ArrayList<>();
                 pairList.add(new Pair<>(x * 1, y));
