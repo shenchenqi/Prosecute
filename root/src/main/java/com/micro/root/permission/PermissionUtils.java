@@ -27,7 +27,7 @@ import java.util.List;
 
 public class PermissionUtils {
 
-    private static final Logger logger = Logger.getLogger("root", "Permission");
+    private static final Logger logger = Logger.getLogger("Root", "Permission");
 
     public static final int INSTALL_APK_REQUEST_CODE = 100;
     private static PermissionUtils instance;

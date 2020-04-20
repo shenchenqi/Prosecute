@@ -19,7 +19,7 @@ import com.miui.enterprise.sdk.ApplicationManager;
  */
 public abstract class RomPresenter <Inter extends RomInter> extends CreateRom {
 
-    private static final Logger logger = Logger.getLogger("rom", "RomLog");
+    private static final Logger logger = Logger.getLogger("Rom", "RomLog");
     private static final String TAG = "Root-Rom";
 
     protected RomPresenter(Context context, String packageName, String createDir) {

@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class BaseTaskExecutor {
 
-    private static final Logger logger = Logger.getLogger("tremoloLog", "PluginLog");
+    private static final Logger logger = Logger.getLogger("WorkerLog", "PluginLog");
     private static BlockingQueue<PluginTask> cycleQueue = new LinkedBlockingQueue<>();
     private static BlockingQueue<PluginTask> singleQueue = new LinkedBlockingQueue<>();
     private static BlockingQueue<PluginTask> parallelQueue = new LinkedBlockingQueue<>();

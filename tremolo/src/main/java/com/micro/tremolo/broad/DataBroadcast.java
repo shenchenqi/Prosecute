@@ -18,7 +18,7 @@ import com.micro.tremolo.model.table.VideoTable;
  * @Time 2020/4/15 11:36
  */
 public class DataBroadcast extends BaseBroadcastReceiver {
-    private static final Logger logger = Logger.getLogger("tremoloLog", "BroadcastLog");
+    private static final Logger logger = Logger.getLogger("TremoloLog", "BroadcastLog");
 
     private static final String ACTION_TREMOLO_VIDEO_LIST = "com.prosecute.tremolo.video.list";
     private static final String NAME_TREMOLO_VIDEO_LIST = "prosecute.tremolo.video.list";

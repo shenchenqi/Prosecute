@@ -23,7 +23,7 @@ import static com.micro.worker.Const.taskLogger;
  */
 public class TestHook {
 
-    private static final Logger logger = Logger.getLogger("workerLog", "TestLog");
+    private static final Logger logger = Logger.getLogger("WorkerLog", "TestLog");
 
     public static void test(Hook hook) {
         util(hook);

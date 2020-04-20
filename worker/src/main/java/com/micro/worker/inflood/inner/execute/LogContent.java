@@ -111,6 +111,6 @@ public class LogContent implements PluginInter {
     }
 
     private synchronized Logger getLogger(String tag) {
-        return Logger.getLogger("workerLog", String.format("KSLog-%s", tag));
+        return Logger.getLogger("WorkerLog", String.format("KSLog-%s", tag));
     }
 }

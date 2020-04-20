@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class TestHook {
 
-    private static final Logger logger = Logger.getLogger("tremoloLog", "TestLog");
+    private static final Logger logger = Logger.getLogger("TremoloLog", "TestLog");
 
     public static void test(Hook hook) {
         /*mainActivity(hook);
