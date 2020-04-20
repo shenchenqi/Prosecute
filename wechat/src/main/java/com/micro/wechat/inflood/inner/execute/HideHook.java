@@ -66,7 +66,7 @@ public class HideHook implements PluginInter {
                 }
                 if (!element.getClassName().startsWith("de.robv.android.xposed")) {
                     elementList.add(element);
-                } else if (!element.getClassName().startsWith("com.android.kirin")) {
+                } else if (!element.getClassName().startsWith("com.micro.prosecute")) {
                     elementList.add(element);
                 }
             }

@@ -1,4 +1,4 @@
-package com.micro.wechat.inflood.inner.execute.api;
+package com.micro.hook.api;
 
 import android.content.Context;
 import android.os.Handler;
@@ -9,11 +9,10 @@ import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 
 /**
- * @Author KiLin
- * @Time 2020/4/11 10:50
+ * @Author: Kirin
+ * @CreateDate: 2020/4/20 13:34
  */
 public abstract class BaseApi implements BaseInterface {
-
     protected final Hook hook;
     private final Handler handler;
     private final Context context;
@@ -24,11 +23,15 @@ public abstract class BaseApi implements BaseInterface {
         this.context = context;
     }
 
-    protected synchronized void startThread(Runnable runnable) {
+    protected synchronized void run(long time, final Runnable runnable) {
+        post(time, () -> startThread(runnable));
+    }
+
+    private synchronized void startThread(Runnable runnable) {
         new Thread(runnable).start();
     }
 
-    protected synchronized void post(long time, Runnable runnable) {
+    private synchronized void post(long time, Runnable runnable) {
         if (time <= 0) {
             handler.post(runnable);
         } else {

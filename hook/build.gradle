@@ -28,4 +28,5 @@ dependencies {
     implementation project(path: ':root')
     compileOnly files('lib/xposed-89.jar')
     api deps.sqlcipher
+    api deps.alibaba.fastjson
 }

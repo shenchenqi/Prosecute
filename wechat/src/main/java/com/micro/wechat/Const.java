@@ -26,12 +26,12 @@ public interface Const extends HookConst {
     Logger monitorLogger = Logger.getLogger("WeChatLog", "MonitorLog");
     Logger taskLogger = Logger.getLogger("WeChatLog", "TaskLog");
 
-    int collectType = 2;//采集类型 0-未知;1-控制布局UI;2-广域获取数据;3-狭域监控数据
+    int collectType = 0;//采集类型 0-未知;
 
     static void initWeChatApply(Context context) {
         InitRoot.instance(context);
         LitePal.initialize(context);
-        HookConst.installApp(context, PACKAGE_NAME, "kuaishou_v7.2.0.12758.apk", "7.2.0.12758");
+        HookConst.installApp(context, PACKAGE_NAME, "xx.apk", "7.0.6");
     }
 
     static int isWeChatForegroundApply(Context context) {

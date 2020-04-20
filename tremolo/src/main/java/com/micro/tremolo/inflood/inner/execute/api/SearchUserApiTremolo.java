@@ -17,13 +17,13 @@ import static com.micro.tremolo.Const.taskLogger;
  * @Author KiLin
  * @Time 2020/4/11 10:54
  */
-public class SearchUserApi extends BaseApi {
+public class SearchUserApiTremolo extends TremoloBaseApi {
 
-    private static SearchUserApi mSearchUserApi;
+    private static SearchUserApiTremolo mSearchUserApi;
 
     public static void setInstance(Hook hook, Context context) {
         if (mSearchUserApi == null) {
-            mSearchUserApi = new SearchUserApi(hook, context);
+            mSearchUserApi = new SearchUserApiTremolo(hook, context);
         }
     }
 
@@ -31,7 +31,7 @@ public class SearchUserApi extends BaseApi {
         mSearchUserApi.loadSearchUserApi(search, callback);
     }
 
-    private SearchUserApi(Hook hook, Context context) {
+    private SearchUserApiTremolo(Hook hook, Context context) {
         super(hook, context);
     }
 
@@ -76,7 +76,7 @@ public class SearchUserApi extends BaseApi {
     }
 
     private void loadSearchUserApi(final String search, final long cursor, final String requestId, final BaseCallback callback) {
-        post(second * 5, () -> startThread(() -> {
+        run(second * 5, () -> {
             try {
                 Object object;
                 boolean isFirst;
@@ -91,7 +91,7 @@ public class SearchUserApi extends BaseApi {
             } catch (Throwable e) {
                 callback.fail(e, "调用搜索用户接口 报错: ");
             }
-        }));
+        });
     }
 
     private Object getSearchUserApi(String search, long size, int limit, int count, String requestId) {

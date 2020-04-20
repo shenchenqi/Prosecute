@@ -5,7 +5,7 @@ import android.view.MotionEvent;
 
 import androidx.core.util.Pair;
 
-import com.micro.hook.BaseControl;
+import com.micro.hook.control.BaseControl;
 import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.tremolo.inflood.version.TremoloParam;

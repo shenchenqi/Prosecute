@@ -8,8 +8,8 @@ import com.micro.root.utils.Lang;
 import com.micro.task.PluginTask;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.broad.DataBroadcast;
-import com.micro.tremolo.inflood.inner.execute.api.ProfileOtherApi;
-import com.micro.tremolo.inflood.inner.execute.api.VideoListApi;
+import com.micro.tremolo.inflood.inner.execute.api.ProfileOtherApiTremolo;
+import com.micro.tremolo.inflood.inner.execute.api.VideoListApiTremolo;
 import com.micro.tremolo.inflood.inner.execute.monitor.oversee.Oversee;
 import com.micro.tremolo.network.UploadNet;
 import com.micro.tremolo.notice.CollectNotice;
@@ -181,7 +181,7 @@ public class WideAreaTask extends BaseTaskExecutor {
 
     private static void loadUser(final String authorID, String secAuthorID, final Callback callback) {
         taskLogger.d(String.format("作者[%s]开始请求 接口", authorID));
-        ProfileOtherApi.loadApi(secAuthorID, new ProfileOtherApi.Callback() {
+        ProfileOtherApiTremolo.loadApi(secAuthorID, new ProfileOtherApiTremolo.Callback() {
             @Override
             public void complete(final Author author) {
                 if (author.getFansCount() > Const.fansCount) {
@@ -210,7 +210,7 @@ public class WideAreaTask extends BaseTaskExecutor {
             UploadNet.isUserExist(userIdParam, (userId, sceUserId, isExist) -> {
                 taskLogger.d(String.format("作者[%s]是否已存在服务器[%s]", userId, isExist));
                 if (isExist) {
-                    VideoListApi.loadApi(userId, sceUserId, new VideoListApi.Callback() {
+                    VideoListApiTremolo.loadApi(userId, sceUserId, new VideoListApiTremolo.Callback() {
                         @Override
                         public void videoList(List<Video> videos) {
                             if (Lang.isEmpty(videos)) {

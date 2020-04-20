@@ -3,13 +3,12 @@ package com.micro.tremolo.inflood.inner.execute.control;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.core.util.Pair;
 
-import com.micro.hook.BaseControl;
-import com.micro.hook.ControlLayout;
+import com.micro.hook.control.BaseControl;
+import com.micro.hook.control.ControlLayout;
 import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.tremolo.inflood.version.TremoloParam;

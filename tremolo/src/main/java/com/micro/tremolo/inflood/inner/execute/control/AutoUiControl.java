@@ -4,8 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.view.View;
 
-import com.micro.hook.BaseControl;
-import com.micro.hook.ControlLayout;
+import com.micro.hook.control.BaseControl;
 import com.micro.hook.config.Hook;
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.Lang;

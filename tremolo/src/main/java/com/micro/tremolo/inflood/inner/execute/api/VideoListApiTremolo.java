@@ -17,13 +17,13 @@ import static com.micro.tremolo.Const.taskLogger;
  * @Author KiLin
  * @Time 2020/4/11 13:06
  */
-public class VideoListApi extends BaseApi {
+public class VideoListApiTremolo extends TremoloBaseApi {
 
-    private static VideoListApi mVideoListApi;
+    private static VideoListApiTremolo mVideoListApi;
 
     public static void setInstance(Hook hook, Context context) {
         if (mVideoListApi == null) {
-            mVideoListApi = new VideoListApi(hook, context);
+            mVideoListApi = new VideoListApiTremolo(hook, context);
         }
     }
 
@@ -31,7 +31,7 @@ public class VideoListApi extends BaseApi {
         mVideoListApi.loadVideoListApi(userId, secUserId, callback);
     }
 
-    private VideoListApi(Hook hook, Context context) {
+    private VideoListApiTremolo(Hook hook, Context context) {
         super(hook, context);
     }
 
@@ -70,7 +70,7 @@ public class VideoListApi extends BaseApi {
     }
 
     private void loadVideoListApi(final boolean isFirst, final String userId, final String secUserId, final long time, final BaseCallback callback) {
-        post(second * 5, () -> startThread(() -> {
+        run(second * 5, () -> {
             try {
                 Object object;
                 if (isFirst) {
@@ -82,7 +82,7 @@ public class VideoListApi extends BaseApi {
             } catch (Throwable e) {
                 callback.fail(e, "视频列表 报错: ");
             }
-        }));
+        });
     }
 
     private Object videoListApi(boolean isFirst, String userId, String secUserId, long time, int limit) {

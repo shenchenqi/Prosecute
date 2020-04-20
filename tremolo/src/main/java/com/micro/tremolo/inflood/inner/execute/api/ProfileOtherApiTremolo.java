@@ -14,7 +14,7 @@ import static com.micro.tremolo.Const.taskLogger;
  * @Author KiLin
  * @Time 2020/4/11 11:39
  */
-public class ProfileOtherApi extends BaseApi {
+public class ProfileOtherApiTremolo extends TremoloBaseApi {
 
     private final static String USER_URL;
 
@@ -22,11 +22,11 @@ public class ProfileOtherApi extends BaseApi {
         USER_URL = "https://aweme.snssdk.com/aweme/v1/user/profile/other/?sec_user_id={secUserId}&address_book_access=1&from=0";
     }
 
-    private static ProfileOtherApi mProfileOtherApi;
+    private static ProfileOtherApiTremolo mProfileOtherApi;
 
     public static void setInstance(Hook hook, Context context) {
         if (mProfileOtherApi == null) {
-            mProfileOtherApi = new ProfileOtherApi(hook, context);
+            mProfileOtherApi = new ProfileOtherApiTremolo(hook, context);
         }
     }
 
@@ -34,7 +34,7 @@ public class ProfileOtherApi extends BaseApi {
         mProfileOtherApi.loadProfileOtherApi(secUserId, callback);
     }
 
-    private ProfileOtherApi(Hook hook, Context context) {
+    private ProfileOtherApiTremolo(Hook hook, Context context) {
         super(hook, context);
     }
 
@@ -65,14 +65,14 @@ public class ProfileOtherApi extends BaseApi {
     }
 
     private void loadProfileOtherApi(final String secUserId, final BaseCallback callback) {
-        post(second * 5, () -> startThread(() -> {
+        run(second * 5, (Runnable) () -> {
             try {
                 Object object = profileOtherApi(secUserId);
                 callback.success(true, getJsonString(object));
             } catch (Throwable e) {
                 callback.fail(e, "用户信息 报错: ");
             }
-        }));
+        });
     }
 
     private Object profileOtherApi(String secUserId) {

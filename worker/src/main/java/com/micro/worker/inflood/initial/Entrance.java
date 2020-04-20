@@ -8,7 +8,7 @@ import com.micro.worker.Const;
 import com.micro.worker.inflood.inner.TestHook;
 import com.micro.worker.inflood.inner.execute.HideDialog;
 import com.micro.worker.inflood.inner.execute.LogContent;
-import com.micro.worker.inflood.inner.execute.api.UserProfileApi;
+import com.micro.worker.inflood.inner.execute.api.UserProfileApiWorker;
 import com.micro.worker.inflood.inner.execute.monitor.HomeActivityOversee;
 import com.micro.worker.inflood.version.WorkerParam;
 import com.micro.worker.notice.CollectNotice;
@@ -68,7 +68,7 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
                 }
             }
             dialog = new HideDialog(getHookParam().getHook(), getIContext());
-            UserProfileApi.initApi(getHookParam().getHook(), getIContext());
+            UserProfileApiWorker.initApi(getHookParam().getHook(), getIContext());
             homeActivityOversee = new HomeActivityOversee(getHookParam().getHook(), getIContext());
         } catch (Throwable throwable) {
             monitorLogger.e(throwable, "配置报错");

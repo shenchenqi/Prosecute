@@ -28,7 +28,7 @@ public interface Const extends HookConst {
     Logger monitorLogger = Logger.getLogger("WorkerLog", "MonitorLog");
     Logger taskLogger = Logger.getLogger("WorkerLog", "TaskLog");
 
-    int collectType = 2;//采集类型 0-未知;1-控制布局UI;2-广域获取数据;3-狭域监控数据
+    int collectType = 0;//采集类型 0-未知;
 
     static void initWorkerApply(Context context) {
         LitePal.initialize(context);

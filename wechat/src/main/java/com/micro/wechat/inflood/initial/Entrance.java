@@ -62,7 +62,6 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
                     Const.setWeChatTopApply(getIContext());
                 }
             }
-
         } catch (Throwable throwable) {
             monitorLogger.e(throwable, "配置报错");
         }
