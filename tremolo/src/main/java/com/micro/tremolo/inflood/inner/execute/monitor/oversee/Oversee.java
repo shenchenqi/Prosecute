@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.micro.hook.config.Hook;
 import com.micro.hook.plugin.Plugin;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaTremolo;
 
 /**
  * @Author KiLin
@@ -16,7 +16,7 @@ public abstract class Oversee extends Plugin<OverseePresenter, OverseeInter> imp
         super(hook, context);
         presenter.setHook(hook);
         presenter.initCreate();
-        WideAreaTask.setOversee(this);
+        WideAreaTremolo.setOversee(this);
     }
 
     @Override

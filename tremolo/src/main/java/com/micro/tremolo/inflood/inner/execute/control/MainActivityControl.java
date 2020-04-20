@@ -19,7 +19,7 @@ import static com.micro.tremolo.Const.controlLogger;
  * @Author KiLin
  * @Time 2020/4/9 9:33
  */
-public class MainActivityControl extends BaseControl {
+public class MainActivityControl extends BaseTremoloControl {
 
     public static MainActivityControl getInstance(Context context, Hook hook) {
         return new MainActivityControl(context, hook);

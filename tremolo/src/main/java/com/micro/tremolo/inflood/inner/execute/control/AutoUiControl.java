@@ -25,7 +25,7 @@ import static com.micro.tremolo.Const.taskLogger;
 /**
  * 自动控制布局
  */
-public class AutoUiControl extends BaseControl implements BaseInterface {
+public class AutoUiControl extends BaseTremoloControl implements BaseInterface {
 
     private final MainActivityControl mainActivityControl;
     private final MainFragmentControl mainFragmentControl;

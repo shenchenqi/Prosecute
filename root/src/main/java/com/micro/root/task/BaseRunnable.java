@@ -1,12 +1,18 @@
 package com.micro.root.task;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+
 /**
  * created by kilin on 19-12-23 下午3:44
  */
 public abstract class BaseRunnable implements Runnable {
     private static final long DEFAULT_TIMEOUT = 60 * 1000L;
 
+    private final String taskName;
     private final long timeout;
+    private final boolean isCycle;
+    private final boolean isSingle;
 
     protected BaseRunnable() {
         this(DEFAULT_TIMEOUT);
@@ -14,35 +20,58 @@ public abstract class BaseRunnable implements Runnable {
 
     protected BaseRunnable(long timeout) {
         this.timeout = timeout;
+        this.taskName = taskName();
+        this.isCycle = isCycleConfig();
+        this.isSingle = isSingleConfig();
     }
 
-    private String taskName;
+    protected abstract String taskName();
+
+    protected abstract boolean isCycleConfig();
+
+    protected abstract boolean isSingleConfig();
+
+    public boolean isCycle() {
+        return isCycle;
+    }
+
+    public boolean isSingle() {
+        return isSingle;
+    }
+
     private long startTime;
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
 
     public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
+    private Future future;
+    private Semaphore semaphore;
+
+    public Future getFuture() {
+        return future;
     }
 
-    private boolean timeOut() {
+    public void setFuture(Future future) {
+        this.future = future;
+    }
+
+    public Semaphore getSemaphore() {
+        return semaphore;
+    }
+
+    public void setSemaphore(Semaphore semaphore) {
+        this.semaphore = semaphore;
+    }
+
+    private boolean isTimeOut() {
         return startTime > 0 && System.currentTimeMillis() > startTime + timeout;
     }
 
     @Override
     public void run() {
         try {
-            if (timeOut()) {
+            if (isTimeOut()) {
                 timeout();
             } else {
                 process();
@@ -50,15 +79,16 @@ public abstract class BaseRunnable implements Runnable {
         } catch (Throwable e) {
             error(e);
         } finally {
+            if (semaphore != null) {
+                semaphore.release();
+            }
             finish();
         }
     }
 
     protected abstract void process();
 
-    protected void timeout() {
-
-    }
+    protected abstract void timeout();
 
     protected abstract void error(Throwable e);
 

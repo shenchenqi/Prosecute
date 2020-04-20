@@ -17,7 +17,7 @@ import static com.micro.tremolo.Const.taskLogger;
  * @Author KiLin
  * @Time 2020/4/11 10:54
  */
-public class SearchUserApiTremolo extends TremoloBaseApi {
+public class SearchUserApiTremolo extends BaseTremoloApi {
 
     private static SearchUserApiTremolo mSearchUserApi;
 

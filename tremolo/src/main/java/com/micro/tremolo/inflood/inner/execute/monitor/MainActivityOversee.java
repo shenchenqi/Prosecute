@@ -7,7 +7,7 @@ import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.Hook;
 import com.micro.tremolo.inflood.inner.execute.monitor.oversee.Oversee;
-import com.micro.tremolo.inflood.inner.execute.task.WideAreaTask;
+import com.micro.tremolo.inflood.inner.execute.task.WideAreaTremolo;
 import com.micro.tremolo.inflood.version.TremoloParam;
 
 import static com.micro.tremolo.Const.monitorLogger;
@@ -31,7 +31,7 @@ public class MainActivityOversee extends Oversee {
                 monitorLogger.d("Main Activity onCreate ");
                 presenter.setMainActivity(param.getThisObject());
                 presenter.statusMonitor();
-                WideAreaTask.canTremoloData(getIContext());
+                WideAreaTremolo.canTremoloData(getIContext());
             }
         }, Bundle.class);
         hook.methodMonitor(MainActivity, TremoloParam.AWEME_MAIN_ACTIVITY_VIDEO_CHANGE_METHOD, new ForeignHook() {

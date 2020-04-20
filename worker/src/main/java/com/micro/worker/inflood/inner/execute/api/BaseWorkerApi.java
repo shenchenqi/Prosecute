@@ -12,10 +12,10 @@ import com.micro.worker.inflood.version.WorkerParam;
  * @Author KiLin
  * @Time 2020/4/11 10:50
  */
-public abstract class WorkerBaseApi extends BaseApi implements BaseInterface {
+public abstract class BaseWorkerApi extends BaseApi implements BaseInterface {
 
 
-    protected WorkerBaseApi(Hook hook, Context context) {
+    protected BaseWorkerApi(Hook hook, Context context) {
         super(hook, context);
     }
 

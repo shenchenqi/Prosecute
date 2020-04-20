@@ -17,7 +17,7 @@ import static com.micro.tremolo.Const.taskLogger;
  * @Author KiLin
  * @Time 2020/4/11 13:06
  */
-public class VideoListApiTremolo extends TremoloBaseApi {
+public class VideoListApiTremolo extends BaseTremoloApi {
 
     private static VideoListApiTremolo mVideoListApi;
 

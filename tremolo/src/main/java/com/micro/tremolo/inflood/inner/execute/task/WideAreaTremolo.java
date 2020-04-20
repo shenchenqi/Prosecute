@@ -5,7 +5,6 @@ import android.os.Handler;
 
 import com.micro.root.mvp.BaseInterface;
 import com.micro.root.utils.Lang;
-import com.micro.task.PluginTask;
 import com.micro.tremolo.Const;
 import com.micro.tremolo.broad.DataBroadcast;
 import com.micro.tremolo.inflood.inner.execute.api.ProfileOtherApiTremolo;
@@ -33,7 +32,7 @@ import static com.micro.tremolo.Const.taskLogger;
  * @Time 2020/4/10 13:10
  * 根据视频作者的ID，secID进行接口访问拿取数据
  */
-public class WideAreaTask extends BaseTaskExecutor {
+public class WideAreaTremolo {
 
     private final static Map<String, String> userMap = new HashMap<>();
 
@@ -59,12 +58,12 @@ public class WideAreaTask extends BaseTaskExecutor {
         }
     }
 
-    private static WideAreaTask mWideAreaTask;
+    private static WideAreaTremolo mWideAreaTask;
 
-    public static WideAreaTask getInstance(Context context) {
-        WideAreaTask.context = context;
+    public static WideAreaTremolo getInstance(Context context) {
+        WideAreaTremolo.context = context;
         if (mWideAreaTask == null) {
-            mWideAreaTask = new WideAreaTask();
+            mWideAreaTask = new WideAreaTremolo();
         }
         return mWideAreaTask;
     }
@@ -78,7 +77,7 @@ public class WideAreaTask extends BaseTaskExecutor {
     private static Oversee mOversee;
 
     public static void setOversee(Oversee mOversee) {
-        WideAreaTask.mOversee = mOversee;
+        WideAreaTremolo.mOversee = mOversee;
     }
 
     private static Handler handler;
@@ -95,7 +94,7 @@ public class WideAreaTask extends BaseTaskExecutor {
                 @Override
                 public void run() {
                     taskLogger.i("广域采集模式 检测扫描");
-                    WideAreaTask.requestData();
+                    WideAreaTremolo.requestData();
                     handler.postDelayed(this::run, BaseInterface.second * 20);
                 }
             }, BaseInterface.second * 20);
@@ -243,160 +242,6 @@ public class WideAreaTask extends BaseTaskExecutor {
                 }
             });
         }, BaseInterface.second * 5);
-    }
-
-    public static class UserTask extends PluginTask {
-        private boolean isRun = false;
-
-        @Override
-        protected String taskName() {
-            return "user-task";
-        }
-
-        @Override
-        protected void process() {
-            Map<String, String> map = new HashMap<>(userMap);
-            if (map.isEmpty()) {
-                taskLogger.e("广域采集模式 用户采集 无数据");
-                return;
-            }
-            if (isRun) {
-                taskLogger.e("广域采集模式 用户采集 正在运行");
-                return;
-            }
-            isRun = true;
-            taskLogger.d("广域采集模式 用户采集 开始进行");
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                final String authorID = entry.getKey();
-                final String secAuthorID = entry.getValue();
-                if (Lang.isNotEmpty(authorID) && Lang.isNotEmpty(secAuthorID)) {
-                    taskLogger.d(String.format("用户[%s] 用户采集 开始请求", authorID));
-                    loadUser(authorID, secAuthorID, new Callback() {
-                        @Override
-                        public void exist(String authorID) {
-                            userMap.remove(authorID);
-                            setVideo(authorID, secAuthorID);
-                            isRun = false;
-                        }
-
-                        @Override
-                        public void end(String authorID) {
-                            userMap.remove(authorID);
-                            isRun = false;
-                        }
-                    });
-                    return;
-                }
-            }
-        }
-
-        @Override
-        protected void error(Throwable throwable) {
-            taskLogger.e(throwable, "广域采集模式 用户采集 报错");
-            isRun = false;
-        }
-
-        @Override
-        public void finish() {
-            taskLogger.i("广域采集模式 用户采集 结束");
-            isRun = false;
-            mWideAreaTask.removeTask(this);
-        }
-
-        @Override
-        public boolean isCycle() {
-            return true;
-        }
-
-        @Override
-        public boolean isSingle() {
-            return false;
-        }
-    }
-
-    public static class VideoTask extends PluginTask {
-        private boolean isRun = false;
-
-        @Override
-        protected String taskName() {
-            return "video-task";
-        }
-
-        @Override
-        protected void process() {
-            Map<String, String> map = new HashMap<>(videoMap);
-            if (map.isEmpty()) {
-                taskLogger.e("广域采集模式 视频采集 无数据");
-                return;
-            }
-            if (isRun) {
-                taskLogger.e("广域采集模式 视频采集 正在运行");
-                return;
-            }
-            isRun = true;
-            taskLogger.d("广域采集模式 视频采集 开始进行");
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                final String authorID = entry.getKey();
-                final String secAuthorID = entry.getValue();
-                if (Lang.isNotEmpty(authorID) && Lang.isNotEmpty(secAuthorID)) {
-                    taskLogger.d(String.format("用户[%s] 视频采集 开始请求", authorID));
-                    loadVideo(authorID, secAuthorID, new Callback() {
-                        @Override
-                        public void exist(String authorID) {
-                            isRun = false;
-                        }
-
-                        @Override
-                        public void end(String authorID) {
-                            videoMap.remove(authorID);
-                            isRun = false;
-                        }
-                    });
-                    return;
-                }
-            }
-        }
-
-        @Override
-        protected void error(Throwable throwable) {
-            taskLogger.e(throwable, "广域采集模式 视频采集 报错");
-            isRun = false;
-        }
-
-        @Override
-        public void finish() {
-            taskLogger.i("广域采集模式 视频采集 结束");
-            isRun = false;
-            mWideAreaTask.removeTask(this);
-        }
-
-        @Override
-        public boolean isCycle() {
-            return true;
-        }
-
-        @Override
-        public boolean isSingle() {
-            return true;
-        }
-    }
-
-    public static void setTasks() {
-        if (Const.isWideArea) {
-            mWideAreaTask.loadScheduled();
-            /*mWideAreaTask.setDistribution(new UserTask());
-            mWideAreaTask.setDistribution(new VideoTask());*/
-        }
-    }
-
-    @Override
-    protected Runnable changeUI() {
-        return () -> {
-            if (mOversee != null) {
-                taskLogger.d("广域采集模式 运行结束 视频切换");
-                mOversee.nextVideo();
-            }
-        };
     }
 
     public interface NetUserCallback {

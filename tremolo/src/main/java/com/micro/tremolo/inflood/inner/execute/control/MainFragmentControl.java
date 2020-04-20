@@ -25,7 +25,7 @@ import static com.micro.tremolo.Const.controlLogger;
  * @Author KiLin
  * @Time 2020/4/9 9:36
  */
-public class MainFragmentControl extends BaseControl {
+public class MainFragmentControl extends BaseTremoloControl {
 
     private final static int clickAttention = 994;
     private final static int clickLive = 995;

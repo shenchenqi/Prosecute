@@ -12,7 +12,7 @@ import static com.micro.worker.Const.taskLogger;
  * @Author KiLin
  * @Time 2020/4/14 15:28
  */
-public class UserProfileApiWorker extends WorkerBaseApi {
+public class UserProfileApiWorker extends BaseWorkerApi {
 
     private static UserProfileApiWorker mUserProfileApi;
 

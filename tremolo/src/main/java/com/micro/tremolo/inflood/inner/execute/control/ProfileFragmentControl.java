@@ -22,7 +22,7 @@ import static com.micro.tremolo.Const.controlLogger;
  * @Author KiLin
  * @Time 2020/4/9 9:41
  */
-public class ProfileFragmentControl extends BaseControl {
+public class ProfileFragmentControl extends BaseTremoloControl {
 
     private final static int clickBack = 1000;
     public final static int uiLoadMoreVideo = 1001;
