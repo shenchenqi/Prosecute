@@ -14,7 +14,7 @@ public class App extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         xposedApp();
-        Const.tremoloApp(this);
+        Const.initTremoloApp(this);
     }
 
     private void xposedApp() {

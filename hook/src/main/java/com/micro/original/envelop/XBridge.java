@@ -1,6 +1,6 @@
 package com.micro.original.envelop;
 
-import com.micro.Const;
+import com.micro.HookConst;
 
 import java.lang.reflect.Member;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class XBridge {
     public static XC_MethodHook.Unhook hookMethod(Member hookMethod, XC_MethodHook callback) {
         XC_MethodHook.Unhook unhook = XposedBridge.hookMethod(hookMethod, callback);
         if (unhook == null) {
-            Const.hookLog.e("XBridge", "监听方法失败");
+            HookConst.hookLog.e("XBridge", "监听方法失败");
             return null;
         }
         return unhook;

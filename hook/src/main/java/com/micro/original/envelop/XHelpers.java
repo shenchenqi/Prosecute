@@ -1,6 +1,6 @@
 package com.micro.original.envelop;
 
-import com.micro.Const;
+import com.micro.HookConst;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -24,7 +24,7 @@ public class XHelpers {
     public static Class<?> findClass(String className, ClassLoader classLoader) {
         Class<?> clazz = XposedHelpers.findClassIfExists(className, classLoader);
         if (clazz == null) {
-            Const.hookLog.e("XHelpers", String.format("类[%s]-未找到", className));
+            HookConst.hookLog.e("XHelpers", String.format("类[%s]-未找到", className));
             return null;
         }
         return clazz;
@@ -41,7 +41,7 @@ public class XHelpers {
     private static Method findMethod(Class<?> clazz, String methodName, Object... parameterTypes) {
         Method method = XposedHelpers.findMethodExactIfExists(clazz, methodName, parameterTypes);
         if (method == null) {
-            Const.hookLog.e("XHelpers", String.format("类[%s]方法[%s]-未找到", clazz.getSimpleName(), methodName));
+            HookConst.hookLog.e("XHelpers", String.format("类[%s]方法[%s]-未找到", clazz.getSimpleName(), methodName));
             return null;
         }
         return method;
@@ -57,7 +57,7 @@ public class XHelpers {
     private static Field findField(Class<?> clazz, String fieldName) {
         Field field = XposedHelpers.findFieldIfExists(clazz, fieldName);
         if (field == null) {
-            Const.hookLog.e("XHelpers", String.format("类[%s]对象[%s]-未找到", clazz.getSimpleName(), fieldName));
+            HookConst.hookLog.e("XHelpers", String.format("类[%s]对象[%s]-未找到", clazz.getSimpleName(), fieldName));
             return null;
         }
         return field;
@@ -73,7 +73,7 @@ public class XHelpers {
     private static Constructor<?> newClass(Class<?> clazz, Object... args) {
         Constructor<?> constructor = XposedHelpers.findConstructorBestMatch(clazz, args);
         if (constructor == null) {
-            Const.hookLog.e("XHelpers", String.format("类[%s]-匹配未成功", clazz.getSimpleName()));
+            HookConst.hookLog.e("XHelpers", String.format("类[%s]-匹配未成功", clazz.getSimpleName()));
             return null;
         }
         return constructor;
@@ -90,7 +90,7 @@ public class XHelpers {
     private static Method newMethod(Class<?> clazz, String methodName, Object... parameterTypes) {
         Method method = XposedHelpers.findMethodExactIfExists(clazz, methodName, parameterTypes);
         if (method == null) {
-            Const.hookLog.e("XHelpers", String.format("类[%s]方法[%s]-匹配未成功", clazz.getSimpleName(), methodName));
+            HookConst.hookLog.e("XHelpers", String.format("类[%s]方法[%s]-匹配未成功", clazz.getSimpleName(), methodName));
             return null;
         }
         return method;
@@ -111,9 +111,9 @@ public class XHelpers {
             if (unhook != null) {
                 return unhook;
             }
-            Const.hookLog.e("XHelpers", String.format("类[%s]监听-监听失败", clazz.getSimpleName()));
+            HookConst.hookLog.e("XHelpers", String.format("类[%s]监听-监听失败", clazz.getSimpleName()));
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]监听-匹配未成功", clazz.getSimpleName()));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]监听-匹配未成功", clazz.getSimpleName()));
         return null;
     }
 
@@ -168,9 +168,9 @@ public class XHelpers {
             if (unhook != null) {
                 return unhook;
             }
-            Const.hookLog.e("XHelpers", String.format("类[%s]方法[%s]监听-监听失败", clazz.getSimpleName(), methodName));
+            HookConst.hookLog.e("XHelpers", String.format("类[%s]方法[%s]监听-监听失败", clazz.getSimpleName(), methodName));
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]方法[%s]监听-匹配未成功", clazz.getSimpleName(), methodName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]方法[%s]监听-匹配未成功", clazz.getSimpleName(), methodName));
         return null;
     }
 
@@ -237,10 +237,10 @@ public class XHelpers {
                     field.set(treat, value);
                 }
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-设置值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-设置值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));*/
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));*/
     }
 
     public static void setCharField(Object treat, String fieldName, char value) {
@@ -250,10 +250,10 @@ public class XHelpers {
             try {
                 field.setChar(treat, value);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-设置值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-设置值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));*/
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));*/
     }
 
     public static Object getField(Object treat, String fieldName) {
@@ -263,10 +263,10 @@ public class XHelpers {
             try {
                 return field.get(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -277,10 +277,10 @@ public class XHelpers {
             try {
                 return field.getBoolean(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -291,10 +291,10 @@ public class XHelpers {
             try {
                 return field.getByte(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -305,10 +305,10 @@ public class XHelpers {
             try {
                 return field.getDouble(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -319,10 +319,10 @@ public class XHelpers {
             try {
                 return field.getFloat(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -333,10 +333,10 @@ public class XHelpers {
             try {
                 return field.getInt(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -347,10 +347,10 @@ public class XHelpers {
             try {
                 return field.getLong(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -361,10 +361,10 @@ public class XHelpers {
             try {
                 return field.getShort(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -375,10 +375,10 @@ public class XHelpers {
             try {
                 return field.getChar(treat);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有对象[%s]-拿取值报错", treat.getClass().getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有对象[%s]-匹配未成功", treat.getClass().getSimpleName(), fieldName));
         return 0;*/
     }
 
@@ -428,10 +428,10 @@ public class XHelpers {
                     field.set(null, value);
                 }
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-设置值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-设置值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));*/
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));*/
     }
 
     public static void setStaticCharField(String clazzName, ClassLoader classLoader, String fieldName, char value) {
@@ -448,10 +448,10 @@ public class XHelpers {
             try {
                 field.setChar(null, value);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-设置值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-设置值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));*/
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));*/
     }
 
     public static Object getStaticField(String clazzName, ClassLoader classLoader, String fieldName) {
@@ -469,10 +469,10 @@ public class XHelpers {
             try {
                 return field.get(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -491,10 +491,10 @@ public class XHelpers {
             try {
                 return field.getBoolean(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -513,10 +513,10 @@ public class XHelpers {
             try {
                 return field.getByte(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -535,10 +535,10 @@ public class XHelpers {
             try {
                 return field.getDouble(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -557,10 +557,10 @@ public class XHelpers {
             try {
                 return field.getFloat(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -579,10 +579,10 @@ public class XHelpers {
             try {
                 return field.getInt(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -601,10 +601,10 @@ public class XHelpers {
             try {
                 return field.getLong(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -623,10 +623,10 @@ public class XHelpers {
             try {
                 return field.getShort(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return null;*/
     }
 
@@ -645,10 +645,10 @@ public class XHelpers {
             try {
                 return field.getChar(null);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有对象[%s]-拿取值报错", clazz.getSimpleName(), fieldName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有对象[%s]-匹配未成功", clazz.getSimpleName(), fieldName));
         return 0;*/
     }
 
@@ -659,10 +659,10 @@ public class XHelpers {
             try {
                 return method.invoke(treat, args);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]私有方法[%s]-创建报错", treat.getClass().getSimpleName(), methodName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]私有方法[%s]-创建报错", treat.getClass().getSimpleName(), methodName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]私有方法[%s]-匹配未成功", treat.getClass().getSimpleName(), methodName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]私有方法[%s]-匹配未成功", treat.getClass().getSimpleName(), methodName));
         return null;*/
     }
 
@@ -681,10 +681,10 @@ public class XHelpers {
             try {
                 return method.invoke(null, args);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]公有方法[%s]-创建报错", clazz.getSimpleName(), methodName));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]公有方法[%s]-创建报错", clazz.getSimpleName(), methodName));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]公有方法[%s]-匹配未成功", clazz.getSimpleName(), methodName));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]公有方法[%s]-匹配未成功", clazz.getSimpleName(), methodName));
         return null;*/
     }
 
@@ -703,10 +703,10 @@ public class XHelpers {
             try {
                 return constructor.newInstance(args);
             } catch (Throwable e) {
-                Const.hookLog.e(e, "XHelpers", String.format("类[%s]-创建报错", clazz.getSimpleName()));
+                HookConst.hookLog.e(e, "XHelpers", String.format("类[%s]-创建报错", clazz.getSimpleName()));
             }
         }
-        Const.hookLog.e("XHelpers", String.format("类[%s]-匹配未成功", clazz.getSimpleName()));
+        HookConst.hookLog.e("XHelpers", String.format("类[%s]-匹配未成功", clazz.getSimpleName()));
         return null;*/
     }
 }

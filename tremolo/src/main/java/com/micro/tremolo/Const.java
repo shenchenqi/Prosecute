@@ -2,8 +2,8 @@ package com.micro.tremolo;
 
 import android.content.Context;
 
+import com.micro.HookConst;
 import com.micro.root.Logger;
-import com.micro.root.utils.InspectApply;
 import com.micro.tremolo.broad.DataBroadcast;
 
 import org.litepal.LitePal;
@@ -15,7 +15,7 @@ import java.util.List;
  * created by kilin on 20-3-18 下午1:08
  * 抖音配置接口
  */
-public interface Const {
+public interface Const extends HookConst {
 
     String PACKAGE_NAME = "com.ss.android.ugc.aweme";
     String APPLICATION = "android.app.Application";
@@ -24,12 +24,12 @@ public interface Const {
     // com.ss.android.ugc.aweme.app.BaseMediaApplication
     // android.app.Application;
     List<String> VERSIONS = Arrays.asList("9.6.0");
-    String CREATE_DIR = "Micro/Backup/init";
+    String CREATE_DIR = "Micro/Backup/Tremolo/init";
 
-    Logger rootLogger = Logger.getLogger("tremoloLog", "RootLog");
-    Logger monitorLogger = Logger.getLogger("tremoloLog", "MonitorLog");
-    Logger controlLogger = Logger.getLogger("tremoloLog", "ControlLog");
-    Logger taskLogger = Logger.getLogger("tremoloLog", "TaskLog");
+    Logger rootLogger = Logger.getLogger("TremoloLog", "RootLog");
+    Logger monitorLogger = Logger.getLogger("TremoloLog", "MonitorLog");
+    Logger controlLogger = Logger.getLogger("TremoloLog", "ControlLog");
+    Logger taskLogger = Logger.getLogger("TremoloLog", "TaskLog");
 
     int collectType = 2;//采集类型 0-未知;1-控制布局UI;2-广域获取数据;3-狭域监控数据
 
@@ -38,23 +38,21 @@ public interface Const {
     boolean isNarrowArea = collectType == 3;
     int fansCount = 10000;
 
-    static void tremoloApp(Context context) {
+    static void initTremoloApp(Context context) {
         LitePal.initialize(context);
         DataBroadcast.registerReceiver(context);
-        if (!InspectApply.checkApkExist(context, PACKAGE_NAME)) {
-            InspectApply.installAPK(context, InspectApply.apkPath(context, "douyin_v9.6.0.apk"), "9.6.0");
-        }
+        HookConst.installApp(context, PACKAGE_NAME, "douyin_v9.6.0.apk", "9.6.0");
     }
 
-    static int isAppOnForeground(Context context) {
-        return InspectApply.isAppOnForeground(context, Const.PACKAGE_NAME);
+    static int isTremoloForegroundApply(Context context) {
+        return HookConst.isAppOnForeground(context, PACKAGE_NAME);
     }
 
-    static void openApply(Context context) {
-        InspectApply.openApply(context, Const.PACKAGE_NAME);
+    static void openTremoloApply(Context context) {
+        HookConst.openApply(context, PACKAGE_NAME);
     }
 
-    static void setTopApply(Context context) {
-        InspectApply.setBackstageToFrontDesk(context, Const.PACKAGE_NAME);
+    static void setTremoloTopApply(Context context) {
+        HookConst.setTopApply(context, PACKAGE_NAME);
     }
 }

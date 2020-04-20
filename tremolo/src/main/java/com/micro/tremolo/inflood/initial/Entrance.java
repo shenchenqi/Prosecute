@@ -86,10 +86,10 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         monitorLogger.i(TAG, "config", "配置");
         try {
             if (Const.collectType != 0) {
-                if (Const.isAppOnForeground(getIContext()) == 500) {
-                    Const.openApply(getIContext());
-                } else if (Const.isAppOnForeground(getIContext()) == 400) {
-                    Const.setTopApply(getIContext());
+                if (Const.isTremoloForegroundApply(getIContext()) == 500) {
+                    Const.openTremoloApply(getIContext());
+                } else if (Const.isTremoloForegroundApply(getIContext()) == 400) {
+                    Const.setTremoloTopApply(getIContext());
                 }
             }
             SearchUserApi.setInstance(getHookParam().getHook(), getIContext());

@@ -1,6 +1,6 @@
 ext.deps = [:]
 
-deps.gradle_build = "com.android.tools.build:gradle:3.6.1"
+deps.gradle_build = "com.android.tools.build:gradle:3.5.3"
 deps.dom4j = "org.dom4j:dom4j:2.0.0"
 deps.sqlcipher = "net.zetetic:android-database-sqlcipher:4.2.0"
 deps.litepal = "org.litepal.android:core:1.5.1"

@@ -61,10 +61,10 @@ public class Entrance extends Setup<EntrancePresenter, EntranceInter> {
         monitorLogger.i(TAG, "config", "配置");
         try {
             if (Const.collectType != 0) {
-                if (Const.isAppOnForeground(getIContext()) == 500) {
-                    Const.openApply(getIContext());
-                } else if (Const.isAppOnForeground(getIContext()) == 400) {
-                    Const.setTopApply(getIContext());
+                if (Const.isWorkerForegroundApply(getIContext()) == 500) {
+                    Const.openWorkerApply(getIContext());
+                } else if (Const.isWorkerForegroundApply(getIContext()) == 400) {
+                    Const.setWorkerTopApply(getIContext());
                 }
             }
             dialog = new HideDialog(getHookParam().getHook(), getIContext());

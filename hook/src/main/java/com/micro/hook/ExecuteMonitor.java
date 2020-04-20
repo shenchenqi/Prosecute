@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.os.Handler;
 import android.os.HandlerThread;
 
+import com.micro.HookConst;
 import com.micro.foreign.ForeignHook;
 import com.micro.foreign.ForeignHookParam;
 import com.micro.hook.config.EventCallback;
@@ -37,12 +38,14 @@ public abstract class ExecuteMonitor implements EventCallback {
 
     public static void setHookRegister(String key, Class clazz) {
         logger.i(TAG, "注册Hook");
-        if (mHookRegisterMap.containsKey(key)) {
-            mHookRegisterMap.remove(key);
+        if (Lang.isEquals(1, HookConst.moduleStatus)) {
+            mHookRegisterMap.put(key, clazz);
+        } else if (Lang.isEquals(2, HookConst.moduleStatus)) {
             mHookRegisterMap.put(key, clazz);
         } else {
             mHookRegisterMap.put(key, clazz);
         }
+
     }
 
     protected final HookParam hookParam;
